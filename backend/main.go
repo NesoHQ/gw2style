@@ -1,9 +1,9 @@
 package main
 
 import (
-	"servicetemplate/cmd"
+	"github.com/NesoHQ/gw2style/cmd"
 )
 
 func main() {
-	cmd.Execute()
+	cmd.Serve()
 }

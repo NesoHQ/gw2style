@@ -7,9 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-
-	"servicetemplate/logger"
-	"servicetemplate/util"
+	"github.com/NesoHQ/gw2style/logger"
 )
 
 type recorder struct {
@@ -67,8 +65,12 @@ func Logger(handler http.Handler) http.Handler {
 	})
 }
 
+const (
+	X_TRACE_ID_KEY string = "x-trace-id"
+)
+
 func NewRequestWithTraceCtx(r *http.Request) *http.Request {
-	traceID := r.Header.Get(util.X_TRACE_ID_KEY)
+	traceID := r.Header.Get(X_TRACE_ID_KEY)
 
 	if traceID == "" {
 		newtraceID, err := uuid.NewRandom()

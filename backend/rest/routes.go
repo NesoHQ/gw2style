@@ -3,14 +3,14 @@ package rest
 import (
 	"net/http"
 
-	"servicetemplate/rest/middlewares"
+	"github.com/NesoHQ/gw2style/rest/middlewares"
 )
 
 func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manager) {
 	mux.Handle(
-		"GET /api/v1/hello",
+		"POST /api/v1/login",
 		manager.With(
-			http.HandlerFunc(server.handlers.HelloHandler),
+			http.HandlerFunc(server.handlers.LoginHandler),
 			// server.middlewares.AuthenticateJWT,
 		),
 	)

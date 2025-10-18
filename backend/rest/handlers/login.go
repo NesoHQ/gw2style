@@ -1,0 +1,43 @@
+package handlers
+
+import (
+	"net/http"
+
+	"github.com/NesoHQ/gw2style/rest/utils"
+)
+
+func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
+	apiKey := r.Header.Get("X-API-Key")
+	if apiKey == "" {
+		utils.SendData(w, http.StatusBadRequest, "API key is required")
+		return
+	}
+
+	hasRequiredPermissions, err := utils.HasRequiredPermissions(apiKey)
+	if err != nil {
+		utils.SendData(w, http.StatusForbidden, err.Error())
+		return
+	}
+
+	if !hasRequiredPermissions {
+		utils.SendData(w, http.StatusForbidden, "missing required permissions")
+		return
+	}
+
+	userInfo, err := utils.GetUserInfo(apiKey)
+	if err != nil {
+		utils.SendData(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	JWT, err := utils.GenerateJWT(utils.User{
+		ID:   userInfo.ID,
+		Name: userInfo.Name,
+	})
+	if err != nil {
+		utils.SendData(w, http.StatusInternalServerError, "Failed to generate token")
+		return
+	}
+
+	utils.SendData(w, http.StatusOK, JWT)
+}

@@ -6,12 +6,10 @@ import (
 	"net/http"
 	"sync"
 
-	"go.elastic.co/apm/module/apmhttp"
-
-	"servicetemplate/config"
-	"servicetemplate/rest/handlers"
-	"servicetemplate/rest/middlewares"
-	"servicetemplate/rest/swagger"
+	"github.com/NesoHQ/gw2style/config"
+	"github.com/NesoHQ/gw2style/rest/handlers"
+	"github.com/NesoHQ/gw2style/rest/middlewares"
+	//"github.com/NesoHQ/gw2style/rest/swagger"
 )
 
 type Server struct {
@@ -45,7 +43,7 @@ func (server *Server) Start() {
 
 	handler := middlewares.EnableCors(mux)
 
-	swagger.SetupSwagger(mux, manager)
+	//swagger.SetupSwagger(mux, manager)
 
 	server.Wg.Add(1)
 
@@ -55,7 +53,7 @@ func (server *Server) Start() {
 		addr := fmt.Sprintf(":%d", server.cnf.HttpPort)
 		slog.Info(fmt.Sprintf("Listening at %s", addr))
 
-		if err := http.ListenAndServe(addr, apmhttp.Wrap(handler)); err != nil {
+		if err := http.ListenAndServe(addr, handler); err != nil {
 			slog.Error(err.Error())
 		}
 	}()

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"servicetemplate/logger"
+	"github.com/NesoHQ/gw2style/logger"
 )
 
 func Recover(next http.Handler) http.Handler {
