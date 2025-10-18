@@ -25,48 +25,50 @@ This document outlines all features in GW2STYLE, including implementation detail
 
 ### Problem Solved
 
-Traditional account systems add friction and maintenance overhead. By leveraging the official Guild Wars 2 API, players authenticate instantly without passwords or signups.
+Traditional account systems add friction and maintenance overhead. By leveraging the official Guild Wars 2 API, players authenticate instantly without passwords or signin.
 
 ### Solution Overview
 
-Players authenticate using their GW2 API key. The backend validates it via the official `/v2/account` endpoint, and the player's account name is stored in browser local storage for session management.
+Players authenticate using their GW2 API key. The backend validates it via the official `/v2/account` endpoint, and the player's account ID & name is stored in DB & browser(JWT).
 
 ### User Flow
 
 1. Player navigates to the Login page
-2. Enters their GW2 API key (requires `account` scope)
+2. Enters their GW2 API key (requires `account`. `characters`, `builds` scope) `https://wiki.guildwars2.com/images/d/dd/API_Key_Creation.png`
 3. Backend validates the key against `https://api.guildwars2.com/v2/account`
-4. On success, username is stored in local storage
-5. Player can now create, edit, and delete their own posts
-6. Logout clears the stored credentials
+4. On success, userid and name is stored in DB and JWT in Clint's browser
+5. user can now create, edit their own posts
+6. Logout clears the stored credentials from there browser
 
 ### Technical Implementation
 
-- **Backend:** Go endpoint `/auth/verify` validates keys and returns `{ username, keyValid }`
-- **Frontend:** Local storage for session persistence
+- **Backend:** Go endpoint `/login` validates keys and returns `{ username, jwt }`
+1. Validate GW2 API key via `/v2/tokeninfo` (requires `account`, `characters`, `builds` scopes)
+2. Fetch account data from `/v2/account`
+3. Create/fetch user by `account.id`
+4. Generate JWT with `{ user_id, username }`
+5. Return `{ user, token }` (never store API key)
+Middleware validates the token and sets the authenticated user context.
+- **Frontend:** HTTP ony cookie for jwt and user info
 - **External API:** Guild Wars 2 official API (`/v2/account`)
-- **Security:** No passwords or sensitive data stored server-side
+- **Security:** No passwords or the api key stored server-side
 
 ### Acceptance Criteria
 
-- [ ] Valid API keys return GW2 username and create active session
-- [ ] Invalid/expired keys show error message without creating session
-- [ ] Sessions persist between browser sessions
-- [ ] Post ownership verified via username match
+- [✅] Valid API keys create user and return JWT
+- [✅] Invalid keys show error message
 
 ### Roadmap
 
 - **Next Steps:**
   - Frontend validation for key scope before submission
   - Server-side caching of verified usernames
-  - Optional session expiry for enhanced UX
 
 ### Contributing
 
 Help wanted:
 - UI feedback improvements for failed login attempts
 - Type-safe TypeScript interfaces for GW2 API responses
-- Session expiry logic implementation
 
 ---
 
