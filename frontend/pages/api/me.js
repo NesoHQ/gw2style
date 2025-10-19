@@ -1,5 +1,5 @@
 // pages/api/me.js
-import cookie from 'cookie';
+import { parse } from 'cookie';
 import jwt from 'jsonwebtoken';
 
 export default function handler(req, res) {
@@ -21,7 +21,7 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const cookies = cookie.parse(req.headers.cookie || '');
+  const cookies = parse(req.headers.cookie || '');
   const token = cookies.token;
 
   if (!token) {

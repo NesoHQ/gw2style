@@ -57,8 +57,6 @@ export default function Home({ posts }) {
     };
   }, [posts]);
 
-  console.log('Posts data:', posts); // Debug log
-
   return (
     <div className="container">
       <Head>
@@ -105,14 +103,14 @@ export default function Home({ posts }) {
 }
 
 export async function getServerSideProps() {
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl =
+    process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://localhost:3000`;
+
   try {
-    // const res = await fetch(
-    //   `http://localhost:8888/.netlify/functions/getPosts`
-    // );
-    const res = await fetch(
-      `https://gw2style.netlify.app/.netlify/functions/getPosts`
-    );
-    const posts = await res.json();
+    const res = await fetch(`${baseUrl}/api/posts`);
+    const data = await res.json();
+    const posts = data.data || []; // Assuming our API returns { success: true, data: [...posts] }
 
     return {
       props: {

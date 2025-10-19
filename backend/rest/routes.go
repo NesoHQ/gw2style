@@ -14,4 +14,11 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			// server.middlewares.AuthenticateJWT,
 		),
 	)
+
+	mux.Handle(
+		"GET /api/v1/posts",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetPostsHandler),
+		),
+	)
 }

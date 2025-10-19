@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['preview.redd.it'], // add external domains here
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'preview.redd.it',
+      },
+    ],
   },
 };
 
