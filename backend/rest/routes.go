@@ -21,4 +21,11 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			http.HandlerFunc(server.handlers.GetPostsHandler),
 		),
 	)
+
+	mux.Handle(
+		"GET /api/v1/posts/search",
+		manager.With(
+			http.HandlerFunc(server.handlers.SearchPostsHandler),
+		),
+	)
 }

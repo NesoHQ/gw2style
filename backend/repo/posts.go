@@ -3,6 +3,8 @@ package repo
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strings"
 )
 
 type Post struct {
@@ -35,7 +37,45 @@ func NewPostRepository(db *sql.DB) *PostRepository {
 }
 
 func (r *PostRepository) GetPosts(ctx context.Context) ([]Post, error) {
-	query := `
+	return r.SearchPosts(ctx, SearchParams{OnlyPublished: true})
+}
+
+type SearchParams struct {
+	Query         string
+	TagID         *int
+	OnlyPublished bool
+	AuthorName    string
+}
+
+func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, error) {
+	queryArgs := []interface{}{}
+	conditions := []string{}
+
+	if params.OnlyPublished {
+		conditions = append(conditions, "published = true")
+	}
+
+	if params.Query != "" {
+		queryArgs = append(queryArgs, "%"+params.Query+"%", "%"+params.Query+"%")
+		conditions = append(conditions, "(title ILIKE $"+fmt.Sprint(len(queryArgs)-1)+" OR description ILIKE $"+fmt.Sprint(len(queryArgs))+")")
+	}
+
+	if params.TagID != nil {
+		queryArgs = append(queryArgs, *params.TagID)
+		conditions = append(conditions, "tag_id = $"+fmt.Sprint(len(queryArgs)))
+	}
+
+	if params.AuthorName != "" {
+		queryArgs = append(queryArgs, params.AuthorName)
+		conditions = append(conditions, "author_name = $"+fmt.Sprint(len(queryArgs)))
+	}
+
+	whereClause := ""
+	if len(conditions) > 0 {
+		whereClause = "WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	baseQuery := `
 		SELECT 
 			CAST(id AS TEXT),
 			COALESCE(title, '') as title,
@@ -52,12 +92,11 @@ func (r *PostRepository) GetPosts(ctx context.Context) ([]Post, error) {
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
 			COALESCE(published, false) as published
-		FROM posts 
-		WHERE published = true 
-		ORDER BY created_at DESC
-	`
+		FROM posts`
 
-	rows, err := r.db.QueryContext(ctx, query)
+	query := baseQuery + " " + whereClause + " ORDER BY created_at DESC"
+
+	rows, err := r.db.QueryContext(ctx, query, queryArgs...)
 	if err != nil {
 		return nil, err
 	}

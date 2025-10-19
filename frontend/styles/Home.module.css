@@ -2,6 +2,44 @@
   padding: 4px;
 }
 
+.searchContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.2rem;
+  border: 2px solid #e5e5e5;
+  border-radius: 8px;
+  transition: border-color 0.3s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #0070f3;
+}
+
+.messageContainer {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.comingSoon {
+  font-size: 1.5rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.searchTermDisplay {
+  font-size: 1.1rem;
+  color: #888;
+  font-style: italic;
+}
+
 .grid {
   position: relative;
   width: 100%;
