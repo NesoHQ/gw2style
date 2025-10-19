@@ -7,8 +7,8 @@ import (
 )
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID   string `json:"id" db:"id"`
+	Name string `json:"name" db:"username"`
 }
 
 type UserRepo interface {
@@ -37,8 +37,8 @@ func (r *userRepo) Create(newUser User) (*User, error) {
 
 func (r *userRepo) FindUser(ID string) (*User, error) {
 	var user User
-	query := `SELECT id FROM users WHERE id = $1`
-	err := r.db.Get(&user, query, user.ID)
+	query := `SELECT id, username FROM users WHERE id = $1`
+	err := r.db.Get(&user, query, ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil
