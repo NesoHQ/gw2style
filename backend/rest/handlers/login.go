@@ -14,29 +14,29 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		APIKey string `json:"apiKey"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		utils.SendData(w, http.StatusBadRequest, "invalid JSON body")
+		utils.SendError(w, http.StatusBadRequest, "invalid JSON body", nil)
 		return
 	}
 	apiKey := req.APIKey
 	if apiKey == "" {
-		utils.SendData(w, http.StatusBadRequest, "API key is required")
+		utils.SendError(w, http.StatusBadRequest, "API key is required", nil)
 		return
 	}
 
 	hasRequiredPermissions, err := utils.HasRequiredPermissions(apiKey)
 	if err != nil {
-		utils.SendData(w, http.StatusForbidden, err.Error())
+		utils.SendError(w, http.StatusForbidden, err.Error(), err)
 		return
 	}
 
 	if !hasRequiredPermissions {
-		utils.SendData(w, http.StatusForbidden, "missing required permissions")
+		utils.SendError(w, http.StatusForbidden, "missing required permissions", nil)
 		return
 	}
 
 	userInfo, err := utils.GetUserInfo(apiKey)
 	if err != nil {
-		utils.SendData(w, http.StatusInternalServerError, err.Error())
+		utils.SendError(w, http.StatusInternalServerError, err.Error(), err)
 		return
 	}
 
@@ -54,7 +54,7 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 			Name: userInfo.Name,
 		})
 		if err != nil {
-			utils.SendData(w, http.StatusInternalServerError, "Failed to create user: "+err.Error())
+			utils.SendError(w, http.StatusInternalServerError, "Failed to create user: "+err.Error(), err)
 			return
 		}
 	}
@@ -64,7 +64,7 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Name: userInfo.Name,
 	})
 	if err != nil {
-		utils.SendData(w, http.StatusInternalServerError, "Failed to generate token")
+		utils.SendError(w, http.StatusInternalServerError, "Failed to generate token", err)
 		return
 	}
 

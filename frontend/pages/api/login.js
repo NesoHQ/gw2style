@@ -15,20 +15,58 @@ export default async function handler(req, res) {
       body: JSON.stringify({ apiKey }),
     });
 
-    // Read token as text
-    let token = await backendRes.text();
-    token = token.trim();
+    // Always expect JSON response from SendJson/SendError
+    const responseText = await backendRes.text();
+    console.log('Backend response:', responseText);
+    let responseData;
 
-    // Remove quotes if present
-    if (token.startsWith('"') && token.endsWith('"')) {
-      token = token.slice(1, -1);
+    try {
+      responseData = JSON.parse(responseText);
+      console.log('Parsed response:', responseData);
+
+      if (!backendRes.ok) {
+        console.log('Response not OK, status:', backendRes.status);
+
+        // Extract the actual error message from the nested format
+        let errorMessage = responseData.message;
+
+        // If the message contains a JSON string with text field, extract it
+        if (errorMessage && errorMessage.includes('text')) {
+          const match = errorMessage.match(/{\s*"text":\s*"([^"]+)"/);
+          if (match) {
+            errorMessage = match[1];
+          }
+        }
+
+        return res.status(backendRes.status).json({
+          error: errorMessage || 'Login failed',
+        });
+      }
+    } catch (parseError) {
+      console.error('Failed to parse response:', parseError);
+      return res.status(500).json({
+        error: 'Server response was not in the expected format',
+      });
     }
 
-    console.log('Clean token:', token);
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (parseError) {
+      // If it's not JSON, treat it as a token
+      responseData = responseText.trim();
+    }
+
+    // Get the token (either from JSON response or direct text)
+    const token =
+      typeof responseData === 'string' ? responseData : responseData.token;
+
+    // Clean up token if needed
+    const cleanToken =
+      token.startsWith('"') && token.endsWith('"') ? token.slice(1, -1) : token;
 
     const cookieOptions = {
       httpOnly: true,
-      secure:  process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days
@@ -41,10 +79,14 @@ export default async function handler(req, res) {
     );
 
     // Decode token here and return user info to frontend
-    const decoded = jwt.decode(token);
+    const decoded = jwt.decode(cleanToken);
 
     if (!decoded) {
-      return res.status(500).json({ error: 'Failed to decode JWT' });
+      // If token exists but can't be decoded, it's likely malformed
+      console.error('Invalid token received from backend');
+      return res.status(500).json({
+        error: 'The server returned an invalid authentication token',
+      });
     }
 
     return res.status(200).json({
