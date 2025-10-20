@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
   try {
     // Get the API URL from environment variable
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = 'http://localhost:8080';
 
     // Call the backend API
     const response = await fetch(`${apiUrl}/api/v1/posts`);

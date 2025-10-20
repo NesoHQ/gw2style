@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   if (!apiKey) return res.status(400).json({ error: 'apiKey is required' });
 
   try {
-    const backendRes = await fetch('http://192.168.0.101:8080/api/v1/login', {
+    const backendRes = await fetch('http://localhost:8080/api/v1/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ apiKey }),
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure:  process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7, // 7 days

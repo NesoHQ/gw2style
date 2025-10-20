@@ -103,9 +103,7 @@ export default function Home({ posts }) {
 }
 
 export async function getServerSideProps() {
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
-  const baseUrl =
-    process.env.NEXT_PUBLIC_FRONTEND_URL || `${protocol}://localhost:3000`;
+  const baseUrl =`http://localhost:3000`;
 
   try {
     const res = await fetch(`${baseUrl}/api/posts`);

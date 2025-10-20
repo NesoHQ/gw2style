@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
   try {
     // Get the API URL from environment variable
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = 'http://localhost:8080';
     const { q, tag, author } = req.query;
 
     // Build search URL
