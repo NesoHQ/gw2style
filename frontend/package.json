@@ -1,6 +1,6 @@
 {
-  "name": "next-netlify-starter",
-  "version": "0.5.0",
+  "name": "gw2style",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",

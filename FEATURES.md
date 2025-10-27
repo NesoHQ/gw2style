@@ -68,7 +68,6 @@ Middleware validates the token and sets the authenticated user context.
 
 Help wanted:
 - UI feedback improvements for failed login attempts
-- Type-safe TypeScript interfaces for GW2 API responses
 
 ---
 

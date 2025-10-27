@@ -9,6 +9,8 @@ import (
 type User struct {
 	ID   string `json:"id" db:"id"`
 	Name string `json:"name" db:"username"`
+	ApiKeyPrivet string `json:"apikeyprivet" db:"apikeyprivet"`
+	ApiKeyPublic string `json:"apikeypublic" db:"apikeypublic"`
 }
 
 type UserRepo interface {
@@ -27,8 +29,10 @@ func NewUserRepo(db *sqlx.DB) UserRepo {
 }
 
 func (r *userRepo) Create(newUser User) (*User, error) {
-	query := `INSERT INTO users (id, username) VALUES ($1, $2)`
-	_, err := r.db.Exec(query, newUser.ID, newUser.Name)
+	query := `INSERT INTO users 
+				(id, username, api_key_privet, api_key_public) 
+				VALUES ($1, $2, $3, $4)`
+	_, err := r.db.Exec(query, newUser.ID, newUser.Name, newUser.ApiKeyPrivet, newUser.ApiKeyPublic)
 	if err != nil {
 		return nil, err
 	}

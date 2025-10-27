@@ -8,7 +8,7 @@ export default function Header() {
     <nav className="navbar">
       {/* Logo/Title */}
       <div className="navbar-logo">
-        <Link href="/">GW2🎨STYLE</Link>
+        <Link href="/"><p><b>GW2</b>style</p></Link>
       </div>
 
       {/* Navigation Links */}

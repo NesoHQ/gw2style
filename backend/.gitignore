@@ -103,7 +103,3 @@ main
 __debug_bin*
 
 .vscode
-
-Dockerfile
-docker-compose.yml
-Makefile
