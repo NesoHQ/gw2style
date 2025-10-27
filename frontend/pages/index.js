@@ -79,8 +79,9 @@ export default function Home({ posts }) {
                 <Image
                   src={post.thumbnail}
                   alt={post.title}
-                  width={300}
+                  width={400}
                   height={0}
+                  priority
                   style={{
                     width: '100%',
                     height: 'auto',
@@ -90,7 +91,13 @@ export default function Home({ posts }) {
               </div>
               <div className={styles.info}>
                 <h2 className={styles.title}>{post.title}</h2>
-                <p className={styles.views}>{post.views} views</p>
+                <p className={styles.views}>
+                  {new Intl.NumberFormat('en-US', {
+                    notation: 'compact',
+                    maximumFractionDigits: 1,
+                  }).format(post.views)}{' '}
+                  views
+                </p>
               </div>
             </div>
           </Link>
@@ -103,7 +110,7 @@ export default function Home({ posts }) {
 }
 
 export async function getServerSideProps() {
-  const baseUrl =`http://localhost:3000`;
+  const baseUrl = `http://localhost:3000`;
 
   try {
     const res = await fetch(`${baseUrl}/api/posts`);

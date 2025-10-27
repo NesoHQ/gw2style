@@ -8,10 +8,11 @@ export default function Footer() {
       <div className="footer-content">
         {/* Main sections */}
         <div className="footer-section footer-brand">
-          <h3 className="footer-title">GW2🎨STYLE</h3>
+          <h3 className="footer-title">GW2 STYLE</h3>
           <p className="footer-description">
-            A community-driven fashion archive for Guild Wars 2 players. Share,
-            explore, and get inspired by the fashion of Tyria.
+            Unleash your creativity in Tyria. Your ultimate destination for
+            Guild Wars 2 fashion, where every character becomes a masterpiece.
+            Join our community of style-savvy adventurers.
           </p>
           <div className="footer-social">
             <a
@@ -28,31 +29,31 @@ export default function Footer() {
               >
                 <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
               </svg>
-              Star on GitHub
+              Join the Revolution
             </a>
           </div>
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">Navigate</h4>
+          <h4 className="footer-heading">Fashion Arena</h4>
           <ul className="footer-links">
             <li>
-              <Link href="/">Home</Link>
+              <Link href="/">Trending Looks</Link>
             </li>
             <li>
-              <Link href="/create">Submit Look</Link>
+              <Link href="/create">Forge Your Style</Link>
             </li>
             <li>
-              <Link href="/guidelines">Guidelines</Link>
+              <Link href="/popular">Hall of Fame</Link>
             </li>
             <li>
-              <Link href="/about">About</Link>
+              <Link href="/guidelines">Style Guide</Link>
             </li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">Community</h4>
+          <h4 className="footer-heading">The Wardrobe</h4>
           <ul className="footer-links">
             <li>
               <a
@@ -60,7 +61,8 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Join Discord
+                Community
+                <span className="new-tag">Discord</span>
               </a>
             </li>
             <li>
@@ -69,7 +71,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Discussions
+                Fashion Forum
               </a>
             </li>
             <li>
@@ -78,7 +80,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Report Issues
+                Feedback Forge
               </a>
             </li>
             <li>
@@ -87,14 +89,14 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Contribute
+                Join the Artisans
               </a>
             </li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">Resources</h4>
+          <h4 className="footer-heading">Style Arsenal</h4>
           <ul className="footer-links">
             <li>
               <a
@@ -102,7 +104,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Guild Wars 2
+                GW2 Universe
               </a>
             </li>
             <li>
@@ -111,16 +113,25 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GW2 Wiki
+                Fashion Wiki
               </a>
             </li>
             <li>
               <a
-                href="https://api.guildwars2.com/v2"
+                href="https://wiki.guildwars2.com/wiki/Dye"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GW2 API
+                Dye Chronicles
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://wiki.guildwars2.com/wiki/Wardrobe"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Wardrobe Guide
               </a>
             </li>
           </ul>
@@ -131,7 +142,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="footer-bottom-content">
           <p className="footer-copyright">
-            Open source under NesoHQ.
+            Crafted & Powered by NesoHQ
           </p>
           <div className="footer-bottom-links">
             <a
@@ -139,20 +150,19 @@ export default function Footer() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              NesoHQ Organization
+              NesoHQ
             </a>
-            <span className="separator">•</span>
+            <span className="separator">✧</span>
             <a
               href="https://github.com/nesohq/gw2style"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Source Code
+              Behind the Seams
             </a>
           </div>
         </div>
       </div>
-
       <style jsx>{`
         .footer {
           background: #1a202c;

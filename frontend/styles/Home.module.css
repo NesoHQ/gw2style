@@ -1,48 +1,60 @@
 .container {
-  padding: 4px;
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .searchContainer {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto 2rem;
+  margin: 2rem auto;
   padding: 0 1rem;
 }
 
 .searchInput {
   width: 100%;
-  padding: 1rem;
-  font-size: 1.2rem;
-  border: 2px solid #e5e5e5;
-  border-radius: 8px;
-  transition: border-color 0.3s ease;
+  padding: 1rem 1.5rem;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(220, 53, 69, 0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  transition: all 0.3s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: #0070f3;
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
+}
+
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .messageContainer {
-  margin: 2rem 0;
+  margin: 3rem 0;
   text-align: center;
 }
 
 .comingSoon {
   font-size: 1.5rem;
-  color: #666;
+  color: var(--text);
   margin-bottom: 1rem;
+  font-family: 'Rajdhani', sans-serif;
 }
 
 .searchTermDisplay {
   font-size: 1.1rem;
-  color: #888;
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .grid {
   position: relative;
   width: 100%;
+  margin: 0 auto;
+  padding: 1rem 0;
 }
 
 .gridSizer {
@@ -50,27 +62,50 @@
 }
 
 .card {
-  padding: 4px;
+  padding: 8px;
   width: 25%;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   display: block;
   text-decoration: none;
   color: inherit;
   box-sizing: border-box;
-  transition: transform 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .card > div {
-  border: 1px solid #e0e0e0;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: rgba(21, 22, 32, 0.6);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 12px;
+  background: linear-gradient(45deg, var(--primary), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover::before {
+  opacity: 0.1;
 }
 
 .card:hover > div {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+  border-color: rgba(220, 53, 69, 0.3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(220, 53, 69, 0.2),
+              0 0 20px rgba(220, 53, 69, 0.15);
 }
 
 .imageWrapper {
@@ -79,20 +114,73 @@
   overflow: hidden;
 }
 
+.imageWrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 70%,
+    rgba(21, 22, 32, 0.8) 100%
+  );
+}
+
 .info {
-  padding: 16px;
+  padding: 1.25rem;
+  position: relative;
+  background: rgba(21, 22, 32, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .title {
-  font-size: 0.95rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0 0 0.5rem 0;
   line-height: 1.4;
-  color: #333;
+  color: var(--text);
+  letter-spacing: 0.5px;
 }
 
 .views {
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.views::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+@media (max-width: 1200px) {
+  .gridSizer,
+  .card {
+    width: 33.333%;
+  }
+}
+
+@media (max-width: 768px) {
+  .gridSizer,
+  .card {
+    width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .gridSizer,
+  .card {
+    width: 100%;
+  }
 }
