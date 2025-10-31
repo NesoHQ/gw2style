@@ -95,27 +95,67 @@ body {
 
 .header-logo {
   flex: 0 0 auto;
+  margin-right: 2rem;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
   position: relative;
 }
 
-.logo-text {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: #ffffff;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  background: linear-gradient(45deg, #ffffff, #f8f9fa);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 2px rgba(220, 53, 69, 0.3));
+.logo-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, var(--primary), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 4px;
 }
 
-.logo-text b {
-  color: #dc3545;
-  -webkit-text-fill-color: #dc3545;
+.logo-container:hover::before {
+  opacity: 0.1;
+}
+
+.logo-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.logo-gw2 {
+  background: linear-gradient(45deg, var(--primary), #ff6b6b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  filter: drop-shadow(0 0 8px rgba(220, 53, 69, 0.3));
   animation: glow 3s infinite;
+}
+
+.logo-style {
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.logo-divider {
+  font-size: 0.8em;
+  opacity: 0.5;
+  color: var(--primary);
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 5px rgba(220, 53, 69, 0.3));
 }
 
 .header-nav {

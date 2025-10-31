@@ -14,7 +14,8 @@ CREATE TABLE
         tag_id INT,
         created_at TIMESTAMPTZ DEFAULT now(),
         updated_at TIMESTAMPTZ DEFAULT now(),
-        likes_count INT,
+        likes_count INT DEFAULT 0,
+        views INT DEFAULT 0;
         published BOOLEAN DEFAULT FALSE,
         CONSTRAINT fk_author FOREIGN KEY (author_name) REFERENCES users (username) ON DELETE SET NULL
     );

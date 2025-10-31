@@ -10,9 +10,13 @@ export default function Header() {
         {/* Logo */}
         <div className="header-logo">
           <Link href="/">
-            <span className="logo-text">
-              <b>GW2</b>style
-            </span>
+            <div className="logo-container">
+              <span className="logo-text">
+                <span className="logo-gw2">GW2</span>
+                <span className="logo-divider">◈</span>
+                <span className="logo-style">STYLE</span>
+              </span>
+            </div>
           </Link>
         </div>
 

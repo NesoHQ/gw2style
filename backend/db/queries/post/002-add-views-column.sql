@@ -1,2 +1,0 @@
-ALTER TABLE posts
-ADD COLUMN views INT DEFAULT 0;
