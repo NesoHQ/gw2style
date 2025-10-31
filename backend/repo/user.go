@@ -7,9 +7,9 @@ import (
 )
 
 type User struct {
-	ID   string `json:"id" db:"id"`
-	Name string `json:"name" db:"username"`
-	ApiKey string `json:"apikey" db:"apikey"`
+	ID     string `json:"id" db:"id"`
+	Name   string `json:"name" db:"username"`
+	ApiKey string `json:"api_key" db:"api_key"`
 }
 
 type UserRepo interface {
@@ -29,7 +29,7 @@ func NewUserRepo(db *sqlx.DB) UserRepo {
 
 func (r *userRepo) Create(newUser User) (*User, error) {
 	query := `INSERT INTO users 
-				(id, username, api_key_privet) 
+				(id, username, api_key) 
 				VALUES ($1, $2, $3)`
 	_, err := r.db.Exec(query, newUser.ID, newUser.Name, newUser.ApiKey)
 	if err != nil {
@@ -40,7 +40,7 @@ func (r *userRepo) Create(newUser User) (*User, error) {
 
 func (r *userRepo) FindUser(ID string) (*User, error) {
 	var user User
-	query := `SELECT id, username FROM users WHERE id = $1`
+	query := `SELECT id, username, api_key FROM users WHERE id = $1`
 	err := r.db.Get(&user, query, ID)
 	if err != nil {
 		if err == sql.ErrNoRows {

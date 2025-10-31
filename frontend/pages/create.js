@@ -49,7 +49,32 @@ export default function CreatePost() {
       setError('At least one image URL is required');
       return false;
     }
+
+    // Validate URLs if they are provided
+    const urlFields = [
+      'thumbnail_url',
+      'image1_url',
+      'image2_url',
+      'image3_url',
+      'image4_url',
+      'image5_url',
+    ];
+    for (const field of urlFields) {
+      if (formData[field] && !isValidUrl(formData[field])) {
+        setError(`Invalid URL format for ${field.replace('_url', '')}`);
+        return false;
+      }
+    }
     return true;
+  };
+
+  const isValidUrl = (string) => {
+    try {
+      new URL(string);
+      return true;
+    } catch (_) {
+      return false;
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -63,23 +88,51 @@ export default function CreatePost() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/posts', {
+      const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: include cookies
         body: JSON.stringify({
-          ...formData,
+          title: formData.title,
+          description: formData.description,
+          thumbnailUrl: formData.thumbnail_url,
+          image1Url: formData.image1_url,
+          image2Url: formData.image2_url,
+          image3Url: formData.image3_url,
+          image4Url: formData.image4_url,
+          image5Url: formData.image5_url,
+          equipments: {}, // Empty JSON object for now
           published: true,
+          tagId: 0, // Default tag ID
         }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to create post');
+        throw new Error(data.error || 'Failed to create post');
       }
 
-      const data = await response.json();
-      router.push('/posts/' + data.id);
+      // If successful, redirect to the new post
+      if (data.id) {
+        await router.push(`/posts/${data.id}`);
+
+        // Clear form data after successful submission
+        setFormData({
+          title: '',
+          description: '',
+          thumbnail_url: '',
+          image1_url: '',
+          image2_url: '',
+          image3_url: '',
+          image4_url: '',
+          image5_url: '',
+        });
+      } else {
+        throw new Error('Post created but no ID returned');
+      }
     } catch (err) {
       setError(err.message);
     } finally {

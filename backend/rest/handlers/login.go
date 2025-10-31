@@ -50,8 +50,9 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	if user == nil {
 		_, err = h.repoUser.Create(repo.User{
-			ID:   userInfo.ID,
-			Name: userInfo.Name,
+			ID:     userInfo.ID,
+			Name:   userInfo.Name,
+			ApiKey: apiKey,
 		})
 		if err != nil {
 			utils.SendError(w, http.StatusInternalServerError, "Failed to create user: "+err.Error(), err)

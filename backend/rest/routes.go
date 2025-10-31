@@ -28,4 +28,28 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			http.HandlerFunc(server.handlers.SearchPostsHandler),
 		),
 	)
+
+	mux.Handle(
+		"GET /api/v1/posts/{id}",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetPostByIDHandler),
+		),
+	)
+
+	// Protected routes that require JWT auth
+	mux.Handle(
+		"GET /api/v1/user/apikey",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetUserAPIKeyHandler),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
+	mux.Handle(
+		"POST /api/v1/posts/create",
+		manager.With(
+			http.HandlerFunc(server.handlers.CreatePostHandler),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
 }

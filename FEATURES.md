@@ -43,15 +43,23 @@ Players authenticate using their GW2 API key. The backend validates it via the o
 ### Technical Implementation
 
 - **Backend:** Go endpoint `/login` validates keys and returns `{ username, jwt }`
+
 1. Validate GW2 API key via `/v2/tokeninfo` (requires `account`, `characters`, `builds` scopes)
 2. Fetch account data from `/v2/account`
-3. Create/fetch user by `account.id`
+3. Create/fetch user by `account.id`, storing API key securely
 4. Generate JWT with `{ user_id, username }`
-5. Return `{ user, token }` (never store API key)
-Middleware validates the token and sets the authenticated user context.
-- **Frontend:** HTTP ony cookie for jwt and user info
+5. Return `{ user, token }`
+   Middleware validates the token and sets the authenticated user context.
+
+- **Frontend:** HTTP only cookie for jwt and user info
 - **External API:** Guild Wars 2 official API (`/v2/account`)
-- **Security:** No passwords or the api key stored server-side
+- **Security:**
+  - API keys stored securely in database with UNIQUE constraint
+  - No passwords required
+  - JWT for session management
+- **Database Schema:**
+  - `users` table includes `api_key VARCHAR NOT NULL UNIQUE`
+  - API key enables automatic user verification and data fetching
 
 ### Acceptance Criteria
 
@@ -67,13 +75,14 @@ Middleware validates the token and sets the authenticated user context.
 ### Contributing
 
 Help wanted:
+
 - UI feedback improvements for failed login attempts
 
 ---
 
 ## Feature: Post Creation and Display System
 
-**Status:** 📅 Planned (v0.1)
+**Status:** ✅ Implemented (v0.1)
 
 ### Problem Solved
 
@@ -81,41 +90,68 @@ GW2 players lack a unified platform for sharing fashion screenshots. Content is 
 
 ### Solution Overview
 
-Provides a comprehensive post creation form with fields for title, description, armor details, weapons, cosmetics, tags, and image links. All posts display in a public gallery accessible to everyone.
+Provides a comprehensive post creation form with fields for title, description, armor details, weapons, cosmetics, and image links. Posts are displayed in both a masonry grid gallery and detailed individual views.
 
 ### User Flow
 
 1. User authenticates via GW2 API key
 2. Opens Create Post page
-3. Fills in outfit details, tags, and image URLs
+3. Fills in outfit details and uploads up to 5 images
 4. Submits form → backend validates and stores post
 5. Post appears immediately on homepage
+6. Users can click to view detailed post page with:
+   - Image gallery with thumbnails
+   - Full equipment details
+   - View counter
+   - Like system
 
 ### Technical Implementation
 
-- **Backend:** Go REST API (`/posts/create`, `/posts/all`, `/posts/:id`)
-- **Database:** PostgreSQL `posts` table with comprehensive columns
-- **Frontend:** Form validation and gallery display components
-- **Images:** External hosting (Imgur, Google Drive, etc.)
-- **Pagination:** Optimized queries for infinite scrolling
+- **Backend:**
+
+  - Go REST API endpoints:
+    - `/posts/create` for new posts
+    - `/posts` for listing/search
+    - `/posts/:id` for individual posts
+  - Automatic view counting
+  - JWT authentication
+  - Equipment JSON storage
+
+- **Database:**
+
+  - PostgreSQL `posts` table with columns:
+    - Basic info (title, description)
+    - Multiple image URLs
+    - Equipment JSON data
+    - Metadata (views, likes, created_at)
+
+- **Frontend:**
+  - Next.js with server-side rendering
+  - Responsive masonry grid layout
+  - Image gallery with thumbnail navigation
+  - Form validation and error handling
+  - Optimized image loading
 
 ### Acceptance Criteria
 
-- [ ] Valid posts save successfully and appear in feed
-- [ ] Invalid/incomplete data rejected with clear error messages
-- [ ] Homepage displays posts in newest-first order
+- [✅] Valid posts save successfully and appear in feed
+- [✅] Invalid/incomplete data rejected with clear error messages
+- [✅] Homepage displays posts in newest-first order
+- [❌] Individual post pages show all details
+- [✅] View counting works correctly
+- [✅] Images display in gallery format
 
 ### Roadmap
 
 - **Next Steps:**
-  - Post editing functionality
-  - Draft/preview system before publishing
+  - Image upload instead of links
 
 ### Contributing
 
 Help wanted:
-- Enhanced form validation
-- UI/UX polish and accessibility improvements
+- - Help on Individual post pages show all details(How it should look like)
+- Performance optimizations for large galleries
+- Accessibility enhancements
 
 ---
 
@@ -160,6 +196,7 @@ Displays latest posts with infinite scrolling. Posts load dynamically as users s
 ### Contributing
 
 Help wanted:
+
 - Scroll performance optimization
 - Loading state UI improvements
 
@@ -208,6 +245,7 @@ Tag-based filtering system allowing users to discover posts by categories like "
 ### Contributing
 
 Help wanted:
+
 - Tag UI component design
 - Backend indexing optimization
 - Tag autocomplete functionality
@@ -257,6 +295,7 @@ Simple like/reaction system tracking engagement per post with one like per user.
 ### Contributing
 
 Help wanted:
+
 - Anti-spam/bot prevention
 - Like button animations
 - Notification system for post creators
@@ -303,6 +342,7 @@ Authenticated users can delete their own posts with ownership verification.
 ### Contributing
 
 Help wanted:
+
 - Soft delete implementation
 - Audit log system
 
@@ -351,6 +391,7 @@ User reporting system with admin review queue for handling flags.
 ### Contributing
 
 Help wanted:
+
 - Moderation UI design
 - Report filtering and sorting logic
 - Admin notification system
@@ -400,6 +441,7 @@ Dynamic leaderboard displaying most-liked posts over various timeframes.
 ### Contributing
 
 Help wanted:
+
 - Leaderboard design and animations
 - Caching strategy optimization
 - Category filter implementation
@@ -449,6 +491,7 @@ Full-text search supporting keywords across titles, descriptions, and tags with 
 ### Contributing
 
 Help wanted:
+
 - PostgreSQL full-text search optimization
 - Search UI/UX design
 - Autocomplete implementation
@@ -500,6 +543,7 @@ Secure admin-only dashboard providing moderation tools, analytics, and content m
 ### Contributing
 
 Help wanted:
+
 - Data visualization components (charts, graphs)
 - Admin route security hardening
 - Audit log interface design
@@ -517,6 +561,7 @@ Each feature welcomes contributions! To get started:
 ---
 
 **Legend:**
+
 - ✅ Implemented - Feature is live
 - 📅 Planned - Feature is designed and awaiting development
 - 🚧 In Progress - Feature is actively being built
