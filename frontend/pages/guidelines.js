@@ -1,17 +1,19 @@
-import Head from 'next/head';
-import Header from '@components/Header';
-import Footer from '@components/Footer';
+import Layout from '@components/Layout';
 import styles from '../styles/Guidelines.module.css';
 
 export default function Guidelines() {
   return (
-    <div className="container">
-      <Head>
-        <title>Submission Guidelines - GW2Style</title>
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-
-      <Header />
+    <Layout
+      title="Submission Guidelines"
+      description="Learn how to create and share high-quality fashion posts on GW2Style"
+    >
+      <div className="page-header">
+        <h1 className="page-title">Submission Guidelines</h1>
+        <p className="page-description">
+          Follow these guidelines to create high-quality fashion posts that the
+          community will love
+        </p>
+      </div>
 
       <main className={styles.main}>
         <h1 className={styles.title}>Submission Guidelines</h1>
@@ -124,8 +126,6 @@ export default function Guidelines() {
           </section>
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

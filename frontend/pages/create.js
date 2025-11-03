@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
-import Head from 'next/head';
-import Header from '@components/Header';
-import Footer from '@components/Footer';
+import Layout from '@components/Layout';
 import styles from '../styles/CreatePost.module.css';
 
 export default function CreatePost() {
@@ -141,13 +139,16 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="container">
-      <Head>
-        <title>Create New Post - GW2Style</title>
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-
-      <Header />
+    <Layout
+      title="Create New Post"
+      description="Share your Guild Wars 2 character's style with the community"
+    >
+      <div className="page-header">
+        <h1 className="page-title">Create New Post</h1>
+        <p className="page-description">
+          Share your unique style with the Guild Wars 2 community
+        </p>
+      </div>
 
       <main className={styles.main}>
         <h1 className={styles.title}>Create New Post</h1>
@@ -239,8 +240,6 @@ export default function CreatePost() {
           </form>
         </div>
       </main>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }

@@ -98,6 +98,48 @@ func (h *Handlers) GetPostByIDHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (h *Handlers) GetPopularPostsHandler(w http.ResponseWriter, r *http.Request) {
+	// Only allow GET method
+	if r.Method != http.MethodGet {
+		h.sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
+
+	// Check if postRepo is initialized
+	if h.postRepo == nil {
+		slog.Error("Post repository not initialized")
+		h.sendError(w, http.StatusInternalServerError, "Post repository not initialized")
+		return
+	}
+
+	// Parse query parameters
+	timeframe := r.URL.Query().Get("timeframe")
+	limit := 100 // Default to top 100 posts
+
+	// Get popular posts from repository
+	posts, err := h.postRepo.GetPopularPosts(r.Context(), timeframe, limit)
+	if err != nil {
+		slog.Error("Failed to fetch popular posts", "error", err.Error())
+		h.sendError(w, http.StatusInternalServerError, "Failed to fetch popular posts")
+		return
+	}
+
+	// Set content type
+	w.Header().Set("Content-Type", "application/json")
+
+	// Create response structure
+	response := map[string]interface{}{
+		"success": true,
+		"data":    posts,
+	}
+
+	// Encode response
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		h.sendError(w, http.StatusInternalServerError, "Failed to encode response")
+		return
+	}
+}
+
 func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 	// Only allow GET method
 	if r.Method != http.MethodGet {

@@ -30,9 +30,9 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 	)
 
 	mux.Handle(
-		"GET /api/v1/posts/{id}",
+		"GET /api/v1/posts/popular",
 		manager.With(
-			http.HandlerFunc(server.handlers.GetPostByIDHandler),
+			http.HandlerFunc(server.handlers.GetPopularPostsHandler),
 		),
 	)
 

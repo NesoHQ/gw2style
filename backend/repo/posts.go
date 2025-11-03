@@ -140,6 +140,80 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 	return &post, nil
 }
 
+func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, limit int) ([]Post, error) {
+	var timeCondition string
+	switch timeframe {
+	case "week":
+		timeCondition = "AND created_at >= NOW() - INTERVAL '7 days'"
+	case "month":
+		timeCondition = "AND created_at >= NOW() - INTERVAL '30 days'"
+	default:
+		timeCondition = ""
+	}
+
+	query := fmt.Sprintf(`
+		SELECT 
+			CAST(id AS TEXT),
+			COALESCE(title, '') as title,
+			COALESCE(description, '') as description,
+			COALESCE(thumbnail_url, '') as thumbnail,
+			COALESCE(image1_url, '') as image1,
+			COALESCE(image2_url, '') as image2,
+			COALESCE(image3_url, '') as image3,
+			COALESCE(image4_url, '') as image4,
+			COALESCE(image5_url, '') as image5,
+			equipments,
+			COALESCE(author_name, '') as author_name,
+			COALESCE(tag_id, 0) as tag_id,
+			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
+			COALESCE(likes_count, 0) as likes_count,
+			COALESCE(views, 0) as views,
+			COALESCE(published, false) as published
+		FROM posts
+		WHERE published = true %s
+		ORDER BY likes_count DESC, views DESC
+		LIMIT $1`, timeCondition)
+
+	rows, err := r.db.QueryContext(ctx, query, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []Post
+	for rows.Next() {
+		var post Post
+		err := rows.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Description,
+			&post.Thumbnail,
+			&post.Image1,
+			&post.Image2,
+			&post.Image3,
+			&post.Image4,
+			&post.Image5,
+			&post.Equipments,
+			&post.AuthorName,
+			&post.TagID,
+			&post.CreatedAt,
+			&post.LikesCount,
+			&post.Views,
+			&post.Published,
+		)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
 func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, error) {
 	queryArgs := []interface{}{}
 	conditions := []string{}
