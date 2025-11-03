@@ -21,7 +21,7 @@ This document outlines all features in GW2STYLE, including implementation detail
 
 ## Feature: User Authentication via Guild Wars 2 API Key
 
-**Status:** 📅 Planned (v0.1)
+**Status:** ✅ Implemented (v0.1)
 
 ### Problem Solved
 
@@ -55,10 +55,7 @@ Players authenticate using their GW2 API key. The backend validates it via the o
 - **External API:** Guild Wars 2 official API (`/v2/account`)
 - **Security:**
   - API keys stored securely in database with UNIQUE constraint
-  - No passwords required
   - JWT for session management
-- **Database Schema:**
-  - `users` table includes `api_key VARCHAR NOT NULL UNIQUE`
   - API key enables automatic user verification and data fetching
 
 ### Acceptance Criteria
@@ -69,8 +66,7 @@ Players authenticate using their GW2 API key. The backend validates it via the o
 ### Roadmap
 
 - **Next Steps:**
-  - Frontend validation for key scope before submission
-  - Server-side caching of verified usernames
+  - Server-side token caching for verified users
 
 ### Contributing
 
@@ -98,7 +94,7 @@ Provides a comprehensive post creation form with fields for title, description, 
 2. Opens Create Post page
 3. Fills in outfit details and uploads up to 5 images
 4. Submits form → backend validates and stores post
-5. Post appears immediately on homepage
+5. Post appears after validations on homepage
 6. Users can click to view detailed post page with:
    - Image gallery with thumbnails
    - Full equipment details
@@ -126,7 +122,6 @@ Provides a comprehensive post creation form with fields for title, description, 
     - Metadata (views, likes, created_at)
 
 - **Frontend:**
-  - Next.js with server-side rendering
   - Responsive masonry grid layout
   - Image gallery with thumbnail navigation
   - Form validation and error handling
@@ -138,7 +133,7 @@ Provides a comprehensive post creation form with fields for title, description, 
 - [✅] Invalid/incomplete data rejected with clear error messages
 - [✅] Homepage displays posts in newest-first order
 - [❌] Individual post pages show all details
-- [✅] View counting works correctly
+- [❌] View counting works correctly
 - [✅] Images display in gallery format
 
 ### Roadmap
@@ -149,7 +144,7 @@ Provides a comprehensive post creation form with fields for title, description, 
 ### Contributing
 
 Help wanted:
-- - Help on Individual post pages show all details(How it should look like)
+- Help on Individual post pages show all details(How it should look like)
 - Performance optimizations for large galleries
 - Accessibility enhancements
 
