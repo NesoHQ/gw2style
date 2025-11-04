@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/NesoHQ/gw2style/repo"
@@ -23,6 +23,28 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// First, try to find user by API key in database
+	user, err := h.repoUser.FindUserByAPIKey(apiKey)
+	if err != nil && err != sql.ErrNoRows {
+		utils.SendError(w, http.StatusInternalServerError, "DB error: "+err.Error(), err)
+		return
+	}
+
+	if user != nil {
+		// User exists in database, skip GW2 API validation
+		JWT, err := utils.GenerateJWT(utils.User{
+			ID:   user.ID,
+			Name: user.Name,
+		})
+		if err != nil {
+			utils.SendError(w, http.StatusInternalServerError, "Failed to generate token", err)
+			return
+		}
+		utils.SendData(w, http.StatusOK, JWT)
+		return
+	}
+
+	// If user not found in database, validate with GW2 API
 	hasRequiredPermissions, err := utils.HasRequiredPermissions(apiKey)
 	if err != nil {
 		utils.SendError(w, http.StatusForbidden, err.Error(), err)
@@ -40,29 +62,20 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(userInfo)
-
-	user, err := h.repoUser.FindUser(userInfo.ID)
+	// Create new user in database
+	newUser, err := h.repoUser.Create(repo.User{
+		ID:     userInfo.ID,
+		Name:   userInfo.Name,
+		ApiKey: apiKey,
+	})
 	if err != nil {
-		utils.SendData(w, http.StatusInternalServerError, "DB error: "+err.Error())
+		utils.SendError(w, http.StatusInternalServerError, "Failed to create user: "+err.Error(), err)
 		return
 	}
 
-	if user == nil {
-		_, err = h.repoUser.Create(repo.User{
-			ID:     userInfo.ID,
-			Name:   userInfo.Name,
-			ApiKey: apiKey,
-		})
-		if err != nil {
-			utils.SendError(w, http.StatusInternalServerError, "Failed to create user: "+err.Error(), err)
-			return
-		}
-	}
-
 	JWT, err := utils.GenerateJWT(utils.User{
-		ID:   userInfo.ID,
-		Name: userInfo.Name,
+		ID:   newUser.ID,
+		Name: newUser.Name,
 	})
 	if err != nil {
 		utils.SendError(w, http.StatusInternalServerError, "Failed to generate token", err)

@@ -1,8 +1,6 @@
 package repo
 
 import (
-	"database/sql"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -15,6 +13,7 @@ type User struct {
 type UserRepo interface {
 	Create(User) (*User, error)
 	FindUser(ID string) (*User, error)
+	FindUserByAPIKey(apiKey string) (*User, error)
 }
 
 type userRepo struct {
@@ -38,14 +37,19 @@ func (r *userRepo) Create(newUser User) (*User, error) {
 	return &newUser, nil
 }
 
-func (r *userRepo) FindUser(ID string) (*User, error) {
+func (u *userRepo) FindUser(ID string) (*User, error) {
 	var user User
-	query := `SELECT id, username, api_key FROM users WHERE id = $1`
-	err := r.db.Get(&user, query, ID)
+	err := u.db.QueryRow("SELECT id, api_key FROM users WHERE id = $1", ID).Scan(&user.ID, &user.ApiKey)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil
-		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (u *userRepo) FindUserByAPIKey(apiKey string) (*User, error) {
+	var user User
+	err := u.db.QueryRow("SELECT id, username, api_key FROM users WHERE api_key = $1", apiKey).Scan(&user.ID, &user.Name, &user.ApiKey)
+	if err != nil {
 		return nil, err
 	}
 	return &user, nil
