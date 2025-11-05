@@ -133,7 +133,7 @@ Provides a comprehensive post creation form with fields for title, description, 
 - [✅] Invalid/incomplete data rejected with clear error messages
 - [✅] Homepage displays posts in newest-first order
 - [❌] Individual post pages show all details
-- [❌] View counting works correctly
+- [❌] Like counting works correctly
 - [✅] Images display in gallery format
 
 ### Roadmap

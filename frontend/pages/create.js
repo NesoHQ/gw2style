@@ -140,7 +140,7 @@ export default function CreatePost() {
 
   return (
     <Layout
-      title="Create New Post"
+      title="Create"
       description="Share your Guild Wars 2 character's style with the community"
     >
       <div className="page-header">

@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Header from './Header';
 import Footer from './Footer';
 
-export default function Layout({ children, title, description }) {
+export default function Layout({ children, title, description, fullWidth = false }) {
   return (
     <div className="site-container">
       <Head>
@@ -18,7 +18,7 @@ export default function Layout({ children, title, description }) {
       <Header />
 
       <main className="site-main">
-        <div className="page-container">{children}</div>
+        {fullWidth ? children : <div className="page-container">{children}</div>}
       </main>
 
       <Footer />

@@ -4,6 +4,7 @@ import { useUser } from '../context/UserContext';
 import Header from '@components/Header';
 import Footer from '@components/Footer';
 import styles from '../styles/User.module.css';
+import Layout from '@components/Layout';
 
 export default function UserPage() {
   const router = useRouter();
@@ -39,8 +40,8 @@ export default function UserPage() {
   }
 
   return (
-    <div className="container">
-      <Header />
+    <Layout title="User">
+      <div className="container">
       <main className={styles.main}>
         <h1 className={styles.title}>User Profile</h1>
         <div className={styles.profile}>
@@ -50,7 +51,8 @@ export default function UserPage() {
           </button>
         </div>
       </main>
-      <Footer />
     </div>
+    </Layout>
+    
   );
 }

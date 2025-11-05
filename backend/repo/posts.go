@@ -24,7 +24,6 @@ type Post struct {
 	CreatedAt   string      `json:"created_at"`
 	LikesCount  int         `json:"likes_count"`
 	Published   bool        `json:"published"`
-	Views       int         `json:"views"`
 }
 
 type PostRepository struct {
@@ -74,7 +73,6 @@ func (r *PostRepository) Create(post Post) (*Post, error) {
 	post.ID = id
 	post.CreatedAt = time.Now().Format(time.RFC3339)
 	post.LikesCount = 0
-	post.Views = 0
 
 	return &post, nil
 }
@@ -97,10 +95,9 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 			COALESCE(tag_id, 0) as tag_id,
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
-			COALESCE(published, false) as published,
-			COALESCE(views, 0) as views
+			COALESCE(published, false) as published
 		FROM posts
-		WHERE id = $1 AND published = true`
+		WHERE id = $1`
 
 	var post Post
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
@@ -119,7 +116,6 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 		&post.CreatedAt,
 		&post.LikesCount,
 		&post.Published,
-		&post.Views,
 	)
 
 	if err == sql.ErrNoRows {
@@ -128,13 +124,6 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 
 	if err != nil {
 		return nil, fmt.Errorf("error getting post: %w", err)
-	}
-
-	// Increment views
-	_, err = r.db.ExecContext(ctx, "UPDATE posts SET views = views + 1 WHERE id = $1", id)
-	if err != nil {
-		// Log the error but don't fail the request
-		fmt.Printf("Error incrementing views: %v\n", err)
 	}
 
 	return &post, nil
@@ -167,11 +156,10 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 			COALESCE(tag_id, 0) as tag_id,
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
-			COALESCE(views, 0) as views,
 			COALESCE(published, false) as published
 		FROM posts
 		WHERE published = true %s
-		ORDER BY likes_count DESC, views DESC
+		ORDER BY likes_count DESC
 		LIMIT $1`, timeCondition)
 
 	rows, err := r.db.QueryContext(ctx, query, limit)
@@ -198,7 +186,6 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 			&post.TagID,
 			&post.CreatedAt,
 			&post.LikesCount,
-			&post.Views,
 			&post.Published,
 		)
 		if err != nil {
@@ -289,8 +276,6 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 			&post.LikesCount,
 			&post.Published,
 		)
-		// Set default value for views since it's not in the query yet
-		post.Views = 0
 		if err != nil {
 			return nil, err
 		}

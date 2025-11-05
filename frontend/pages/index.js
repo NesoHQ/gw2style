@@ -1,10 +1,8 @@
 import { useEffect, useRef } from 'react';
 import Head from 'next/head';
-import Header from '@components/Header';
-import Footer from '@components/Footer';
-import Image from 'next/image';
-import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import Layout from '@components/Layout';
+import PostCard from '@components/PostCard';
 
 export default function Home({ posts }) {
   const gridRef = useRef(null);
@@ -58,54 +56,15 @@ export default function Home({ posts }) {
   }, [posts]);
 
   return (
-    <div className="container">
-      <Head>
-        <title>gw2style</title>
-        <link rel="icon" href="/favicon.png" />
-      </Head>
-
-      <Header />
+    <Layout fullWidth  title="Home">
 
       <div ref={gridRef} className={styles.grid}>
         <div className={styles.gridSizer}></div>
         {posts.map((post) => (
-          <Link
-            key={post.id}
-            href={`/posts/${post.id}`}
-            className={styles.card}
-          >
-            <div>
-              <div className={styles.imageWrapper}>
-                <Image
-                  src={post.thumbnail}
-                  alt={post.title}
-                  width={400}
-                  height={0}
-                  priority
-                  style={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                  }}
-                />
-              </div>
-              <div className={styles.info}>
-                <h2 className={styles.title}>{post.title}</h2>
-                <p className={styles.views}>
-                  {new Intl.NumberFormat('en-US', {
-                    notation: 'compact',
-                    maximumFractionDigits: 1,
-                  }).format(post.views)}{' '}
-                  views
-                </p>
-              </div>
-            </div>
-          </Link>
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
-
-      <Footer />
-    </div>
+    </Layout>
   );
 }
 

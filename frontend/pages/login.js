@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Header from '@components/Header';
 import { useUser } from '../context/UserContext';
+import Layout from '@components/Layout';
 
 export default function LoginPage() {
   const { setUser } = useUser();
@@ -47,13 +48,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div>
-      <Header />
+    <Layout title="Login">
+      <div>
       <div style={{ maxWidth: 520, margin: '60px auto', padding: 20 }}>
-        <Head>
-          <title>Login</title>
-        </Head>
-
         <h1>Login</h1>
         <form onSubmit={handleSubmit}>
           <label htmlFor="apiKey">API Key</label>
@@ -97,5 +94,6 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+    </Layout>
   );
 }

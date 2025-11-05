@@ -4,7 +4,7 @@ import styles from '../styles/Guidelines.module.css';
 export default function Guidelines() {
   return (
     <Layout
-      title="Submission Guidelines"
+      title="Guidelines"
       description="Learn how to create and share high-quality fashion posts on GW2Style"
     >
       <div className="page-header">

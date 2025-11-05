@@ -8,7 +8,6 @@ export default function About() {
     <div className="container">
       <Head>
         <title>About - GW2Style</title>
-        <link rel="icon" href="/favicon.png" />
       </Head>
 
       <Header />

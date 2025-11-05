@@ -11,10 +11,23 @@ export default function Header() {
         <div className="header-logo">
           <Link href="/">
             <div className="logo-container">
+              
+              <svg className="logo-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#f59e0b" />
+                    <stop offset="100%" stopColor="#ef4444" />
+                  </linearGradient>
+                </defs>
+                <path d="M6 24L8 12L12 16L18 8L24 16L28 12L30 24H6Z" fill="url(#logoGradient)" opacity="0.3"/>
+                <path d="M6 24L8 12L12 16L18 8L24 16L28 12L30 24M6 24H30M6 24V28H30V24" stroke="url(#logoGradient)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="18" cy="8" r="2" fill="url(#logoGradient)"/>
+                <circle cx="12" cy="16" r="1.5" fill="url(#logoGradient)"/>
+                <circle cx="24" cy="16" r="1.5" fill="url(#logoGradient)"/>
+              </svg>
               <span className="logo-text">
                 <span className="logo-gw2">GW2</span>
-                <span className="logo-divider">◈</span>
-                <span className="logo-style">STYLE</span>
+                <span className="logo-style">Style</span>
               </span>
             </div>
           </Link>

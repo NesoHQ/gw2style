@@ -1,0 +1,27 @@
+.filterCategory {
+  margin-bottom: 2rem;
+}
+
+.categoryTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.categoryTitle::before {
+  content: '◆';
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.filterTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

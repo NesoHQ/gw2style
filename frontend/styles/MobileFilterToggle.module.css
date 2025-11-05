@@ -1,0 +1,74 @@
+.mobileFilterToggle {
+  display: none;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #d4af37, #cd7f32);
+  border: 2px solid #f4d03f;
+  border-radius: 8px;
+  color: #0a0e1a;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.mobileFilterToggle:hover {
+  background: linear-gradient(135deg, #f4d03f, #d4af37);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+  transform: translateY(-2px);
+}
+
+.mobileFilterToggle:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.toggleIcon {
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.toggleText {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.filterBadge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  border: 2px solid #0a0e1a;
+  min-width: 24px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* Show button only on mobile and tablet viewports */
+@media (max-width: 768px) {
+  .mobileFilterToggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Ensure minimum touch target size for accessibility */
+@media (max-width: 768px) {
+  .mobileFilterToggle {
+    min-height: 44px;
+  }
+}

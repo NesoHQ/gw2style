@@ -33,7 +33,7 @@ export default function PopularPage() {
 
   return (
     <Layout
-      title="Popular Styles"
+      title="Popular"
       description="Top 100 most popular Guild Wars 2 fashion styles"
     >
       <div className="page-header">
