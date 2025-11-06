@@ -6,16 +6,21 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Clear the token cookie by setting it to expire in the past
-  const cookie = serialize('token', '', {
+  // Clear both token and jwt cookies by setting them to expire in the past
+  const cookieOptions = {
     httpOnly: true,
-    secure: 'production',
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     expires: new Date(0), // Set expiration to the past
-  });
+  };
 
-  res.setHeader('Set-Cookie', cookie);
+  const cookies = [
+    serialize('token', '', cookieOptions),
+    serialize('jwt', '', cookieOptions),
+  ];
+
+  res.setHeader('Set-Cookie', cookies);
 
   return res.status(200).json({
     success: true,

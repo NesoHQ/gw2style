@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useUser } from '../context/UserContext';
 import Layout from '@components/Layout';
@@ -19,6 +19,16 @@ export default function CreatePost() {
     image4_url: '',
     image5_url: '',
   });
+  
+  // GW2 API related state
+  const [apiKey, setApiKey] = useState('');
+  const [characters, setCharacters] = useState([]);
+  const [selectedCharacter, setSelectedCharacter] = useState('');
+  const [equipmentTabs, setEquipmentTabs] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('');
+  const [loadingApiKey, setLoadingApiKey] = useState(false);
+  const [loadingCharacters, setLoadingCharacters] = useState(false);
+  const [loadingEquipment, setLoadingEquipment] = useState(false);
 
   // Redirect if not logged in
   if (typeof window !== 'undefined' && !user) {
@@ -26,12 +36,128 @@ export default function CreatePost() {
     return null;
   }
 
+  // Fetch API key from backend on component mount
+  const fetchApiKey = async () => {
+    setLoadingApiKey(true);
+    try {
+      // Note: HttpOnly cookies can't be read by JavaScript, but browser will send them
+      // Just try to fetch the API key - if user is logged in, it will work
+      
+      // Call backend directly with credentials
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiUrl}/api/v1/user/apikey`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('API key response:', data);
+        
+        // Backend returns { data: { apiKey: "..." }, success: true }
+        const key = data.data?.apiKey || data.apiKey;
+        
+        if (key) {
+          setApiKey(key);
+          // Automatically fetch characters once we have the API key
+          fetchCharactersWithKey(key);
+        } else {
+          console.log('No API key found in user profile');
+        }
+      } else {
+        const errorData = await response.json();
+        console.log('Could not fetch API key:', response.status, errorData.message);
+        // Don't show error - user might just not have API key set
+      }
+    } catch (err) {
+      console.error('Failed to fetch API key:', err);
+    } finally {
+      setLoadingApiKey(false);
+    }
+  };
+
+  // Fetch API key on mount
+  useEffect(() => {
+    if (user) {
+      fetchApiKey();
+    }
+  }, [user]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Fetch characters from GW2 API with provided key
+  const fetchCharactersWithKey = async (key) => {
+    if (!key) return;
+
+    setLoadingCharacters(true);
+    
+    try {
+      const response = await fetch(`https://api.guildwars2.com/v2/characters?access_token=${key}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch characters');
+      }
+      
+      const data = await response.json();
+      setCharacters(data);
+      setSelectedCharacter('');
+      setEquipmentTabs([]);
+      setSelectedTab('');
+    } catch (err) {
+      console.error('Failed to fetch characters:', err);
+      setCharacters([]);
+    } finally {
+      setLoadingCharacters(false);
+    }
+  };
+
+  // Fetch equipment tabs for selected character
+  const fetchEquipmentTabs = async (characterName) => {
+    if (!characterName || !apiKey) return;
+
+    setLoadingEquipment(true);
+    setError('');
+    
+    try {
+      const encodedName = encodeURIComponent(characterName);
+      const response = await fetch(
+        `https://api.guildwars2.com/v2/characters/${encodedName}/equipmenttabs?tabs=all&access_token=${apiKey}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch equipment tabs');
+      }
+      
+      const data = await response.json();
+      setEquipmentTabs(data);
+      setSelectedTab('');
+    } catch (err) {
+      setError(err.message);
+      setEquipmentTabs([]);
+    } finally {
+      setLoadingEquipment(false);
+    }
+  };
+
+  // Handle character selection
+  const handleCharacterChange = (e) => {
+    const characterName = e.target.value;
+    setSelectedCharacter(characterName);
+    if (characterName) {
+      fetchEquipmentTabs(characterName);
+    } else {
+      setEquipmentTabs([]);
+      setSelectedTab('');
+    }
   };
 
   const validateForm = () => {
@@ -86,6 +212,9 @@ export default function CreatePost() {
     setLoading(true);
 
     try {
+      // Get the selected equipment tab data
+      const selectedEquipment = equipmentTabs.find(tab => tab.name === selectedTab);
+      
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
@@ -101,7 +230,7 @@ export default function CreatePost() {
           image3Url: formData.image3_url,
           image4Url: formData.image4_url,
           image5Url: formData.image5_url,
-          equipments: {}, // Empty JSON object for now
+          equipments: selectedEquipment || {}, // Send selected equipment or empty object
           published: true,
           tagId: 0, // Default tag ID
         }),
@@ -220,6 +349,71 @@ export default function CreatePost() {
                 />
               </div>
             ))}
+
+            <div className={styles.divider}></div>
+
+            {/* GW2 Equipment Section */}
+            <div className={styles.apiSection}>
+              <h3>Guild Wars 2 Equipment</h3>
+              
+              {loadingApiKey && (
+                <div className={styles.loading}>Loading your GW2 data...</div>
+              )}
+
+              {!loadingApiKey && !apiKey && (
+                <div className={styles.note}>
+                  <p>
+                    No GW2 API key found. Please add your API key in your profile settings to automatically fetch equipment data.
+                  </p>
+                </div>
+              )}
+
+              {apiKey && loadingCharacters && (
+                <div className={styles.loading}>Loading characters...</div>
+              )}
+
+              {apiKey && characters.length > 0 && (
+                <div className={styles.formGroup}>
+                  <label htmlFor="character">Select Character</label>
+                  <select
+                    id="character"
+                    value={selectedCharacter}
+                    onChange={handleCharacterChange}
+                    className={styles.select}
+                  >
+                    <option value="">-- Choose a character --</option>
+                    {characters.map((char) => (
+                      <option key={char} value={char}>
+                        {char}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {loadingEquipment && (
+                <div className={styles.loading}>Loading equipment tabs...</div>
+              )}
+
+              {equipmentTabs.length > 0 && (
+                <div className={styles.formGroup}>
+                  <label htmlFor="equipmentTab">Select Equipment Tab</label>
+                  <select
+                    id="equipmentTab"
+                    value={selectedTab}
+                    onChange={(e) => setSelectedTab(e.target.value)}
+                    className={styles.select}
+                  >
+                    <option value="">-- Choose an equipment tab --</option>
+                    {equipmentTabs.map((tab) => (
+                      <option key={tab.tab} value={tab.name}>
+                        {tab.name} {tab.is_active ? '(Active)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
 
             <div className={styles.note}>
               <p>

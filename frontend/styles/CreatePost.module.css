@@ -281,3 +281,113 @@
     font-size: 1rem;
   }
 }
+
+/* API Section Styles */
+.apiSection {
+  background: rgba(18, 21, 31, 0.5);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 1rem;
+}
+
+.apiSection h3 {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.apiKeyInput {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.apiKeyInput input {
+  flex: 1;
+}
+
+.fetchButton {
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #4a7ba7, #2c5f8d);
+  border: 2px solid #4a7ba7;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.fetchButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a8bb7, #3c6f9d);
+  box-shadow: 0 4px 12px rgba(74, 123, 167, 0.3);
+  transform: translateY(-1px);
+}
+
+.fetchButton:disabled {
+  background: rgba(168, 162, 158, 0.2);
+  border-color: rgba(168, 162, 158, 0.3);
+  color: rgba(168, 162, 158, 0.5);
+  cursor: not-allowed;
+}
+
+.select {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: rgba(26, 31, 46, 0.6);
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 6px;
+  color: #e8e6e3;
+  font-size: 1rem;
+  font-family: 'Lato', 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.select:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.select:focus {
+  outline: none;
+  border-color: #d4af37;
+  background: rgba(26, 31, 46, 0.8);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.select option {
+  background: #1a1f2e;
+  color: #e8e6e3;
+  padding: 0.5rem;
+}
+
+.loading {
+  text-align: center;
+  color: #a8a29e;
+  padding: 1rem;
+  font-style: italic;
+}
+
+.divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+  margin: 1rem 0;
+}
+
+.hint a {
+  color: #4a7ba7;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.hint a:hover {
+  color: #5a8bb7;
+  text-decoration: underline;
+}

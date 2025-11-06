@@ -72,10 +72,10 @@ export default async function handler(req, res) {
       maxAge: 60 * 60 * 24 * 7, // 7 days
     };
 
-    // Set HttpOnly cookie
+    // Set HttpOnly cookie with name 'jwt' to match backend expectation
     res.setHeader(
       'Set-Cookie',
-      cookie.serialize('token', token, cookieOptions)
+      cookie.serialize('jwt', token, cookieOptions)
     );
 
     // Decode token here and return user info to frontend

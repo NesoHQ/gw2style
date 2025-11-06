@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     // Call the backend API
     const response = await fetch(`${apiUrl}/api/v1/posts`);
     const text = await response.text(); // Get raw response text
-    console.log('Backend response:', text); // Log the raw response
+    //console.log('Backend response:', text); // Log the raw response
 
     let posts;
     try {

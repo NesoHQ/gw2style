@@ -31,7 +31,7 @@ export default function handler(req, res) {
 
   try {
     const cookies = parse(req.headers.cookie);
-    const token = cookies.token;
+    const token = cookies.jwt || cookies.token; // Check both jwt and token for backward compatibility
 
     if (!token) {
       return res.status(401).json({
