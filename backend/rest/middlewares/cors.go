@@ -8,12 +8,15 @@ import (
 
 func EnableCors(mux *http.ServeMux) http.Handler {
 	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "http://127.0.0.1:3000"},
+		AllowOriginFunc: func(origin string) bool {
+			// Allow all origins for now
+			return true
+		},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token", "Cookie"},
 		ExposedHeaders:   []string{"Set-Cookie"},
 		AllowCredentials: true,
-		Debug:            true, // Enable debug mode to see CORS issues
+		Debug:            false,
 	})
 
 	return c.Handler(mux)
