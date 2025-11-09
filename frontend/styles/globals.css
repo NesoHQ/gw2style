@@ -460,18 +460,6 @@ body {
   border-image: linear-gradient(90deg, transparent, var(--color-gold), transparent) 1;
 }
 
-.footer::before {
-  content: '◆◆◆◆◆';
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--color-bg-primary);
-  padding: 0 2rem;
-  color: var(--color-gold);
-  font-size: 0.75rem;
-  letter-spacing: 1rem;
-}
 
 .footer-content {
   max-width: 1200px;

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
     // Parse the token from the cookie
     const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
-    const token = cookies.token;
+    const token = cookies.jwt || cookies.token; // Check both jwt and token
 
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });

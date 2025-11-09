@@ -16,11 +16,12 @@ export default function Guidelines() {
       </div>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Submission Guidelines</h1>
-
         <div className={styles.content}>
           <section className={styles.section}>
-            <h2>Basic Requirements</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Basic Requirements</h2>
+            </div>
             <ul className={styles.list}>
               <li>
                 <strong>GW2 API Key:</strong> You must be logged in with your
@@ -38,16 +39,19 @@ export default function Guidelines() {
               </li>
               <li>
                 <strong>Images:</strong> Submit clear, high-quality screenshots
-                of your character (up to 5 images).
+                of your character (up to 6 images).
               </li>
             </ul>
           </section>
 
           <section className={styles.section}>
-            <h2>Image Guidelines</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Image Guidelines</h2>
+            </div>
             <div className={styles.imageGuidelines}>
               <div className={styles.guideline}>
-                <h3>Do</h3>
+                <h3 className={styles.guidelineTitle}>✓ Do</h3>
                 <ul className={styles.checkList}>
                   <li>Use high-resolution screenshots</li>
                   <li>Show your character in good lighting</li>
@@ -57,7 +61,7 @@ export default function Guidelines() {
                 </ul>
               </div>
               <div className={styles.guideline}>
-                <h3>Don't</h3>
+                <h3 className={styles.guidelineTitle}>✗ Don't</h3>
                 <ul className={styles.xList}>
                   <li>Submit blurry or low-quality images</li>
                   <li>Use heavily modified or edited screenshots</li>
@@ -70,7 +74,10 @@ export default function Guidelines() {
           </section>
 
           <section className={styles.section}>
-            <h2>Character Presentation</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Character Presentation</h2>
+            </div>
             <ul className={styles.list}>
               <li>Ensure your character is well-lit and clearly visible</li>
               <li>
@@ -88,40 +95,56 @@ export default function Guidelines() {
           </section>
 
           <section className={styles.section}>
-            <h2>Automatic Information</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Automatic Information</h2>
+            </div>
             <p>
               The following information will be automatically fetched from your
               GW2 account:
             </p>
             <ul className={styles.list}>
-              <li>Character name and race</li>
               <li>Armor pieces and their dyes</li>
               <li>Weapons and backpiece</li>
-              <li>Outfits and additional cosmetic items</li>
+              <li>Equipment stats and upgrades</li>
             </ul>
-            <p className={styles.note}>
-              Note: Make sure your API key has the 'characters' permission
-              enabled to allow us to fetch this information.
-            </p>
+            <div className={styles.note}>
+              <span className={styles.noteIcon}>ℹ</span>
+              <p>
+                Make sure your API key has the <strong>'account'</strong>, <strong>'characters'</strong>, and <strong>'builds'</strong> permissions
+                enabled to allow us to fetch this information.
+              </p>
+            </div>
           </section>
 
           <section className={styles.section}>
-            <h2>Community Standards</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Community Standards</h2>
+            </div>
             <ul className={styles.list}>
               <li>Be respectful to other creators</li>
               <li>Give credit if you're inspired by someone else's design</li>
               <li>Don't spam or post duplicate content</li>
               <li>Keep your content appropriate for all audiences</li>
+              <li>Engage positively with the community</li>
             </ul>
           </section>
 
           <section className={styles.section}>
-            <h2>Moderation</h2>
+            <div className={styles.sectionHeader}>
+              <span className={styles.sectionIcon}>◆</span>
+              <h2>Moderation</h2>
+            </div>
             <p>
               Posts that don't meet these guidelines may be removed. Repeated
               violations may result in temporary or permanent posting
               restrictions. If you notice any inappropriate content, please use
               the report feature to notify moderators.
+            </p>
+            <p>
+              We're committed to maintaining a positive and creative community
+              where everyone feels welcome to share their fashion creations.
             </p>
           </section>
         </div>

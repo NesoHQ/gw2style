@@ -90,6 +90,8 @@ air
 air.*
 tmp
 tmp/*
+bin/
+build-errors.log
 
 bangladesh-latest.osm.pbf
 
@@ -103,3 +105,4 @@ main
 __debug_bin*
 
 .vscode
+tmp/

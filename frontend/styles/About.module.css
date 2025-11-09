@@ -1,82 +1,105 @@
 .main {
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   min-height: calc(100vh - 160px);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 3rem;
-  text-align: center;
-  padding: 2rem 0;
-  color: #2c3e50;
-}
-
 .content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.9), rgba(36, 41, 56, 0.9));
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
 }
 
 .section:last-child {
   margin-bottom: 0;
 }
 
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.sectionIcon {
+  color: #d4af37;
+  font-size: 1rem;
+}
+
 .section h2 {
-  color: #34495e;
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #e0e0e0;
-  padding-bottom: 0.5rem;
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-size: 1.75rem;
+  margin: 0;
+  font-weight: 600;
 }
 
 .section p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: #444;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #e8e6e3;
   margin-bottom: 1rem;
+}
+
+.section p:last-child {
+  margin-bottom: 0;
 }
 
 .list {
   list-style-type: none;
   padding: 0;
-  margin: 1rem 0;
+  margin: 1rem 0 0 0;
 }
 
 .list li {
-  padding: 0.5rem 0;
-  font-size: 1.1rem;
-  color: #444;
+  padding: 0.75rem 0;
+  font-size: 1.05rem;
+  color: #e8e6e3;
   position: relative;
-  padding-left: 1.5rem;
+  padding-left: 1.75rem;
+  line-height: 1.6;
 }
 
 .list li:before {
-  content: "•";
-  color: #3498db;
-  font-weight: bold;
+  content: "◆";
+  color: #d4af37;
+  font-size: 0.6rem;
   position: absolute;
   left: 0;
+  top: 1rem;
+}
+
+.list li strong {
+  color: #d4af37;
+  font-weight: 600;
 }
 
 .link {
-  color: #3498db;
+  color: #4a7ba7;
   text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
   border-bottom: 1px solid transparent;
-  transition: border-color 0.2s;
 }
 
 .link:hover {
-  border-bottom-color: #3498db;
+  color: #6ba3d4;
+  border-bottom-color: #4a7ba7;
 }
 
 @media (max-width: 768px) {
@@ -84,21 +107,25 @@
     padding: 1rem;
   }
 
-  .title {
-    font-size: 2rem;
-    padding: 1rem 0;
-  }
-
-  .content {
-    padding: 1rem;
+  .section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .section h2 {
     font-size: 1.5rem;
   }
 
+  .sectionIcon {
+    font-size: 0.85rem;
+  }
+
   .section p,
   .list li {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .list li {
+    padding-left: 1.5rem;
   }
 }

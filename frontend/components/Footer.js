@@ -5,55 +5,52 @@ export default function Footer() {
 
   return (
     <footer className="footer">
+      {/* Decorative divider */}
+      <div className="footer-divider">
+        <div className="divider-line"></div>
+        <div className="divider-diamonds">
+          <span className="diamond">◆</span>
+          <span className="diamond">◆</span>
+          <span className="diamond">◆</span>
+          <span className="diamond">◆</span>
+          <span className="diamond">◆</span>
+        </div>
+        <div className="divider-line"></div>
+      </div>
+
       <div className="footer-content">
         {/* Main sections */}
         <div className="footer-section footer-brand">
-          <h3 className="footer-title">GW2 STYLE</h3>
+          <h3 className="footer-title">GW2STYLE</h3>
           <p className="footer-description">
-            Unleash your creativity in Tyria. Your ultimate destination for
-            Guild Wars 2 fashion, where every character becomes a masterpiece.
-            Join our community of style-savvy adventurers.
+            A community-driven fashion archive for Guild Wars 2 players. 
+            Showcase your character outfits, browse creative looks, and get 
+            inspired by the fashion of Tyria. Free, open-source, and built 
+            to celebrate creativity within the GW2 community.
           </p>
-          <div className="footer-social">
-            <a
-              href="https://github.com/nesohq/gw2style"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="github-button"
-            >
-              <svg
-                height="20"
-                width="20"
-                viewBox="0 0 16 16"
-                fill="currentColor"
-              >
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-              </svg>
-              Join the Revolution
-            </a>
-          </div>
+          
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">Fashion Arena</h4>
+          <h4 className="footer-heading">Explore</h4>
           <ul className="footer-links">
             <li>
-              <Link href="/">Trending Looks</Link>
+              <Link href="/">Browse Gallery</Link>
             </li>
             <li>
-              <Link href="/create">Forge Your Style</Link>
+              <Link href="/create">Share Your Style</Link>
             </li>
             <li>
-              <Link href="/popular">Hall of Fame</Link>
+              <Link href="/popular">Popular Posts</Link>
             </li>
             <li>
-              <Link href="/guidelines">Style Guide</Link>
+              <Link href="/about">About Project</Link>
             </li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">The Wardrobe</h4>
+          <h4 className="footer-heading">Community</h4>
           <ul className="footer-links">
             <li>
               <a
@@ -61,8 +58,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Community
-                <span className="new-tag">Discord</span>
+                Discord Server
               </a>
             </li>
             <li>
@@ -71,7 +67,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Fashion Forum
+                Discussions
               </a>
             </li>
             <li>
@@ -80,23 +76,23 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Feedback Forge
+                Report Issues
               </a>
             </li>
             <li>
               <a
-                href="https://github.com/nesohq/gw2style/blob/main/CONTRIBUTING.md"
+                href="https://github.com/nesohq/gw2style"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Join the Artisans
+                Contribute on GitHub
               </a>
             </li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4 className="footer-heading">Style Arsenal</h4>
+          <h4 className="footer-heading">Resources</h4>
           <ul className="footer-links">
             <li>
               <a
@@ -104,34 +100,34 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                GW2 Universe
+                Guild Wars 2
               </a>
             </li>
             <li>
               <a
-                href="https://wiki.guildwars2.com/wiki/Main_Page"
+                href="https://wiki.guildwars2.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Fashion Wiki
+                GW2 Wiki
               </a>
             </li>
             <li>
               <a
-                href="https://wiki.guildwars2.com/wiki/Dye"
+                href="https://account.arena.net/applications"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Dye Chronicles
+                Get API Key
               </a>
             </li>
             <li>
               <a
-                href="https://wiki.guildwars2.com/wiki/Wardrobe"
+                href="https://github.com/nesohq/gw2style/blob/main/README.md"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Wardrobe Guide
+                Documentation
               </a>
             </li>
           </ul>
@@ -142,9 +138,7 @@ export default function Footer() {
       <div className="footer-bottom">
         <div className="footer-bottom-content">
           <p className="footer-copyright">
-            Crafted & Powered by NesoHQ
-          </p>
-          <div className="footer-bottom-links">
+            © {currentYear} GW2Style • Built by{' '}
             <a
               href="https://github.com/nesohq"
               target="_blank"
@@ -152,23 +146,64 @@ export default function Footer() {
             >
               NesoHQ
             </a>
-            <span className="separator">✧</span>
+          </p>
+          <div className="footer-bottom-links">
             <a
               href="https://github.com/nesohq/gw2style"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Behind the Seams
+              View Source
             </a>
+            <span className="separator">•</span>
+            <span className="tech-stack">Go + Next.js + PostgreSQL</span>
           </div>
         </div>
       </div>
       <style jsx>{`
         .footer {
-          background: #1a202c;
+          background: linear-gradient(180deg, #0f1419 0%, #1a202c 100%);
           color: #e2e8f0;
-          padding: 4rem 2rem 1rem;
+          padding: 0 2rem 1rem;
           margin-top: 4rem;
+          position: relative;
+        }
+
+        .footer-divider {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 2rem 0;
+          gap: 1rem;
+        }
+
+        .divider-line {
+          flex: 1;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, #d4af37, transparent);
+          max-width: 400px;
+        }
+
+        .divider-diamonds {
+          display: flex;
+          gap: 1rem;
+        }
+
+        .diamond {
+          color: #d4af37;
+          font-size: 0.75rem;
+          animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .diamond:nth-child(1) { animation-delay: 0s; }
+        .diamond:nth-child(2) { animation-delay: 0.2s; }
+        .diamond:nth-child(3) { animation-delay: 0.4s; }
+        .diamond:nth-child(4) { animation-delay: 0.6s; }
+        .diamond:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes shimmer {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
         }
 
         .footer-content {
@@ -184,18 +219,37 @@ export default function Footer() {
         }
 
         .footer-title {
+          font-family: 'Cinzel', serif;
           font-size: 1.5rem;
           font-weight: 700;
           margin: 0 0 1rem;
-          background: linear-gradient(45deg, #3498db, #2ecc71);
+          background: linear-gradient(135deg, #d4af37, #cd7f32);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
         .footer-description {
           color: #a0aec0;
-          line-height: 1.6;
+          line-height: 1.7;
           margin-bottom: 1.5rem;
+          font-size: 0.95rem;
+        }
+
+        .footer-badges {
+          display: flex;
+          gap: 0.75rem;
+          flex-wrap: wrap;
+        }
+
+        .badge {
+          display: inline-block;
+          padding: 0.375rem 0.75rem;
+          background: rgba(212, 175, 55, 0.1);
+          border: 1px solid rgba(212, 175, 55, 0.3);
+          border-radius: 6px;
+          color: #d4af37;
+          font-size: 0.8rem;
+          font-weight: 500;
         }
 
         .footer-heading {
@@ -225,21 +279,19 @@ export default function Footer() {
           color: #fff;
         }
 
-        .github-button {
-          display: inline-flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 1rem;
-          background: #24292e;
-          color: #fff;
+        .footer-copyright a {
+          color: #d4af37;
           text-decoration: none;
-          border-radius: 6px;
-          font-size: 0.9rem;
-          transition: background-color 0.2s;
+          transition: color 0.2s;
         }
 
-        .github-button:hover {
-          background: #2c333a;
+        .footer-copyright a:hover {
+          color: #f4d03f;
+        }
+
+        .tech-stack {
+          color: #4a5568;
+          font-size: 0.85rem;
         }
 
         .footer-bottom {
@@ -292,7 +344,23 @@ export default function Footer() {
 
         @media (max-width: 640px) {
           .footer {
-            padding: 3rem 1rem 1rem;
+            padding: 0 1rem 1rem;
+          }
+
+          .footer-divider {
+            padding: 1.5rem 0;
+          }
+
+          .divider-line {
+            max-width: 100px;
+          }
+
+          .divider-diamonds {
+            gap: 0.5rem;
+          }
+
+          .diamond {
+            font-size: 0.6rem;
           }
 
           .footer-content {

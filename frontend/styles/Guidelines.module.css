@@ -1,133 +1,179 @@
 .main {
-  padding: 2rem;
+  padding: 2rem 1.5rem;
   min-height: calc(100vh - 160px);
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 3rem;
-  text-align: center;
-  padding: 2rem 0;
-  color: #2c3e50;
-}
-
 .content {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
-  background: var(--surface);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
 }
 
 .section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(26, 31, 46, 0.9), rgba(36, 41, 56, 0.9));
+  border: 2px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.section:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
 }
 
 .section:last-child {
   margin-bottom: 0;
 }
 
-.section h2 {
-  color: var(--text);
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 0.5rem;
-  font-family: 'Rajdhani', sans-serif;
-  font-weight: 600;
-  letter-spacing: 0.5px;
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
 }
 
-.section h3 {
-  color: var(--text);
-  font-size: 1.4rem;
-  margin-bottom: 1rem;
-  font-family: 'Rajdhani', sans-serif;
+.sectionIcon {
+  color: #d4af37;
+  font-size: 1rem;
+}
+
+.section h2 {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-size: 1.75rem;
+  margin: 0;
   font-weight: 600;
 }
 
 .section p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #e8e6e3;
   margin-bottom: 1rem;
+}
+
+.section p:last-child {
+  margin-bottom: 0;
 }
 
 .list {
   list-style-type: none;
   padding: 0;
-  margin: 1rem 0;
+  margin: 1rem 0 0 0;
 }
 
 .list li {
-  padding: 0.8rem 0;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  padding: 0.75rem 0;
+  font-size: 1.05rem;
+  color: #e8e6e3;
   position: relative;
-  padding-left: 1.5rem;
-  line-height: 1.4;
+  padding-left: 1.75rem;
+  line-height: 1.6;
 }
 
 .list li:before {
-  content: "•";
-  color: var(--primary);
-  font-weight: bold;
+  content: "◆";
+  color: #d4af37;
+  font-size: 0.6rem;
   position: absolute;
   left: 0;
-  text-shadow: 0 0 8px var(--primary-glow);
+  top: 1rem;
+}
+
+.list li strong {
+  color: #d4af37;
+  font-weight: 600;
 }
 
 .imageGuidelines {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin: 1.5rem 0;
+  gap: 1.5rem;
+  margin: 1.5rem 0 0 0;
 }
 
 .guideline {
-  background: var(--surface-dark);
+  background: rgba(0, 0, 0, 0.3);
   padding: 1.5rem;
   border-radius: 8px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.guidelineTitle {
+  font-family: 'Cinzel', serif;
+  color: #d4af37;
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.checkList,
+.xList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
 .checkList li,
 .xList li {
-  padding: 0.5rem 0;
+  padding: 0.6rem 0;
   padding-left: 2rem;
   position: relative;
+  font-size: 0.95rem;
+  color: #e8e6e3;
+  line-height: 1.5;
 }
 
 .checkList li:before {
   content: "✓";
-  color: #2ecc71;
+  color: #4ade80;
   position: absolute;
   left: 0;
   font-weight: bold;
+  font-size: 1.1rem;
 }
 
 .xList li:before {
-  content: "×";
-  color: #e74c3c;
+  content: "✗";
+  color: #f87171;
   position: absolute;
   left: 0;
   font-weight: bold;
-  font-size: 1.2em;
+  font-size: 1.1rem;
 }
 
 .note {
-  background: var(--surface-dark);
-  padding: 1rem;
-  border-left: 4px solid var(--primary);
-  border-radius: 4px;
-  margin: 1rem 0;
+  background: rgba(74, 123, 167, 0.1);
+  padding: 1.25rem;
+  border-left: 4px solid #4a7ba7;
+  border-radius: 6px;
+  margin: 1.5rem 0 0 0;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.noteIcon {
+  color: #4a7ba7;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.note p {
+  margin: 0;
   font-size: 0.95rem;
-  color: var(--text-secondary);
+  color: #e8e6e3;
+  line-height: 1.6;
+}
+
+.note strong {
+  color: #d4af37;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
@@ -135,13 +181,17 @@
     padding: 1rem;
   }
 
-  .title {
-    font-size: 2rem;
-    padding: 1rem 0;
+  .section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
   }
 
-  .content {
-    padding: 1rem;
+  .section h2 {
+    font-size: 1.5rem;
+  }
+
+  .sectionIcon {
+    font-size: 0.85rem;
   }
 
   .imageGuidelines {
@@ -149,18 +199,31 @@
     gap: 1rem;
   }
 
-  .section h2 {
-    font-size: 1.5rem;
-  }
-
-  .section h3 {
-    font-size: 1.3rem;
+  .guidelineTitle {
+    font-size: 1.1rem;
   }
 
   .section p,
-  .list li,
+  .list li {
+    font-size: 0.95rem;
+  }
+
   .checkList li,
   .xList li {
-    font-size: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .list li {
+    padding-left: 1.5rem;
+  }
+
+  .note {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .noteIcon {
+    font-size: 1.25rem;
   }
 }

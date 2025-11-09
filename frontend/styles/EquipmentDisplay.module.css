@@ -1,0 +1,394 @@
+.equipmentContainer {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #d4af37;
+  font-size: 1.1rem;
+}
+
+.equipmentGrid {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Left column - Armor + Backpack */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Middle column - Weapons */
+.middleColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Right column - Accessories + Aquatic */
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Equipment slot container */
+.equipmentSlot {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Item icon wrapper for tooltip positioning */
+.itemIconWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Item icon */
+.itemIcon {
+  width: 64px;
+  height: 64px;
+  border: 3px solid;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.itemIcon.clickable {
+  cursor: pointer;
+}
+
+.itemIcon.clickable:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
+
+.itemIcon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Copied notification */
+.copiedNotification {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #4ade80;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 14, 26, 0.98);
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  border-radius: 6px;
+  padding: 0.75rem;
+  min-width: 200px;
+  z-index: 1000;
+  pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(212, 175, 55, 0.5);
+}
+
+.tooltipName {
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.wikiLink {
+  display: block;
+  color: #62a4da;
+  text-decoration: none;
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0.25rem 0;
+  transition: color 0.2s ease;
+}
+
+.wikiLink:hover {
+  color: #8ec5f0;
+  text-decoration: underline;
+}
+
+.tooltipHint {
+  color: #a8a29e;
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.tooltipInfusions {
+  margin: 0.75rem 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.tooltipLabel {
+  color: #d4af37;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.tooltipInfusionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tooltipInfusionItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #e8e6e3;
+}
+
+.tooltipInfusionIcon {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* Empty slot */
+.emptySlot {
+  width: 64px;
+  height: 64px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Upgrades (runes/sigils) */
+.upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.upgradeSlot {
+  width: 32px;
+  height: 32px;
+  border: 2px solid;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.upgradeSlot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Infusions */
+.infusions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.infusionSlot {
+  width: 24px;
+  height: 24px;
+  border: 2px solid;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.infusionSlot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .equipmentContainer {
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .equipmentGrid {
+    gap: 1rem;
+  }
+
+  .rightColumn {
+    gap: 1rem;
+  }
+
+  .itemIcon,
+  .emptySlot {
+    width: 48px;
+    height: 48px;
+  }
+
+  .upgradeSlot {
+    width: 24px;
+    height: 24px;
+  }
+
+  .infusionSlot {
+    width: 20px;
+    height: 20px;
+  }
+
+  .tooltip {
+    min-width: 150px;
+    padding: 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .tooltipName {
+    font-size: 0.85rem;
+  }
+
+  .wikiLink {
+    font-size: 0.75rem;
+  }
+
+  .copiedNotification {
+    font-size: 0.65rem;
+  }
+}
+
+/* Dyes */
+.dyes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem;
+}
+
+.dyeSlot {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(100, 100, 100, 0.8);
+  background: rgba(0, 0, 0, 0.6);
+  cursor: help;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dyeColor {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.dyeSlot:hover {
+  transform: scale(1.1);
+  border-color: rgba(212, 175, 55, 0.8);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  z-index: 10;
+}
+
+/* Cosmetic Infusions Showcase - Compact version */
+.cosmeticShowcase {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(244, 208, 63, 0.05));
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 4px;
+  max-width: 100%;
+}
+
+.showcaseTitle {
+  color: #d4af37;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.showcaseItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.showcaseItem {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #d4af37;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: help;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
+  flex-shrink: 0;
+}
+
+.showcaseItem:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7);
+  border-color: #f4d03f;
+  z-index: 10;
+}
+
+.showcaseItem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

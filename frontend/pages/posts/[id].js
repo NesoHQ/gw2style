@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
 import Layout from '@components/Layout';
+import EquipmentDisplay from '@components/EquipmentDisplay';
 import styles from '../../styles/Post.module.css';
 
 export async function getServerSideProps({ params }) {
@@ -30,6 +30,8 @@ export async function getServerSideProps({ params }) {
 
 export default function PostDetail({ post }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [direction, setDirection] = useState('');
 
   if (!post) {
     return (
@@ -44,21 +46,38 @@ export default function PostDetail({ post }) {
     );
   }
 
-  // Collect all available images
-  const images = [post.thumbnail, post.image1, post.image2, post.image3, post.image4, post.image5].filter(Boolean);
+  // Separate thumbnail from additional images
+  const additionalImages = [post.image1, post.image2, post.image3, post.image4, post.image5].filter(Boolean);
+
+  const getNextIndex = () => (currentImageIndex + 1) % additionalImages.length;
+  const getPrevIndex = () => (currentImageIndex - 1 + additionalImages.length) % additionalImages.length;
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setDirection('left');
+    setTimeout(() => {
+      setCurrentImageIndex(getNextIndex());
+      setIsTransitioning(false);
+      setDirection('');
+    }, 600);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setDirection('right');
+    setTimeout(() => {
+      setCurrentImageIndex(getPrevIndex());
+      setIsTransitioning(false);
+      setDirection('');
+    }, 600);
   };
 
   return (
     <Layout>
       <Head>
-        <title>{post.title} - GW2Style</title>
+        <title>GW2Style</title>
         <meta name="description" content={post.description} />
       </Head>
 
@@ -81,65 +100,115 @@ export default function PostDetail({ post }) {
           </header>
 
           <div className={styles.content}>
-            {/* Image Carousel */}
-            <div className={styles.carousel}>
-              <div className={styles.carouselContainer}>
-                <Image
-                  src={images[currentImageIndex]}
-                  alt={`${post.title} - Image ${currentImageIndex + 1}`}
-                  width={1200}
-                  height={0}
-                  style={{ width: '100%', height: 'auto' }}
-                  priority
-                />
-                
-                {images.length > 1 && (
-                  <>
-                    <button
-                      className={`${styles.carouselButton} ${styles.prev}`}
-                      onClick={prevImage}
-                      aria-label="Previous image"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      className={`${styles.carouselButton} ${styles.next}`}
-                      onClick={nextImage}
-                      aria-label="Next image"
-                    >
-                      ›
-                    </button>
-                    
-                    <div className={styles.carouselIndicators}>
-                      {images.map((_, index) => (
-                        <button
-                          key={index}
-                          className={`${styles.indicator} ${
-                            index === currentImageIndex ? styles.active : ''
-                          }`}
-                          onClick={() => setCurrentImageIndex(index)}
-                          aria-label={`Go to image ${index + 1}`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </div>
+            {/* Main Thumbnail and Equipment Section */}
+            <div className={styles.mainSection}>
+              {post.thumbnail && (
+                <div className={styles.thumbnailSection}>
+                  <h2>Main Image</h2>
+                  <div className={styles.thumbnailContainer}>
+                    <img
+                      src={post.thumbnail}
+                      alt={post.title}
+                      className={styles.thumbnail}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Equipment */}
+              {post.equipments && Object.keys(post.equipments).length > 0 && (
+                <div className={styles.equipment}>
+                  <h2>Equipment</h2>
+                  <EquipmentDisplay equipment={post.equipments} />
+                </div>
+              )}
             </div>
+
+            {/* Additional Images Carousel */}
+            {additionalImages.length > 0 && (
+              <div className={styles.carouselSection}>
+                <h2>Additional Images ({additionalImages.length})</h2>
+                <div className={styles.carousel}>
+                  <div className={`${styles.carouselContainer} ${direction ? styles[`sliding-${direction}`] : ''}`}>
+                    <div className={styles.carouselTrack}>
+                      {direction === 'left' && (
+                        <>
+                          <img
+                            src={additionalImages[currentImageIndex]}
+                            alt={`${post.title} - Image ${currentImageIndex + 1}`}
+                            className={styles.carouselImage}
+                          />
+                          <img
+                            src={additionalImages[getNextIndex()]}
+                            alt={`${post.title} - Image ${getNextIndex() + 1}`}
+                            className={styles.carouselImage}
+                          />
+                        </>
+                      )}
+                      {direction === 'right' && (
+                        <>
+                          <img
+                            src={additionalImages[getPrevIndex()]}
+                            alt={`${post.title} - Image ${getPrevIndex() + 1}`}
+                            className={styles.carouselImage}
+                          />
+                          <img
+                            src={additionalImages[currentImageIndex]}
+                            alt={`${post.title} - Image ${currentImageIndex + 1}`}
+                            className={styles.carouselImage}
+                          />
+                        </>
+                      )}
+                      {!direction && (
+                        <img
+                          src={additionalImages[currentImageIndex]}
+                          alt={`${post.title} - Image ${currentImageIndex + 1}`}
+                          className={styles.carouselImage}
+                        />
+                      )}
+                    </div>
+                    
+                    {additionalImages.length > 1 && (
+                      <>
+                        <button
+                          className={`${styles.carouselButton} ${styles.prev}`}
+                          onClick={prevImage}
+                          aria-label="Previous image"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          className={`${styles.carouselButton} ${styles.next}`}
+                          onClick={nextImage}
+                          aria-label="Next image"
+                        >
+                          ›
+                        </button>
+                        
+                        <div className={styles.carouselIndicators}>
+                          {additionalImages.map((_, index) => (
+                            <button
+                              key={index}
+                              className={`${styles.indicator} ${
+                                index === currentImageIndex ? styles.active : ''
+                              }`}
+                              onClick={() => setCurrentImageIndex(index)}
+                              aria-label={`Go to image ${index + 1}`}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Description */}
             <div className={styles.description}>
               <h2>Description</h2>
               <p>{post.description}</p>
             </div>
-
-            {/* Equipment */}
-            {post.equipments && Object.keys(post.equipments).length > 0 && (
-              <div className={styles.equipment}>
-                <h2>Equipment</h2>
-                <pre>{JSON.stringify(post.equipments, null, 2)}</pre>
-              </div>
-            )}
           </div>
         </article>
       </main>
