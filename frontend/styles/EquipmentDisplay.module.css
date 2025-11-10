@@ -301,11 +301,35 @@
   }
 }
 
-/* Dyes */
+/* Dyes - Default 4 dyes layout (2x2 grid) */
 .dyes {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.25rem;
+}
+
+/* Dyes - 2 dyes layout (2 horizontal boxes) */
+.dyesTwoSlots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Dyes - 3 dyes layout (1 large on top, 2 small on bottom) */
+.dyesThreeSlots {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem;
+}
+
+/* Dye slot wrapper for tooltip positioning */
+.dyeSlotWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.dyeSlotWrapperLarge {
+  grid-column: 1 / -1;
 }
 
 .dyeSlot {
@@ -319,6 +343,17 @@
   overflow: hidden;
 }
 
+/* Large dye slot for 2-dye and 3-dye (first slot) layouts */
+.dyesTwoSlots .dyeSlot {
+  width: 68px;
+  height: 32px;
+}
+
+.dyeSlotLarge {
+  width: 68px !important;
+  height: 32px !important;
+}
+
 .dyeColor {
   width: 100%;
   height: 100%;
@@ -330,6 +365,41 @@
   border-color: rgba(212, 175, 55, 0.8);
   box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
   z-index: 10;
+}
+
+/* Dye Tooltip */
+.dyeTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 14, 26, 0.98);
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  min-width: 120px;
+  z-index: 1000;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
+}
+
+.dyeTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(212, 175, 55, 0.5);
+}
+
+.dyeTooltipName {
+  color: #e8e6e3;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: center;
 }
 
 /* Cosmetic Infusions Showcase - Compact version */

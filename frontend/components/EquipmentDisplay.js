@@ -135,6 +135,31 @@ const isCosmeticInfusion = (infusionId) => {
   return COSMETIC_INFUSIONS.includes(infusionId);
 };
 
+// Dye Slot Component with Tooltip
+const DyeSlot = ({ dye, rgbColor, isLarge }) => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <div 
+      className={`${styles.dyeSlotWrapper} ${isLarge ? styles.dyeSlotWrapperLarge : ''}`}
+      onMouseEnter={() => setShowTooltip(true)}
+      onMouseLeave={() => setShowTooltip(false)}
+    >
+      <div 
+        className={`${styles.dyeSlot} ${isLarge ? styles.dyeSlotLarge : ''}`}
+      >
+        <div className={styles.dyeColor} style={{ backgroundColor: rgbColor }} />
+      </div>
+      
+      {showTooltip && dye && (
+        <div className={styles.dyeTooltip}>
+          <div className={styles.dyeTooltipName}>{dye.name}</div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const EquipmentSlot = ({ item, slotName, itemDetails, upgradeDetails, infusionDetails, skinDetails, dyeDetails }) => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -256,24 +281,40 @@ const EquipmentSlot = ({ item, slotName, itemDetails, upgradeDetails, infusionDe
         </div>
       )}
 
-      {item.dyes && item.dyes.length > 0 && (
-        <div className={styles.dyes}>
-          {item.dyes.filter(dyeId => dyeId !== null).map((dyeId, idx) => {
-            const dye = dyeDetails[dyeId];
-            const dyeColor = dye?.cloth?.rgb || dye?.base_rgb;
-            const rgbColor = dyeColor ? `rgb(${dyeColor[0]}, ${dyeColor[1]}, ${dyeColor[2]})` : '#666';
-            return (
-              <div 
-                key={idx}
-                className={styles.dyeSlot}
-                title={dye?.name || 'Dye'}
-              >
-                <div className={styles.dyeColor} style={{ backgroundColor: rgbColor }} />
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {item.dyes && item.dyes.length > 0 && (() => {
+        const filteredDyes = item.dyes.filter(dyeId => dyeId !== null);
+        const dyeCount = filteredDyes.length;
+        
+        // Determine the layout class based on dye count
+        let dyesClass = styles.dyes;
+        if (dyeCount === 2) {
+          dyesClass = styles.dyesTwoSlots;
+        } else if (dyeCount === 3) {
+          dyesClass = styles.dyesThreeSlots;
+        }
+        
+        return (
+          <div className={dyesClass}>
+            {filteredDyes.map((dyeId, idx) => {
+              const dye = dyeDetails[dyeId];
+              const dyeColor = dye?.cloth?.rgb || dye?.base_rgb;
+              const rgbColor = dyeColor ? `rgb(${dyeColor[0]}, ${dyeColor[1]}, ${dyeColor[2]})` : '#666';
+              
+              // For 3 dyes, first one is large, others are small
+              const isLargeSlot = dyeCount === 3 && idx === 0;
+              
+              return (
+                <DyeSlot
+                  key={idx}
+                  dye={dye}
+                  rgbColor={rgbColor}
+                  isLarge={isLargeSlot}
+                />
+              );
+            })}
+          </div>
+        );
+      })()}
     </div>
   );
 };
