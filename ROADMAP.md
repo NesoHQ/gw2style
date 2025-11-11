@@ -19,7 +19,7 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 | Priority | Feature Name | Description | Status | Est. Effort (SP) | Dependencies |
 |----------|--------------|-------------|--------|------------------|--------------|
 | **Must-Have (MVP Core)** | GW2 API Authentication | Login system using Guild Wars 2 API keys. Enables user identification without passwords. | ✅ Completed | 5 | None |
-| **Must-Have (MVP Core)** | Post Creation System | Form to create posts with title, description, armor info, tags, and image links. Core feature for content generation. | 📅 Planned (v0.1) | 8 | Authentication |
+| **Must-Have (MVP Core)** | Post Creation System | Form to create posts with title, description, armor info, tags, and image links. Core feature for content generation. | ✅ Completed | 8 | Authentication |
 | **Must-Have (MVP Core)** | Homepage Feed with Pagination | Display latest posts with infinite scrolling. Essential for content discovery. | 📅 Planned (v0.1) | 5 | Post Creation |
 | **Must-Have (MVP Core)** | Post Deletion | Allow users to delete their own posts. Required for user control over content. | 📅 Planned (v0.1) | 3 | Authentication, Post Creation |
 | **Must-Have (MVP Core)** | Basic UI/UX | Responsive layout for desktop and mobile. Clean, accessible interface. | 📅 Planned (v0.1) | 8 | None |
