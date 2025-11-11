@@ -1,28 +1,16 @@
+.container {
+  width: 100%;
+  padding: 0;
+}
+
 .main {
-  padding: 2rem 1.5rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 0 1rem;
+  width: 100%;
 }
 
-/* Page Layout Grid (Task 8.1) */
-.pageLayout {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-  align-items: start;
-}
-
-.filterPanelColumn {
-  /* Sticky positioning is handled in FilterPanel component */
-  position: relative;
-}
-
-.resultsColumn {
-  min-width: 0; /* Prevents grid blowout */
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+/* Filter Section - Horizontal on top */
+.filterSection {
+  margin: 1.5rem 0;
 }
 
 .searchSection {
@@ -85,6 +73,7 @@
 .resultsSection {
   min-height: 400px;
   position: relative;
+  margin-top: 1.5rem;
 }
 
 /* Results Count Display (Task 9) */
@@ -109,56 +98,7 @@
   letter-spacing: 1px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  padding: 0.5rem 0;
-}
 
-.post {
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-}
-
-.post:hover {
-  transform: translateY(-2px);
-}
-
-.postLink {
-  text-decoration: none;
-  color: inherit;
-}
-
-.imageContainer {
-  aspect-ratio: 4/3;
-  overflow: hidden;
-}
-
-.thumbnail {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.postInfo {
-  padding: 1rem;
-}
-
-.postTitle {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.postMeta {
-  margin: 0.5rem 0 0;
-  font-size: 0.9rem;
-  color: #666;
-}
 
 /* Loading State (Task 8.2) */
 .loading {
@@ -231,19 +171,7 @@
   font-style: italic;
 }
 
-/* Responsive Layout (Task 8.1) */
-@media (max-width: 1024px) {
-  .pageLayout {
-    grid-template-columns: 250px 1fr;
-    gap: 1.5rem;
-  }
-  
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
-  }
-}
-
+/* Responsive Layout */
 @media (max-width: 768px) {
   .main {
     padding: 1rem;
@@ -255,27 +183,6 @@
 
   .inputGroup {
     width: 100%;
-  }
-
-  /* Mobile layout - single column (Task 8.1) */
-  .pageLayout {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .filterPanelColumn {
-    /* Filter panel becomes fixed overlay on mobile */
-    display: contents;
-  }
-  
-  .resultsColumn {
-    gap: 1rem;
-  }
-  
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   .resultsCount {
@@ -295,10 +202,6 @@
   
   .searchForm {
     padding: 1rem;
-  }
-  
-  .grid {
-    gap: 0.75rem;
   }
 
   .resultsCount {

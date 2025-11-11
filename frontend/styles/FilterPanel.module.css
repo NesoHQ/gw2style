@@ -6,11 +6,8 @@
     rgba(36, 41, 56, 0.95));
   border: 2px solid rgba(212, 175, 55, 0.3);
   border-radius: 8px;
-  padding: 1.5rem;
-  position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
+  padding: 0.875rem 1.25rem;
+  width: 100%;
 }
 
 /* Custom scrollbar styling */
@@ -38,21 +35,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid;
-  border-image: linear-gradient(90deg, 
-    #d4af37, 
-    transparent) 1;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   position: relative;
 }
 
 .filterPanelTitle {
   font-family: 'Cinzel', serif;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #d4af37;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1.5px;
   margin: 0;
   font-weight: 600;
 }
@@ -60,11 +54,11 @@
 /* Clear All Button */
 .clearAllButton {
   background: transparent;
-  border: 2px solid rgba(212, 175, 55, 0.3);
+  border: 1px solid rgba(212, 175, 55, 0.3);
   color: #d4af37;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.875rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
@@ -109,11 +103,11 @@
   transform: scale(1.1);
 }
 
-/* Filter Categories Container */
+/* Filter Categories Container - Stacked rows */
 .filterCategories {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.625rem;
 }
 
 /* Overlay for mobile - Hidden on desktop */

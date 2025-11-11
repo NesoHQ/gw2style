@@ -4,7 +4,9 @@ import Layout from '@components/Layout';
 import FilterPanel from '@components/FilterPanel';
 import ActiveFiltersBar from '@components/ActiveFiltersBar';
 import MobileFilterToggle from '@components/MobileFilterToggle';
+import PostCard from '@components/PostCard';
 import styles from '../styles/Styles.module.css';
+import homeStyles from '../styles/Home.module.css';
 import {
   encodeFiltersToURL,
   decodeFiltersFromURL,
@@ -42,6 +44,10 @@ export default function StylesPage() {
   
   // Scroll position management (Task 8.3)
   const scrollPositionRef = useRef(0);
+  
+  // Masonry grid refs
+  const gridRef = useRef(null);
+  const masonryRef = useRef(null);
 
   // Parse URL parameters on mount (Task 7.2)
   useEffect(() => {
@@ -135,6 +141,48 @@ export default function StylesPage() {
     };
   }, [filters, searchParams]);
 
+  // Initialize Masonry layout
+  useEffect(() => {
+    const initMasonry = async () => {
+      if (
+        typeof window !== 'undefined' &&
+        gridRef.current &&
+        posts &&
+        posts.length > 0
+      ) {
+        try {
+          const Masonry = (await import('masonry-layout')).default;
+          const imagesLoaded = (await import('imagesloaded')).default;
+
+          if (masonryRef.current) {
+            masonryRef.current.destroy();
+          }
+
+          imagesLoaded(gridRef.current, () => {
+            masonryRef.current = new Masonry(gridRef.current, {
+              itemSelector: `.${homeStyles.card}`,
+              columnWidth: `.${homeStyles.gridSizer}`,
+              percentPosition: true,
+              transitionDuration: '0.3s',
+              fitWidth: false,
+            });
+          });
+        } catch (error) {
+          console.log('Masonry not available, using CSS Grid fallback');
+        }
+      }
+    };
+
+    const timer = setTimeout(initMasonry, 100);
+
+    return () => {
+      clearTimeout(timer);
+      if (masonryRef.current) {
+        masonryRef.current.destroy();
+      }
+    };
+  }, [posts]);
+
   // Handle filter change (Task 7.1)
   const handleFilterChange = (category, value) => {
     setFilters(prevFilters => toggleFilter(prevFilters, category, value));
@@ -170,17 +218,19 @@ export default function StylesPage() {
 
   return (
     <Layout
+      fullWidth
       title="Styles"
       description="Browse and search Guild Wars 2 fashion styles"
     >
-      <div className="page-header">
-        <h1 className="page-title">Browse Styles</h1>
-        <p className="page-description">
-          Discover amazing fashion styles created by the Guild Wars 2 community
-        </p>
-      </div>
+      <div className={styles.container}>
+        <div className="page-header">
+          <h1 className="page-title">Browse Styles</h1>
+          <p className="page-description">
+            Discover amazing fashion styles created by the Guild Wars 2 community
+          </p>
+        </div>
 
-      <main className={styles.main}>
+        <main className={styles.main}>
         <section className={styles.searchSection}>
           <form onSubmit={handleSearch} className={styles.searchForm}>
             <div className={styles.searchInputs}>
@@ -215,88 +265,68 @@ export default function StylesPage() {
           </form>
         </section>
 
-        {/* Page Layout with Grid (Task 7.4) */}
-        <div className={styles.pageLayout}>
-          {/* Filter Panel Sidebar (Task 7.4) */}
-          <aside className={styles.filterPanelColumn}>
-            <FilterPanel
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onClearAll={handleClearAll}
-              isOpen={isFilterPanelOpen}
-              onToggle={handleToggleFilterPanel}
-            />
-          </aside>
+        {/* Mobile Filter Toggle */}
+        <MobileFilterToggle
+          filterCount={totalActiveFilters}
+          isOpen={isFilterPanelOpen}
+          onClick={handleToggleFilterPanel}
+        />
 
-          {/* Results Column (Task 7.4) */}
-          <div className={styles.resultsColumn}>
-            {/* Mobile Filter Toggle (Task 7.4) */}
-            <MobileFilterToggle
-              filterCount={totalActiveFilters}
-              isOpen={isFilterPanelOpen}
-              onClick={handleToggleFilterPanel}
-            />
+        {/* Filter Panel - Horizontal on top */}
+        <section className={styles.filterSection}>
+          <FilterPanel
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onClearAll={handleClearAll}
+            isOpen={isFilterPanelOpen}
+            onToggle={handleToggleFilterPanel}
+          />
+        </section>
 
-            {/* Active Filters Bar (Task 7.4) */}
-            <ActiveFiltersBar
-              filters={filters}
-              onRemoveFilter={handleRemoveFilter}
-              onClearAll={handleClearAll}
-            />
+        {/* Active Filters Bar */}
+        <ActiveFiltersBar
+          filters={filters}
+          onRemoveFilter={handleRemoveFilter}
+          onClearAll={handleClearAll}
+        />
 
-            {/* Results Section */}
-            <section className={styles.resultsSection}>
-              {loading ? (
-                <div className={styles.loading}>
-                  <div className={styles.loadingSpinner}></div>
-                  <div className={styles.loadingText}>Loading Styles...</div>
-                </div>
-              ) : posts.length > 0 ? (
-                <>
-                  {/* Results Count Display (Task 9) */}
-                  <div className={styles.resultsCount}>
-                    <span className={styles.resultsCountText}>
-                      Showing {posts.length} {posts.length === 1 ? 'result' : 'results'}
-                    </span>
-                  </div>
-                  <div className={styles.grid}>
-                  {posts.map((post) => (
-                    <article key={post.id} className={styles.post}>
-                      <a href={`/posts/${post.id}`} className={styles.postLink}>
-                        <div className={styles.imageContainer}>
-                          <img
-                            src={post.thumbnail}
-                            alt={post.title}
-                            className={styles.thumbnail}
-                          />
-                        </div>
-                        <div className={styles.postInfo}>
-                          <h2 className={styles.postTitle}>{post.title}</h2>
-                          <p className={styles.postMeta}>
-                            by {post.author_name} • {post.likes_count} likes
-                          </p>
-                        </div>
-                      </a>
-                    </article>
-                  ))}
-                </div>
-                </>
-              ) : (
-                <div className={styles.noResults}>
-                  <div className={styles.noResultsIcon}>⚔</div>
-                  <h3 className={styles.noResultsTitle}>No Styles Found</h3>
-                  <p className={styles.noResultsMessage}>
-                    No posts match your current filter selection.
-                  </p>
-                  <p className={styles.noResultsSuggestion}>
-                    Try adjusting your filters or clearing all filters to see more results.
-                  </p>
-                </div>
-              )}
-            </section>
-          </div>
-        </div>
+        {/* Results Section */}
+        <section className={styles.resultsSection}>
+          {loading ? (
+            <div className={styles.loading}>
+              <div className={styles.loadingSpinner}></div>
+              <div className={styles.loadingText}>Loading Styles...</div>
+            </div>
+          ) : posts.length > 0 ? (
+            <>
+              {/* Results Count Display */}
+              <div className={styles.resultsCount}>
+                <span className={styles.resultsCountText}>
+                  Showing {posts.length} {posts.length === 1 ? 'result' : 'results'}
+                </span>
+              </div>
+              <div ref={gridRef} className={homeStyles.grid}>
+                <div className={homeStyles.gridSizer}></div>
+                {posts.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className={styles.noResults}>
+              <div className={styles.noResultsIcon}>⚔</div>
+              <h3 className={styles.noResultsTitle}>No Styles Found</h3>
+              <p className={styles.noResultsMessage}>
+                No posts match your current filter selection.
+              </p>
+              <p className={styles.noResultsSuggestion}>
+                Try adjusting your filters or clearing all filters to see more results.
+              </p>
+            </div>
+          )}
+        </section>
       </main>
+      </div>
     </Layout>
   );
 }
