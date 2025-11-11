@@ -381,28 +381,33 @@ body {
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
   color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 0.5rem 0.75rem;
+  padding: 0.5rem;
   border: 2px solid rgba(212, 175, 55, 0.2);
-  border-radius: var(--radius-lg);
+  border-radius: 50%;
   transition: all var(--transition-base);
   background: rgba(26, 31, 46, 0.3);
+  width: 44px;
+  height: 44px;
+}
+
+.user-profile svg {
+  width: 24px;
+  height: 24px;
 }
 
 .user-profile:hover {
-  color: var(--color-text-primary);
+  color: var(--color-gold);
   border-color: rgba(212, 175, 55, 0.6);
   box-shadow: 0 0 15px var(--glow-gold-intense), 0 0 25px var(--glow-gold);
   background: rgba(26, 31, 46, 0.5);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.05);
 }
 
 .username {
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  display: none;
 }
 
 .login-button {

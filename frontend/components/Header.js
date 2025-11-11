@@ -52,11 +52,11 @@ export default function Header() {
         {/* Right Side Actions */}
         <div className="header-actions">
           {user?.username ? (
-            <Link href="/user" className="user-profile">
+            <Link href="/user" className="user-profile" title={user.username}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="24"
+                height="24"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -67,7 +67,6 @@ export default function Header() {
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              <span className="username">{user.username}</span>
             </Link>
           ) : (
             <Link href="/login" className="login-button">
