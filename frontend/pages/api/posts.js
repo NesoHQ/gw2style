@@ -22,8 +22,12 @@ export default async function handler(req, res) {
     // Get the API URL from environment variable
     const apiUrl = 'http://localhost:8080';
 
+    // Forward query parameters (page, limit, etc.)
+    const queryParams = new URLSearchParams(req.query).toString();
+    const url = `${apiUrl}/api/v1/posts${queryParams ? `?${queryParams}` : ''}`;
+
     // Call the backend API
-    const response = await fetch(`${apiUrl}/api/v1/posts`);
+    const response = await fetch(url);
     const text = await response.text(); // Get raw response text
     //console.log('Backend response:', text); // Log the raw response
 
