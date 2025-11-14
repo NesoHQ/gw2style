@@ -36,8 +36,8 @@ func NewPostRepository(db *sql.DB) *PostRepository {
 	}
 }
 
-func (r *PostRepository) GetPosts(ctx context.Context) ([]Post, error) {
-	return r.SearchPosts(ctx, SearchParams{OnlyPublished: true})
+func (r *PostRepository) GetPosts(ctx context.Context, limit, offset int) ([]Post, int, error) {
+	return r.SearchPosts(ctx, SearchParams{OnlyPublished: true, Limit: limit, Offset: offset})
 }
 
 type SearchParams struct {
@@ -45,6 +45,8 @@ type SearchParams struct {
 	TagID         *int
 	OnlyPublished bool
 	AuthorName    string
+	Limit         int
+	Offset        int
 }
 
 // Create adds a new post to the database
@@ -201,7 +203,7 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 	return posts, nil
 }
 
-func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, error) {
+func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, int, error) {
 	queryArgs := []interface{}{}
 	conditions := []string{}
 
@@ -229,6 +231,14 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 		whereClause = "WHERE " + strings.Join(conditions, " AND ")
 	}
 
+	// Get total count
+	countQuery := "SELECT COUNT(*) FROM posts " + whereClause
+	var totalCount int
+	err := r.db.QueryRowContext(ctx, countQuery, queryArgs...).Scan(&totalCount)
+	if err != nil {
+		return nil, 0, fmt.Errorf("error getting total count: %w", err)
+	}
+
 	baseQuery := `
 		SELECT 
 			CAST(id AS TEXT),
@@ -250,9 +260,15 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 
 	query := baseQuery + " " + whereClause + " ORDER BY created_at DESC"
 
+	// Add pagination if limit is set
+	if params.Limit > 0 {
+		queryArgs = append(queryArgs, params.Limit, params.Offset)
+		query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(queryArgs)-1, len(queryArgs))
+	}
+
 	rows, err := r.db.QueryContext(ctx, query, queryArgs...)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	defer rows.Close()
 
@@ -277,14 +293,14 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 			&post.Published,
 		)
 		if err != nil {
-			return nil, err
+			return nil, 0, err
 		}
 		posts = append(posts, post)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
-	return posts, nil
+	return posts, totalCount, nil
 }

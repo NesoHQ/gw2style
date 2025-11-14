@@ -23,13 +23,38 @@ func (h *Handlers) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Parse pagination parameters
+	page := 1
+	limit := 20 // Default limit
+	maxLimit := 100
+
+	if pageStr := r.URL.Query().Get("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if l, err := strconv.Atoi(limitStr); err == nil && l > 0 {
+			limit = l
+			if limit > maxLimit {
+				limit = maxLimit
+			}
+		}
+	}
+
+	offset := (page - 1) * limit
+
 	// Get posts from repository
-	posts, err := h.postRepo.GetPosts(r.Context())
+	posts, totalCount, err := h.postRepo.GetPosts(r.Context(), limit, offset)
 	if err != nil {
 		slog.Error("Failed to fetch posts", "error", err.Error())
 		h.sendError(w, http.StatusInternalServerError, "Failed to fetch posts: "+err.Error())
 		return
 	}
+
+	// Calculate pagination metadata
+	totalPages := (totalCount + limit - 1) / limit
 
 	// Set content type
 	w.Header().Set("Content-Type", "application/json")
@@ -38,6 +63,12 @@ func (h *Handlers) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"success": true,
 		"data":    posts,
+		"pagination": map[string]interface{}{
+			"page":        page,
+			"limit":       limit,
+			"total":       totalCount,
+			"total_pages": totalPages,
+		},
 	}
 
 	// Encode response
@@ -159,10 +190,34 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 	tagIDStr := r.URL.Query().Get("tag")
 	authorName := r.URL.Query().Get("author")
 
+	// Parse pagination parameters
+	page := 1
+	limit := 20
+	maxLimit := 100
+
+	if pageStr := r.URL.Query().Get("page"); pageStr != "" {
+		if p, err := strconv.Atoi(pageStr); err == nil && p > 0 {
+			page = p
+		}
+	}
+
+	if limitStr := r.URL.Query().Get("limit"); limitStr != "" {
+		if l, err := strconv.Atoi(limitStr); err == nil && l > 0 {
+			limit = l
+			if limit > maxLimit {
+				limit = maxLimit
+			}
+		}
+	}
+
+	offset := (page - 1) * limit
+
 	slog.Info("Search request",
 		"query", query,
 		"tagID", tagIDStr,
 		"author", authorName,
+		"page", page,
+		"limit", limit,
 	)
 
 	// Parse tag ID if provided
@@ -182,17 +237,22 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 		TagID:         tagID,
 		OnlyPublished: true,
 		AuthorName:    authorName,
+		Limit:         limit,
+		Offset:        offset,
 	}
 
 	// Get posts from repository
-	posts, err := h.postRepo.SearchPosts(r.Context(), params)
+	posts, totalCount, err := h.postRepo.SearchPosts(r.Context(), params)
 	if err != nil {
 		slog.Error("Failed to search posts", "error", err.Error())
 		h.sendError(w, http.StatusInternalServerError, "Failed to search posts")
 		return
 	}
 
-	slog.Info("Search results", "count", len(posts))
+	// Calculate pagination metadata
+	totalPages := (totalCount + limit - 1) / limit
+
+	slog.Info("Search results", "count", len(posts), "total", totalCount)
 
 	// Set content type
 	w.Header().Set("Content-Type", "application/json")
@@ -201,6 +261,12 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 	response := map[string]interface{}{
 		"success": true,
 		"data":    posts,
+		"pagination": map[string]interface{}{
+			"page":        page,
+			"limit":       limit,
+			"total":       totalCount,
+			"total_pages": totalPages,
+		},
 	}
 
 	// Encode response

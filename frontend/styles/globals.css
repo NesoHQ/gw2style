@@ -246,7 +246,6 @@ body {
 
 .header-logo {
   flex: 0 0 auto;
-  margin-right: 2rem;
 }
 
 .logo-container {
@@ -315,7 +314,6 @@ body {
   display: flex;
   justify-content: center;
   gap: 2.5rem;
-  margin-left: 3rem;
 }
 
 .nav-link {
