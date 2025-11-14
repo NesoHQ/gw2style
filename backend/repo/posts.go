@@ -26,6 +26,14 @@ type Post struct {
 	Published   bool        `json:"published"`
 }
 
+type PostSummary struct {
+	ID         string `json:"id"`
+	Title      string `json:"title"`
+	Thumbnail  string `json:"thumbnail"`
+	AuthorName string `json:"author_name"`
+	LikesCount int    `json:"likes_count"`
+}
+
 type PostRepository struct {
 	db *sql.DB
 }
@@ -36,8 +44,56 @@ func NewPostRepository(db *sql.DB) *PostRepository {
 	}
 }
 
-func (r *PostRepository) GetPosts(ctx context.Context, limit, offset int) ([]Post, int, error) {
-	return r.SearchPosts(ctx, SearchParams{OnlyPublished: true, Limit: limit, Offset: offset})
+func (r *PostRepository) GetPosts(ctx context.Context, limit, offset int) ([]PostSummary, int, error) {
+	queryArgs := []interface{}{limit, offset}
+
+	// Get total count
+	countQuery := "SELECT COUNT(*) FROM posts WHERE published = true"
+	var totalCount int
+	err := r.db.QueryRowContext(ctx, countQuery).Scan(&totalCount)
+	if err != nil {
+		return nil, 0, fmt.Errorf("error getting total count: %w", err)
+	}
+
+	query := `
+		SELECT 
+			CAST(id AS TEXT),
+			COALESCE(title, '') as title,
+			COALESCE(thumbnail_url, '') as thumbnail,
+			COALESCE(author_name, '') as author_name,
+			COALESCE(likes_count, 0) as likes_count
+		FROM posts
+		WHERE published = true
+		ORDER BY created_at DESC
+		LIMIT $1 OFFSET $2`
+
+	rows, err := r.db.QueryContext(ctx, query, queryArgs...)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+
+	var posts []PostSummary
+	for rows.Next() {
+		var post PostSummary
+		err := rows.Scan(
+			&post.ID,
+			&post.Title,
+			&post.Thumbnail,
+			&post.AuthorName,
+			&post.LikesCount,
+		)
+		if err != nil {
+			return nil, 0, err
+		}
+		posts = append(posts, post)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, 0, err
+	}
+
+	return posts, totalCount, nil
 }
 
 type SearchParams struct {

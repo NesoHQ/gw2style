@@ -250,7 +250,10 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Calculate pagination metadata
-	totalPages := (totalCount + limit - 1) / limit
+	totalPages := 0
+	if totalCount > 0 {
+		totalPages = (totalCount + limit - 1) / limit
+	}
 
 	slog.Info("Search results", "count", len(posts), "total", totalCount)
 
