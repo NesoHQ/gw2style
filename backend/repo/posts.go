@@ -64,7 +64,7 @@ func (r *PostRepository) GetPosts(ctx context.Context, limit, offset int) ([]Pos
 			COALESCE(likes_count, 0) as likes_count
 		FROM posts
 		WHERE published = true
-		ORDER BY created_at DESC
+		ORDER BY CAST(id AS INTEGER) DESC
 		LIMIT $1 OFFSET $2`
 
 	rows, err := r.db.QueryContext(ctx, query, queryArgs...)
