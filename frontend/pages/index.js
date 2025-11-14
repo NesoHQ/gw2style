@@ -3,16 +3,23 @@ import styles from '../styles/Home.module.css';
 import Layout from '@components/Layout';
 import PostCard from '@components/PostCard';
 
-function PostSection({ posts, sectionIndex }) {
+export default function Home({ initialPosts, initialTotal }) {
   const gridRef = useRef(null);
   const masonryRef = useRef(null);
+  const [posts, setPosts] = useState(initialPosts);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialPosts.length < initialTotal);
+  const loadingRef = useRef(false);
+  const previousPostCount = useRef(initialPosts.length);
 
+  // Initialize Masonry once
   useEffect(() => {
     const initMasonry = async () => {
       if (
         typeof window !== 'undefined' &&
         gridRef.current &&
-        posts.length > 0
+        initialPosts.length > 0
       ) {
         try {
           const Masonry = (await import('masonry-layout')).default;
@@ -41,24 +48,40 @@ function PostSection({ posts, sectionIndex }) {
         masonryRef.current.destroy();
       }
     };
+  }, []);
+
+  // Append new items to Masonry when posts change
+  useEffect(() => {
+    const appendToMasonry = async () => {
+      if (
+        masonryRef.current &&
+        gridRef.current &&
+        posts.length > previousPostCount.current
+      ) {
+        try {
+          const imagesLoaded = (await import('imagesloaded')).default;
+          
+          // Get all card elements
+          const allCards = Array.from(gridRef.current.querySelectorAll(`.${styles.card}`));
+          // Get only the new ones
+          const newCards = allCards.slice(previousPostCount.current);
+
+          if (newCards.length > 0) {
+            imagesLoaded(newCards, () => {
+              masonryRef.current.appended(newCards);
+              masonryRef.current.layout();
+            });
+          }
+
+          previousPostCount.current = posts.length;
+        } catch (error) {
+          console.log('Error appending to masonry:', error);
+        }
+      }
+    };
+
+    appendToMasonry();
   }, [posts]);
-
-  return (
-    <div ref={gridRef} className={styles.grid}>
-      <div className={styles.gridSizer}></div>
-      {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
-      ))}
-    </div>
-  );
-}
-
-export default function Home({ initialPosts, initialTotal }) {
-  const [postSections, setPostSections] = useState([initialPosts]);
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(initialPosts.length < initialTotal);
-  const loadingRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = async () => {
@@ -68,7 +91,7 @@ export default function Home({ initialPosts, initialTotal }) {
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
 
-      if (scrollTop + windowHeight >= documentHeight - 500) {
+      if (scrollTop + windowHeight >= documentHeight - 1500) {
         loadingRef.current = true;
         setLoading(true);
         
@@ -77,12 +100,12 @@ export default function Home({ initialPosts, initialTotal }) {
           const res = await fetch(`/api/posts?page=${nextPage}&limit=25`);
           const data = await res.json();
           
-          console.log('Loading page:', nextPage, 'Got posts:', data.data?.length);
-          console.log('Post IDs:', data.data?.map(p => p.id).join(', '));
-          console.log('Pagination:', data.pagination);
-          
           if (data.success && data.data.length > 0) {
-            setPostSections(prev => [...prev, data.data]);
+            setPosts(prev => {
+              const existingIds = new Set(prev.map(p => p.id));
+              const newPosts = data.data.filter(p => !existingIds.has(p.id));
+              return [...prev, ...newPosts];
+            });
             setPage(nextPage);
             setHasMore(data.pagination.page < data.pagination.total_pages);
           } else {
@@ -103,15 +126,18 @@ export default function Home({ initialPosts, initialTotal }) {
 
   return (
     <Layout fullWidth  title="Home">
-      {postSections.map((posts, index) => (
-        <PostSection key={index} posts={posts} sectionIndex={index} />
-      ))}
+      <div ref={gridRef} className={styles.grid}>
+        <div className={styles.gridSizer}></div>
+        {posts.map((post) => (
+          <PostCard key={post.id} post={post} />
+        ))}
+      </div>
       {loading && (
         <div style={{ textAlign: 'center', padding: '20px' }}>
           Loading more posts...
         </div>
       )}
-      {!hasMore && postSections.length > 0 && (
+      {!hasMore && posts.length > 0 && (
         <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
           No more posts to load
         </div>
