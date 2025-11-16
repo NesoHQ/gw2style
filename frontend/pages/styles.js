@@ -4,6 +4,7 @@ import Layout from '@components/Layout';
 import FilterPanel from '@components/FilterPanel';
 import ActiveFiltersBar from '@components/ActiveFiltersBar';
 import MobileFilterToggle from '@components/MobileFilterToggle';
+import DeepSearchPanel from '@components/DeepSearchPanel';
 import PostCard from '@components/PostCard';
 import styles from '../styles/Styles.module.css';
 import homeStyles from '../styles/Home.module.css';
@@ -37,6 +38,10 @@ export default function StylesPage() {
   
   // Mobile filter panel state (Task 7.1)
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
+  
+  // Deep search panel state
+  const [isDeepSearchOpen, setIsDeepSearchOpen] = useState(false);
+  const [skinTags, setSkinTags] = useState([]);
   
   // Debounce timer ref (Task 7.3)
   const debounceTimerRef = useRef(null);
@@ -72,7 +77,7 @@ export default function StylesPage() {
   }, [filters]);
 
   // Fetch posts with filters - debounced (Task 7.3)
-  const fetchPosts = async (filtersToApply) => {
+  const fetchPosts = async (filtersToApply, skinTagsToApply = []) => {
     setLoading(true);
     try {
       const queryParams = new URLSearchParams();
@@ -86,6 +91,15 @@ export default function StylesPage() {
       filterParams.forEach((value, key) => {
         queryParams.append(key, value);
       });
+
+      // Add skin tags to the tags parameter
+      if (skinTagsToApply.length > 0) {
+        const existingTags = queryParams.get('tags');
+        const allTags = existingTags 
+          ? `${existingTags},${skinTagsToApply.join(',')}` 
+          : skinTagsToApply.join(',');
+        queryParams.set('tags', allTags);
+      }
 
       // Call Next.js API route (which proxies to backend)
       const response = await fetch(
@@ -180,7 +194,7 @@ export default function StylesPage() {
     const newFilters = toggleFilter(filters, category, value, isSingleSelect);
     setFilters(newFilters);
     // Trigger fetch immediately when filter changes
-    fetchPosts(newFilters);
+    fetchPosts(newFilters, skinTags);
   };
 
   // Handle clear all filters (Task 7.1)
@@ -195,7 +209,7 @@ export default function StylesPage() {
     const newFilters = removeFilter(filters, category, value);
     setFilters(newFilters);
     // Trigger fetch immediately when removing a filter
-    fetchPosts(newFilters);
+    fetchPosts(newFilters, skinTags);
   };
 
   // Toggle mobile filter panel (Task 7.1)
@@ -212,7 +226,18 @@ export default function StylesPage() {
     };
     setSearchParams(newSearchParams);
     // Trigger fetch immediately when search is submitted
-    fetchPosts(filters);
+    fetchPosts(filters, skinTags);
+  };
+
+  // Handle deep search by skins
+  const handleDeepSearch = (selectedSkins) => {
+    setSkinTags(selectedSkins);
+    fetchPosts(filters, selectedSkins);
+  };
+
+  // Toggle deep search panel
+  const handleToggleDeepSearch = () => {
+    setIsDeepSearchOpen(prev => !prev);
   };
 
   // Calculate total active filters for mobile toggle
@@ -274,6 +299,15 @@ export default function StylesPage() {
             onClearAll={handleClearAll}
             isOpen={isFilterPanelOpen}
             onToggle={handleToggleFilterPanel}
+          />
+        </section>
+
+        {/* Deep Search Panel - Equipment Skins */}
+        <section className={styles.deepSearchSection}>
+          <DeepSearchPanel
+            onSearch={handleDeepSearch}
+            isOpen={isDeepSearchOpen}
+            onToggle={handleToggleDeepSearch}
           />
         </section>
 
