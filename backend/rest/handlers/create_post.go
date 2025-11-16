@@ -18,7 +18,7 @@ type CreatePostRequest struct {
 	Image4URL    string          `json:"image4Url"`
 	Image5URL    string          `json:"image5Url"`
 	Equipments   json.RawMessage `json:"equipments"` // Will store GW2 equipment data
-	TagID        int             `json:"tagId"`
+	Tags         json.RawMessage `json:"tags"`       // Array of tags
 	Published    bool            `json:"published"`
 }
 
@@ -54,7 +54,7 @@ func (h *Handlers) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		Image5:      req.Image5URL,
 		Equipments:  req.Equipments,
 		AuthorName:  user.Name,
-		TagID:       req.TagID,
+		Tags:        req.Tags,
 		Published:   req.Published,
 	}
 

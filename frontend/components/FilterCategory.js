@@ -8,12 +8,13 @@ import styles from '../styles/FilterCategory.module.css';
  * Groups related filter tags under a category label.
  * Renders a collection of FilterTag components for a specific filter type.
  * 
- * @param {string} title - The category title (e.g., "Race", "Gender", "Armor Weight")
+ * @param {string} title - The category title (e.g., "Race", "Gender", "Class")
  * @param {string[]} options - Array of filter option values to display
  * @param {string[]} activeFilters - Array of currently active filter values
  * @param {function} onToggle - Callback function when a filter tag is toggled, receives the value
+ * @param {boolean} singleSelect - If true, only one option can be selected at a time
  */
-const FilterCategory = ({ title, options, activeFilters, onToggle }) => {
+const FilterCategory = ({ title, options, activeFilters, onToggle, singleSelect = false }) => {
   return (
     <div className={styles.filterCategory}>
       <h3 className={styles.categoryTitle}>{title}</h3>

@@ -23,14 +23,6 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 	)
 
 	mux.Handle(
-		"GET /api/v1/posts/{id}",
-		manager.With(
-			http.HandlerFunc(server.handlers.GetPostByIDHandler),
-		),
-	)
-
-
-	mux.Handle(
 		"GET /api/v1/posts/search",
 		manager.With(
 			http.HandlerFunc(server.handlers.SearchPostsHandler),
@@ -41,6 +33,13 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		"GET /api/v1/posts/popular",
 		manager.With(
 			http.HandlerFunc(server.handlers.GetPopularPostsHandler),
+		),
+	)
+
+	mux.Handle(
+		"GET /api/v1/posts/{id}",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetPostByIDHandler),
 		),
 	)
 

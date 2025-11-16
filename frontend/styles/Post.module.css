@@ -76,7 +76,7 @@
 .thumbnailContainer {
   border-radius: 8px;
   overflow: hidden;
-  background: rgba(0, 0, 0, 0.3);
+  background: #000000;
   display: flex;
   justify-content: center;
   align-items: center;

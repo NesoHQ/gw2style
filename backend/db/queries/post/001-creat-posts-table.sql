@@ -11,10 +11,16 @@ CREATE TABLE
         image5_url TEXT,
         equipments JSON,
         author_name VARCHAR,
-        tag_id INT,
+        tags JSONB DEFAULT '[]'::jsonb,
         created_at TIMESTAMPTZ DEFAULT now(),
         updated_at TIMESTAMPTZ DEFAULT now(),
         likes_count INT DEFAULT 0,
         published BOOLEAN DEFAULT FALSE,
         CONSTRAINT fk_author FOREIGN KEY (author_name) REFERENCES users (username) ON DELETE SET NULL
     );
+
+-- Create GIN index for efficient tag filtering
+CREATE INDEX idx_posts_tags ON posts USING GIN (tags);
+
+-- Create index for published posts with tags (common query pattern)
+CREATE INDEX idx_posts_published_tags ON posts USING GIN (tags) WHERE published = true;

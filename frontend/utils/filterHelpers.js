@@ -24,9 +24,9 @@ export const decodeFiltersFromURL = (query) => {
   const filters = {
     races: [],
     genders: [],
-    weights: [],
-    sources: [],
-    colors: []
+    classes: [],
+    colors: [],
+    sources: []
   };
   
   Object.keys(filters).forEach(category => {
@@ -40,17 +40,25 @@ export const decodeFiltersFromURL = (query) => {
 
 /**
  * Builds API query parameters from filter state
+ * Combines all filter categories into a single 'tags' parameter for the backend
  * @param {Object} filters - Filter state object
  * @returns {URLSearchParams} URL search params ready for API call
  */
 export const buildAPIQueryParams = (filters) => {
   const params = new URLSearchParams();
   
+  // Combine all filter categories into a single tags array
+  const allTags = [];
   Object.keys(filters).forEach(category => {
     if (filters[category] && filters[category].length > 0) {
-      params.append(category, filters[category].join(','));
+      allTags.push(...filters[category]);
     }
   });
+  
+  // Add tags parameter if there are any active filters
+  if (allTags.length > 0) {
+    params.append('tags', allTags.join(','));
+  }
   
   return params;
 };
@@ -82,22 +90,31 @@ export const isFilterActive = (filters, category, value) => {
  * @param {Object} filters - Current filter state
  * @param {string} category - Filter category name
  * @param {string} value - Filter value to toggle
+ * @param {boolean} singleSelect - If true, only one value can be selected in this category
  * @returns {Object} New filter state
  */
-export const toggleFilter = (filters, category, value) => {
+export const toggleFilter = (filters, category, value, singleSelect = false) => {
   const newFilters = { ...filters };
   const categoryFilters = [...(newFilters[category] || [])];
   
-  const index = categoryFilters.indexOf(value);
-  if (index > -1) {
-    // Remove filter
-    categoryFilters.splice(index, 1);
+  if (singleSelect) {
+    // Single select mode: if clicking the same value, deselect it; otherwise select only this value
+    if (categoryFilters.includes(value)) {
+      newFilters[category] = [];
+    } else {
+      newFilters[category] = [value];
+    }
   } else {
-    // Add filter
-    categoryFilters.push(value);
+    // Multi-select mode: toggle the value
+    const index = categoryFilters.indexOf(value);
+    if (index > -1) {
+      categoryFilters.splice(index, 1);
+    } else {
+      categoryFilters.push(value);
+    }
+    newFilters[category] = categoryFilters;
   }
   
-  newFilters[category] = categoryFilters;
   return newFilters;
 };
 
@@ -109,9 +126,9 @@ export const clearAllFilters = () => {
   return {
     races: [],
     genders: [],
-    weights: [],
-    sources: [],
-    colors: []
+    classes: [],
+    colors: [],
+    sources: []
   };
 };
 

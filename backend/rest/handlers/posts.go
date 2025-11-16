@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/NesoHQ/gw2style/repo"
 )
@@ -187,7 +188,7 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parse query parameters
 	query := r.URL.Query().Get("q")
-	tagIDStr := r.URL.Query().Get("tag")
+	tagsParam := r.URL.Query().Get("tags") // Comma-separated tags
 	authorName := r.URL.Query().Get("author")
 
 	// Parse pagination parameters
@@ -212,29 +213,28 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 
 	offset := (page - 1) * limit
 
+	// Parse tags if provided (comma-separated)
+	var tags []string
+	if tagsParam != "" {
+		tags = strings.Split(tagsParam, ",")
+		// Trim whitespace from each tag
+		for i := range tags {
+			tags[i] = strings.TrimSpace(tags[i])
+		}
+	}
+
 	slog.Info("Search request",
 		"query", query,
-		"tagID", tagIDStr,
+		"tags", tags,
 		"author", authorName,
 		"page", page,
 		"limit", limit,
 	)
 
-	// Parse tag ID if provided
-	var tagID *int
-	if tagIDStr != "" {
-		id, err := strconv.Atoi(tagIDStr)
-		if err != nil {
-			h.sendError(w, http.StatusBadRequest, "Invalid tag ID")
-			return
-		}
-		tagID = &id
-	}
-
 	// Prepare search parameters
 	params := repo.SearchParams{
 		Query:         query,
-		TagID:         tagID,
+		Tags:          tags,
 		OnlyPublished: true,
 		AuthorName:    authorName,
 		Limit:         limit,

@@ -1,9 +1,18 @@
 // Filter options for the advanced filtering system
 export const FILTER_OPTIONS = {
-  races: ["Human", "Norn", "Asura", "Sylvari", "Charr"],
+  races: ["Human", "Asura", "Norn", "Charr", "Sylvari"],
   genders: ["Male", "Female"],
-  weights: ["Light", "Medium", "Heavy"],
-  sources: ["Gem Store"],
+  classes: [
+    "Guardian",
+    "Warrior",
+    "Engineer",
+    "Ranger",
+    "Thief",
+    "Elementalist",
+    "Mesmer",
+    "Necromancer",
+    "Revenant"
+  ],
   colors: [
     "Gray dyes",
     "Brown dyes",
@@ -13,6 +22,16 @@ export const FILTER_OPTIONS = {
     "Green dyes",
     "Blue dyes",
     "Purple dyes"
+  ],
+  sources: [
+    "Lunar New Year",
+    "Super Adventure Box",
+    "Dragon Bash",
+    "Four Winds",
+    "Halloween",
+    "Loot",
+    "Gems Store",
+    "Trading Post"
   ]
 };
 
@@ -20,7 +39,7 @@ export const FILTER_OPTIONS = {
 export const FILTER_CATEGORIES = {
   races: "Race",
   genders: "Gender",
-  weights: "Armor Weight",
-  sources: "Source",
-  colors: "Dye Colors"
+  classes: "Class",
+  colors: "Dye Colors",
+  sources: "Source"
 };

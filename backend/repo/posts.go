@@ -3,6 +3,7 @@ package repo
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -20,7 +21,7 @@ type Post struct {
 	Image5      string      `json:"image5"`
 	Equipments  interface{} `json:"equipments"` // Using interface{} for JSON
 	AuthorName  string      `json:"author_name"`
-	TagID       int         `json:"tag_id"`
+	Tags        interface{} `json:"tags"` // JSONB array of tags
 	CreatedAt   string      `json:"created_at"`
 	LikesCount  int         `json:"likes_count"`
 	Published   bool        `json:"published"`
@@ -98,7 +99,7 @@ func (r *PostRepository) GetPosts(ctx context.Context, limit, offset int) ([]Pos
 
 type SearchParams struct {
 	Query         string
-	TagID         *int
+	Tags          []string // Array of tags to filter by (AND condition)
 	OnlyPublished bool
 	AuthorName    string
 	Limit         int
@@ -111,7 +112,7 @@ func (r *PostRepository) Create(post Post) (*Post, error) {
 		INSERT INTO posts (
 			title, description, thumbnail_url, image1_url, image2_url, 
 			image3_url, image4_url, image5_url, equipments, author_name, 
-			tag_id, published
+			tags, published
 		) VALUES (
 			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
 		) RETURNING id`
@@ -121,7 +122,7 @@ func (r *PostRepository) Create(post Post) (*Post, error) {
 		query,
 		post.Title, post.Description, post.Thumbnail, post.Image1,
 		post.Image2, post.Image3, post.Image4, post.Image5,
-		post.Equipments, post.AuthorName, post.TagID, post.Published,
+		post.Equipments, post.AuthorName, post.Tags, post.Published,
 	).Scan(&id)
 
 	if err != nil {
@@ -150,7 +151,7 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 			COALESCE(image5_url, '') as image5,
 			equipments,
 			COALESCE(author_name, '') as author_name,
-			COALESCE(tag_id, 0) as tag_id,
+			COALESCE(tags, '[]'::jsonb) as tags,
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
 			COALESCE(published, false) as published
@@ -170,7 +171,7 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 		&post.Image5,
 		&post.Equipments,
 		&post.AuthorName,
-		&post.TagID,
+		&post.Tags,
 		&post.CreatedAt,
 		&post.LikesCount,
 		&post.Published,
@@ -211,7 +212,7 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 			COALESCE(image5_url, '') as image5,
 			equipments,
 			COALESCE(author_name, '') as author_name,
-			COALESCE(tag_id, 0) as tag_id,
+			COALESCE(tags, '[]'::jsonb) as tags,
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
 			COALESCE(published, false) as published
@@ -241,7 +242,7 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 			&post.Image5,
 			&post.Equipments,
 			&post.AuthorName,
-			&post.TagID,
+			&post.Tags,
 			&post.CreatedAt,
 			&post.LikesCount,
 			&post.Published,
@@ -272,9 +273,14 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 		conditions = append(conditions, "(title ILIKE $"+fmt.Sprint(len(queryArgs)-1)+" OR description ILIKE $"+fmt.Sprint(len(queryArgs))+")")
 	}
 
-	if params.TagID != nil {
-		queryArgs = append(queryArgs, *params.TagID)
-		conditions = append(conditions, "tag_id = $"+fmt.Sprint(len(queryArgs)))
+	// Filter by tags using JSONB contains operator (@>)
+	if len(params.Tags) > 0 {
+		tagsJSON, err := json.Marshal(params.Tags)
+		if err != nil {
+			return nil, 0, fmt.Errorf("error marshaling tags: %w", err)
+		}
+		queryArgs = append(queryArgs, string(tagsJSON))
+		conditions = append(conditions, "tags @> $"+fmt.Sprint(len(queryArgs))+"::jsonb")
 	}
 
 	if params.AuthorName != "" {
@@ -308,7 +314,7 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 			COALESCE(image5_url, '') as image5,
 			equipments,
 			COALESCE(author_name, '') as author_name,
-			COALESCE(tag_id, 0) as tag_id,
+			COALESCE(tags, '[]'::jsonb) as tags,
 			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
 			COALESCE(likes_count, 0) as likes_count,
 			COALESCE(published, false) as published
@@ -343,7 +349,7 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 			&post.Image5,
 			&post.Equipments,
 			&post.AuthorName,
-			&post.TagID,
+			&post.Tags,
 			&post.CreatedAt,
 			&post.LikesCount,
 			&post.Published,

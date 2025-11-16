@@ -23,17 +23,16 @@ export default function StylesPage() {
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({
     query: '',
-    author: '',
-    tag: '',
+    author: ''
   });
   
   // Filter state management (Task 7.1)
   const [filters, setFilters] = useState({
     races: [],
     genders: [],
-    weights: [],
-    sources: [],
-    colors: []
+    classes: [],
+    colors: [],
+    sources: []
   });
   
   // Mobile filter panel state (Task 7.1)
@@ -81,14 +80,14 @@ export default function StylesPage() {
       // Add search params
       if (searchParams.query) queryParams.append('q', searchParams.query);
       if (searchParams.author) queryParams.append('author', searchParams.author);
-      if (searchParams.tag) queryParams.append('tag', searchParams.tag);
       
-      // Add filter params (Task 7.3)
+      // Add filter params - combines all filters into 'tags' parameter
       const filterParams = buildAPIQueryParams(filtersToApply);
       filterParams.forEach((value, key) => {
         queryParams.append(key, value);
       });
 
+      // Call Next.js API route (which proxies to backend)
       const response = await fetch(
         `/api/posts/search?${queryParams.toString()}`
       );
@@ -101,6 +100,7 @@ export default function StylesPage() {
       setPosts(data.data || []);
     } catch (error) {
       console.error('Error fetching posts:', error);
+      setPosts([]);
     } finally {
       setLoading(false);
     }
@@ -124,22 +124,10 @@ export default function StylesPage() {
     }
   }, [loading, posts]);
 
-  // Debounced effect for filter changes (Task 7.3)
-  useEffect(() => {
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
-    }
-    
-    debounceTimerRef.current = setTimeout(() => {
-      fetchPosts(filters);
-    }, 300);
-    
-    return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-      }
-    };
-  }, [filters, searchParams]);
+  // Manual search trigger - only fetch when user clicks search or applies filters
+  const handleApplyFilters = () => {
+    fetchPosts(filters);
+  };
 
   // Initialize Masonry layout
   useEffect(() => {
@@ -185,17 +173,29 @@ export default function StylesPage() {
 
   // Handle filter change (Task 7.1)
   const handleFilterChange = (category, value) => {
-    setFilters(prevFilters => toggleFilter(prevFilters, category, value));
+    // Single-select categories: races, genders, classes
+    const singleSelectCategories = ['races', 'genders', 'classes'];
+    const isSingleSelect = singleSelectCategories.includes(category);
+    
+    const newFilters = toggleFilter(filters, category, value, isSingleSelect);
+    setFilters(newFilters);
+    // Trigger fetch immediately when filter changes
+    fetchPosts(newFilters);
   };
 
   // Handle clear all filters (Task 7.1)
   const handleClearAll = () => {
-    setFilters(clearAllFilters());
+    const clearedFilters = clearAllFilters();
+    setFilters(clearedFilters);
+    setPosts([]); // Clear results when clearing filters
   };
 
   // Handle remove individual filter (Task 7.1)
   const handleRemoveFilter = (category, value) => {
-    setFilters(prevFilters => removeFilter(prevFilters, category, value));
+    const newFilters = removeFilter(filters, category, value);
+    setFilters(newFilters);
+    // Trigger fetch immediately when removing a filter
+    fetchPosts(newFilters);
   };
 
   // Toggle mobile filter panel (Task 7.1)
@@ -206,11 +206,13 @@ export default function StylesPage() {
   const handleSearch = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    setSearchParams({
+    const newSearchParams = {
       query: formData.get('query') || '',
-      author: formData.get('author') || '',
-      tag: formData.get('tag') || '',
-    });
+      author: formData.get('author') || ''
+    };
+    setSearchParams(newSearchParams);
+    // Trigger fetch immediately when search is submitted
+    fetchPosts(filters);
   };
 
   // Calculate total active filters for mobile toggle
@@ -247,14 +249,6 @@ export default function StylesPage() {
                   type="text"
                   name="author"
                   placeholder="Filter by author..."
-                  className={styles.searchInput}
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <input
-                  type="text"
-                  name="tag"
-                  placeholder="Filter by tag..."
                   className={styles.searchInput}
                 />
               </div>
@@ -315,12 +309,20 @@ export default function StylesPage() {
           ) : (
             <div className={styles.noResults}>
               <div className={styles.noResultsIcon}>⚔</div>
-              <h3 className={styles.noResultsTitle}>No Styles Found</h3>
+              <h3 className={styles.noResultsTitle}>
+                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
+                  ? 'No Styles Found'
+                  : 'Select Filters to Search'}
+              </h3>
               <p className={styles.noResultsMessage}>
-                No posts match your current filter selection.
+                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
+                  ? 'No posts match your current filter selection.'
+                  : 'Use the filters above to find Guild Wars 2 fashion styles.'}
               </p>
               <p className={styles.noResultsSuggestion}>
-                Try adjusting your filters or clearing all filters to see more results.
+                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
+                  ? 'Try adjusting your filters or clearing all filters to see more results.'
+                  : 'Select race, gender, armor weight, class, or other filters to get started.'}
               </p>
             </div>
           )}

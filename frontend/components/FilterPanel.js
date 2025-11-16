@@ -66,6 +66,7 @@ const FilterPanel = ({ filters, onFilterChange, onClearAll, isOpen, onToggle }) 
             options={FILTER_OPTIONS.races}
             activeFilters={filters?.races || []}
             onToggle={(value) => onFilterChange('races', value)}
+            singleSelect={true}
           />
 
           <FilterCategory
@@ -73,20 +74,15 @@ const FilterPanel = ({ filters, onFilterChange, onClearAll, isOpen, onToggle }) 
             options={FILTER_OPTIONS.genders}
             activeFilters={filters?.genders || []}
             onToggle={(value) => onFilterChange('genders', value)}
+            singleSelect={true}
           />
 
           <FilterCategory
-            title={FILTER_CATEGORIES.weights}
-            options={FILTER_OPTIONS.weights}
-            activeFilters={filters?.weights || []}
-            onToggle={(value) => onFilterChange('weights', value)}
-          />
-
-          <FilterCategory
-            title={FILTER_CATEGORIES.sources}
-            options={FILTER_OPTIONS.sources}
-            activeFilters={filters?.sources || []}
-            onToggle={(value) => onFilterChange('sources', value)}
+            title={FILTER_CATEGORIES.classes}
+            options={FILTER_OPTIONS.classes}
+            activeFilters={filters?.classes || []}
+            onToggle={(value) => onFilterChange('classes', value)}
+            singleSelect={true}
           />
 
           <FilterCategory
@@ -94,6 +90,13 @@ const FilterPanel = ({ filters, onFilterChange, onClearAll, isOpen, onToggle }) 
             options={FILTER_OPTIONS.colors}
             activeFilters={filters?.colors || []}
             onToggle={(value) => onFilterChange('colors', value)}
+          />
+
+          <FilterCategory
+            title={FILTER_CATEGORIES.sources}
+            options={FILTER_OPTIONS.sources}
+            activeFilters={filters?.sources || []}
+            onToggle={(value) => onFilterChange('sources', value)}
           />
         </div>
       </div>
