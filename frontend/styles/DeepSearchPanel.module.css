@@ -1,8 +1,8 @@
 .deepSearchPanel {
-  background: linear-gradient(135deg, rgba(26, 31, 46, 0.95), rgba(36, 41, 56, 0.95));
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 12px;
-  margin-bottom: 2rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -89,6 +89,12 @@
   gap: 1rem;
 }
 
+.weaponSetGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 .inputGroup {
   display: flex;
   flex-direction: column;
@@ -120,6 +126,20 @@
 
 .input::placeholder {
   color: #6b7280;
+}
+
+.input.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(212, 175, 55, 0.15);
+}
+
+.disabledNote {
+  color: #9ca3af;
+  font-size: 0.75rem;
+  font-weight: normal;
+  margin-left: 0.5rem;
 }
 
 .actions {
@@ -174,6 +194,70 @@
   cursor: not-allowed;
 }
 
+/* Autocomplete Suggestions */
+.inputGroup {
+  position: relative;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(15, 20, 35, 0.98);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.suggestionItem {
+  padding: 0.75rem;
+  color: #e8e6e3;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.suggestionItem:last-child {
+  border-bottom: none;
+}
+
+.suggestionItem:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+.weaponType {
+  color: #9ca3af;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+}
+
+/* Scrollbar styling for suggestions */
+.suggestions::-webkit-scrollbar {
+  width: 8px;
+}
+
+.suggestions::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.4);
+  border-radius: 4px;
+}
+
+.suggestions::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6);
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .header {
@@ -192,6 +276,10 @@
     grid-template-columns: 1fr;
   }
 
+  .weaponSetGrid {
+    grid-template-columns: 1fr;
+  }
+
   .actions {
     flex-direction: column;
   }
@@ -199,5 +287,9 @@
   .searchButton,
   .clearButton {
     width: 100%;
+  }
+
+  .suggestions {
+    max-height: 200px;
   }
 }

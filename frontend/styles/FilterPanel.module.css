@@ -1,12 +1,10 @@
 /* FilterPanel Component Styles */
 
 .filterPanel {
-  background: linear-gradient(135deg, 
-    rgba(26, 31, 46, 0.95), 
-    rgba(36, 41, 56, 0.95));
-  border: 2px solid rgba(212, 175, 55, 0.3);
-  border-radius: 8px;
-  padding: 0.875rem 1.25rem;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 1.5rem 1.5rem;
   width: 100%;
 }
 
@@ -35,15 +33,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.625rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
   position: relative;
 }
 
 .filterPanelTitle {
   font-family: 'Cinzel', serif;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #d4af37;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -107,7 +105,7 @@
 .filterCategories {
   display: flex;
   flex-direction: column;
-  gap: 0.625rem;
+  gap: 1rem;
 }
 
 /* Overlay for mobile - Hidden on desktop */

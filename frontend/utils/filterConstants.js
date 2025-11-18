@@ -22,16 +22,6 @@ export const FILTER_OPTIONS = {
     "Green dyes",
     "Blue dyes",
     "Purple dyes"
-  ],
-  sources: [
-    "Lunar New Year",
-    "Super Adventure Box",
-    "Dragon Bash",
-    "Four Winds",
-    "Halloween",
-    "Loot",
-    "Gems Store",
-    "Trading Post"
   ]
 };
 
@@ -40,6 +30,5 @@ export const FILTER_CATEGORIES = {
   races: "Race",
   genders: "Gender",
   classes: "Class",
-  colors: "Dye Colors",
-  sources: "Source"
+  colors: "Dye Colors"
 };

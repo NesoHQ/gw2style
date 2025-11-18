@@ -7,7 +7,7 @@ import { FILTER_OPTIONS, FILTER_CATEGORIES } from '../utils/filterConstants';
  * FilterPanel Component
  * 
  * Container for all filter categories with a header and clear all functionality.
- * Displays filter categories for races, genders, weights, sources, and colors.
+ * Displays filter categories for races, genders, classes, and colors.
  * Supports mobile toggle behavior with slide-in animation.
  * 
  * @param {Object} filters - Current filter state object with arrays for each category
@@ -90,13 +90,6 @@ const FilterPanel = ({ filters, onFilterChange, onClearAll, isOpen, onToggle }) 
             options={FILTER_OPTIONS.colors}
             activeFilters={filters?.colors || []}
             onToggle={(value) => onFilterChange('colors', value)}
-          />
-
-          <FilterCategory
-            title={FILTER_CATEGORIES.sources}
-            options={FILTER_OPTIONS.sources}
-            activeFilters={filters?.sources || []}
-            onToggle={(value) => onFilterChange('sources', value)}
           />
         </div>
       </div>

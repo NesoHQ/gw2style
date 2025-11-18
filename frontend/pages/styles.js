@@ -32,8 +32,7 @@ export default function StylesPage() {
     races: [],
     genders: [],
     classes: [],
-    colors: [],
-    sources: []
+    colors: []
   });
   
   // Mobile filter panel state (Task 7.1)
@@ -42,6 +41,7 @@ export default function StylesPage() {
   // Deep search panel state
   const [isDeepSearchOpen, setIsDeepSearchOpen] = useState(false);
   const [skinTags, setSkinTags] = useState([]);
+  const [clearDeepSearch, setClearDeepSearch] = useState(0);
   
   // Debounce timer ref (Task 7.3)
   const debounceTimerRef = useRef(null);
@@ -193,14 +193,16 @@ export default function StylesPage() {
     
     const newFilters = toggleFilter(filters, category, value, isSingleSelect);
     setFilters(newFilters);
-    // Trigger fetch immediately when filter changes
-    fetchPosts(newFilters, skinTags);
+    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Handle clear all filters (Task 7.1)
   const handleClearAll = () => {
     const clearedFilters = clearAllFilters();
     setFilters(clearedFilters);
+    setSearchParams({ query: '', author: '' });
+    setSkinTags([]);
+    setClearDeepSearch(prev => prev + 1); // Trigger deep search clear
     setPosts([]); // Clear results when clearing filters
   };
 
@@ -208,8 +210,7 @@ export default function StylesPage() {
   const handleRemoveFilter = (category, value) => {
     const newFilters = removeFilter(filters, category, value);
     setFilters(newFilters);
-    // Trigger fetch immediately when removing a filter
-    fetchPosts(newFilters, skinTags);
+    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Toggle mobile filter panel (Task 7.1)
@@ -217,22 +218,22 @@ export default function StylesPage() {
     setIsFilterPanelOpen(prev => !prev);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const newSearchParams = {
-      query: formData.get('query') || '',
-      author: formData.get('author') || ''
-    };
-    setSearchParams(newSearchParams);
-    // Trigger fetch immediately when search is submitted
+  const handleSearch = () => {
+    // Trigger fetch with all current filters, search params, and skin tags
     fetchPosts(filters, skinTags);
+  };
+
+  const handleSearchInputChange = (field, value) => {
+    setSearchParams(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   // Handle deep search by skins
   const handleDeepSearch = (selectedSkins) => {
     setSkinTags(selectedSkins);
-    fetchPosts(filters, selectedSkins);
+    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Toggle deep search panel
@@ -258,57 +259,75 @@ export default function StylesPage() {
         </div>
 
         <main className={styles.main}>
-        <section className={styles.searchSection}>
-          <form onSubmit={handleSearch} className={styles.searchForm}>
+        {/* Unified Search Panel */}
+        <section className={styles.unifiedSearchPanel}>
+          {/* Search Inputs */}
+          <div className={styles.searchInputsSection}>
             <div className={styles.searchInputs}>
               <div className={styles.inputGroup}>
                 <input
                   type="text"
-                  name="query"
-                  placeholder="Search by title or description..."
+                  value={searchParams.query}
+                  onChange={(e) => handleSearchInputChange('query', e.target.value)}
+                  placeholder="Search by title..."
                   className={styles.searchInput}
                 />
               </div>
               <div className={styles.inputGroup}>
                 <input
                   type="text"
-                  name="author"
+                  value={searchParams.author}
+                  onChange={(e) => handleSearchInputChange('author', e.target.value)}
                   placeholder="Filter by author..."
                   className={styles.searchInput}
                 />
               </div>
-              <button type="submit" className={styles.searchButton}>
-                Search
-              </button>
             </div>
-          </form>
-        </section>
+          </div>
 
-        {/* Mobile Filter Toggle */}
-        <MobileFilterToggle
-          filterCount={totalActiveFilters}
-          isOpen={isFilterPanelOpen}
-          onClick={handleToggleFilterPanel}
-        />
-
-        {/* Filter Panel - Horizontal on top */}
-        <section className={styles.filterSection}>
-          <FilterPanel
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearAll={handleClearAll}
+          {/* Mobile Filter Toggle */}
+          <MobileFilterToggle
+            filterCount={totalActiveFilters}
             isOpen={isFilterPanelOpen}
-            onToggle={handleToggleFilterPanel}
+            onClick={handleToggleFilterPanel}
           />
-        </section>
 
-        {/* Deep Search Panel - Equipment Skins */}
-        <section className={styles.deepSearchSection}>
-          <DeepSearchPanel
-            onSearch={handleDeepSearch}
-            isOpen={isDeepSearchOpen}
-            onToggle={handleToggleDeepSearch}
-          />
+          {/* Filter Panel */}
+          <div className={styles.filterPanelWrapper}>
+            <FilterPanel
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onClearAll={handleClearAll}
+              isOpen={isFilterPanelOpen}
+              onToggle={handleToggleFilterPanel}
+            />
+          </div>
+
+          {/* Deep Search Panel */}
+          <div className={styles.deepSearchWrapper}>
+            <DeepSearchPanel
+              onSearch={handleDeepSearch}
+              isOpen={isDeepSearchOpen}
+              onToggle={handleToggleDeepSearch}
+              clearTrigger={clearDeepSearch}
+            />
+          </div>
+
+          {/* Search Button */}
+          <div className={styles.searchButtonSection}>
+            <button 
+              onClick={handleSearch}
+              className={styles.unifiedSearchButton}
+            >
+              🔍 Search & Apply Filters
+            </button>
+            <button
+              onClick={handleClearAll}
+              className={styles.clearAllButton}
+            >
+              Clear All
+            </button>
+          </div>
         </section>
 
         {/* Active Filters Bar */}

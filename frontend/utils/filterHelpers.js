@@ -25,8 +25,7 @@ export const decodeFiltersFromURL = (query) => {
     races: [],
     genders: [],
     classes: [],
-    colors: [],
-    sources: []
+    colors: []
   };
   
   Object.keys(filters).forEach(category => {
@@ -127,8 +126,7 @@ export const clearAllFilters = () => {
     races: [],
     genders: [],
     classes: [],
-    colors: [],
-    sources: []
+    colors: []
   };
 };
 
