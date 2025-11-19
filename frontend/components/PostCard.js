@@ -1,23 +1,18 @@
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
+import { useLike } from '../hooks/useLike';
 
 export default function PostCard({ post }) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(post.likes_count || 0);
+  const { isLiked, likesCount, isLoading, toggleLike, canLike } = useLike(
+    post.id,
+    post.likes_count || 0
+  );
 
   const handleLike = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
-    if (isLiked) {
-      setLikesCount(likesCount - 1);
-      setIsLiked(false);
-    } else {
-      setLikesCount(likesCount + 1);
-      setIsLiked(true);
-    }
+    toggleLike();
   };
 
   const formatNumber = (num) => {
@@ -53,12 +48,13 @@ export default function PostCard({ post }) {
                 {formatNumber(likesCount)}
               </span>
               <button
-                className={`${styles.likeButton} ${isLiked ? styles.liked : ''}`}
+                className={`${styles.likeButton} ${isLiked ? styles.liked : ''} ${isLoading ? styles.loading : ''}`}
                 onClick={handleLike}
+                disabled={isLoading}
                 aria-label={isLiked ? 'Unlike' : 'Like'}
-                title={isLiked ? 'Unlike' : 'Like'}
+                title={canLike ? (isLiked ? 'Unlike' : 'Like') : 'Login to like'}
               >
-                ❤️
+                {isLoading ? '⏳' : '❤️'}
               </button>
             </div>
           </div>

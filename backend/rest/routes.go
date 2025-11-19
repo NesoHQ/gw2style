@@ -59,4 +59,38 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			server.middlewares.AuthenticateJWT,
 		),
 	)
+
+	// Like endpoints - require authentication
+	mux.Handle(
+		"POST /api/v1/posts/{id}/like",
+		manager.With(
+			http.HandlerFunc(server.handlers.LikePost),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
+	mux.Handle(
+		"DELETE /api/v1/posts/{id}/like",
+		manager.With(
+			http.HandlerFunc(server.handlers.UnlikePost),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
+	mux.Handle(
+		"GET /api/v1/posts/{id}/like",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetLikeStatus),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
+	// Get all liked posts for a user (for localStorage sync)
+	mux.Handle(
+		"GET /api/v1/user/liked-posts",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetUserLikedPosts),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
 }

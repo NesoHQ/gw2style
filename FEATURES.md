@@ -152,7 +152,7 @@ Help wanted:
 
 ## Feature: Homepage Feed (Latest Posts with Pagination)
 
-**Status:** 📅 Planned (v0.1)
+**Status:**  ✅ Implemented (v0.1)
 
 ### Problem Solved
 
@@ -178,9 +178,9 @@ Displays latest posts with infinite scrolling. Posts load dynamically as users s
 
 ### Acceptance Criteria
 
-- [ ] Posts load in correct chronological order (newest → oldest)
-- [ ] Pagination works smoothly without duplicates
-- [ ] Loading indicators display during fetch operations
+- [✅] Posts load in correct chronological order (newest → oldest)
+- [✅] Pagination works smoothly without duplicates
+- [✅] Loading indicators display during fetch operations
 
 ### Roadmap
 
@@ -199,7 +199,7 @@ Help wanted:
 
 ## Feature: Tag Search & Filtering
 
-**Status:** 📅 Planned (v0.2)
+**Status:**  ✅ Implemented (v0.2)
 
 ### Problem Solved
 
@@ -225,10 +225,9 @@ Tag-based filtering system allowing users to discover posts by categories like "
 
 ### Acceptance Criteria
 
-- [ ] Tag filters return accurate matching posts
-- [ ] Multiple tags can be combined (AND/OR logic)
-- [ ] Clearing filters resets to full feed
-- [ ] Filter state persists during session
+- [✅] Tag filters return accurate matching posts
+- [✅] Multiple tags can be combined
+- [✅] Clearing filters resets to full feed
 
 ### Roadmap
 
@@ -249,7 +248,7 @@ Help wanted:
 
 ## Feature: Likes / Reactions System
 
-**Status:** 📅 Planned (v0.2)
+**Status:** ✅ Implemented
 
 ### Problem Solved
 
@@ -275,10 +274,10 @@ Simple like/reaction system tracking engagement per post with one like per user.
 
 ### Acceptance Criteria
 
-- [ ] Likes persist per user across sessions
-- [ ] Each user can like/unlike once per post
-- [ ] Like count updates in real-time
-- [ ] Unlike functionality available
+- [✅] Likes persist per user across sessions
+- [✅] Each user can like/unlike any post
+- [✅] Like count updates in real-time
+- [✅] Unlike functionality available
 
 ### Roadmap
 
