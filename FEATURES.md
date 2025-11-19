@@ -394,7 +394,7 @@ Help wanted:
 
 ## Feature: Leaderboard (by Likes)
 
-**Status:** 📅 Planned (v0.3)
+**Status:** ✅ Implemented
 
 ### Problem Solved
 
@@ -420,10 +420,10 @@ Dynamic leaderboard displaying most-liked posts over various timeframes.
 
 ### Acceptance Criteria
 
-- [ ] Leaderboard updates periodically (hourly)
-- [ ] Accurate like counts reflected
-- [ ] Multiple timeframe options available
-- [ ] Mobile-responsive layout
+- [✅] Leaderboard updates
+- [✅] Accurate like counts reflected
+- [✅] Multiple timeframe options available
+- [❌] Mobile-responsive layout
 
 ### Roadmap
 

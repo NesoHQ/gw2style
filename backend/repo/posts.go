@@ -192,9 +192,11 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 	var timeCondition string
 	switch timeframe {
 	case "week":
-		timeCondition = "AND created_at >= NOW() - INTERVAL '7 days'"
+		// Start of current week (Monday)
+		timeCondition = "AND created_at >= DATE_TRUNC('week', NOW())"
 	case "month":
-		timeCondition = "AND created_at >= NOW() - INTERVAL '30 days'"
+		// Start of current month
+		timeCondition = "AND created_at >= DATE_TRUNC('month', NOW())"
 	default:
 		timeCondition = ""
 	}

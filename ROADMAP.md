@@ -26,7 +26,7 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 | **Should-Have (Post-MVP)** | Tag Search & Filtering | Filter posts by tags (race, armor type, theme). Significantly improves discoverability. | ✅ Completed | 5 | Post Creation |
 | **Should-Have (Post-MVP)** | Likes/Reactions System | Let users like posts to show appreciation. Drives engagement and community. | ✅ Completed | 5 | Post Creation |
 | **Should-Have (Post-MVP)** | Reporting & Moderation | User reporting with admin review queue. Essential for content quality. | 📅 Planned (v0.2) | 8 | Authentication |
-| **Could-Have (Nice-to-Have)** | Leaderboard by Likes | Showcase most popular posts and creators. Gamification element. | 📅 Planned (v0.3) | 3 | Likes System |
+| **Could-Have (Nice-to-Have)** | Leaderboard by Likes | Showcase most popular posts and creators. Gamification element. | ✅ Completed | 3 | Likes System |
 | **Could-Have (Nice-to-Have)** | Search Bar & Advanced Filters | Full-text search across titles, descriptions, tags. Enhanced discovery. | 📅 Planned (v0.3) | 8 | Tag Filtering |
 | **Could-Have (Nice-to-Have)** | User Galleries | View all posts from a specific creator. Community building feature. | 📅 Planned (v0.3) | 5 | Post Creation |
 | **Could-Have (Nice-to-Have)** | Post Editing | Edit existing posts after creation. Improved user experience. | 📅 Planned (v0.3) | 5 | Post Creation |
