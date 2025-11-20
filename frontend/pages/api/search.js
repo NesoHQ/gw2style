@@ -21,13 +21,15 @@ export default async function handler(req, res) {
   try {
     // Get the API URL from environment variable
     const apiUrl = 'http://localhost:8080';
-    const { q, tag, author } = req.query;
+    const { q, tag, author, limit, page } = req.query;
 
     // Build search URL
     const searchParams = new URLSearchParams();
     if (q) searchParams.append('q', q);
     if (tag) searchParams.append('tag', tag);
     if (author) searchParams.append('author', author);
+    if (limit) searchParams.append('limit', limit);
+    if (page) searchParams.append('page', page);
 
     // Call the backend API
     const response = await fetch(
