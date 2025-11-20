@@ -262,6 +262,26 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 	return posts, nil
 }
 
+// DeletePost soft deletes a post by setting published to false
+func (r *PostRepository) DeletePost(ctx context.Context, postID string) error {
+	query := `UPDATE posts SET published = false WHERE id = $1`
+	result, err := r.db.ExecContext(ctx, query, postID)
+	if err != nil {
+		return fmt.Errorf("error deleting post: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("error checking rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("post not found")
+	}
+
+	return nil
+}
+
 func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, int, error) {
 	queryArgs := []interface{}{}
 	conditions := []string{}

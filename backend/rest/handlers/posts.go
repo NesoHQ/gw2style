@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/NesoHQ/gw2style/repo"
+	"github.com/NesoHQ/gw2style/rest/utils"
 )
 
 func (h *Handlers) GetPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -270,6 +271,85 @@ func (h *Handlers) SearchPostsHandler(w http.ResponseWriter, r *http.Request) {
 			"total":       totalCount,
 			"total_pages": totalPages,
 		},
+	}
+
+	// Encode response
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		h.sendError(w, http.StatusInternalServerError, "Failed to encode response")
+		return
+	}
+}
+
+func (h *Handlers) DeletePostHandler(w http.ResponseWriter, r *http.Request) {
+	// Only allow DELETE method
+	if r.Method != http.MethodDelete {
+		h.sendError(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
+
+	// Check if postRepo is initialized
+	if h.postRepo == nil {
+		slog.Error("Post repository not initialized")
+		h.sendError(w, http.StatusInternalServerError, "Post repository not initialized")
+		return
+	}
+
+	// Get post ID from URL path
+	postID := r.URL.Path[len("/api/v1/posts/"):]
+	if postID == "" {
+		h.sendError(w, http.StatusBadRequest, "Post ID is required")
+		return
+	}
+
+	// Get authenticated user from context (set by JWT middleware)
+	user, ok := r.Context().Value(utils.UserContextKey).(*utils.User)
+	if !ok || user == nil {
+		h.sendError(w, http.StatusUnauthorized, "user not authenticated")
+		return
+	}
+	username := user.Name
+
+	// Get the post to verify ownership
+	post, err := h.postRepo.GetPostByID(r.Context(), postID)
+	if err != nil {
+		slog.Error("Failed to fetch post", "error", err.Error())
+		h.sendError(w, http.StatusInternalServerError, "Failed to fetch post")
+		return
+	}
+
+	if post == nil {
+		h.sendError(w, http.StatusNotFound, "Post not found")
+		return
+	}
+
+	// Verify that the authenticated user is the author
+	if post.AuthorName != username {
+		slog.Warn("Unauthorized delete attempt",
+			"username", username,
+			"author", post.AuthorName,
+			"postID", postID,
+		)
+		h.sendError(w, http.StatusForbidden, "You can only delete your own posts")
+		return
+	}
+
+	// Soft delete the post (set published to false)
+	err = h.postRepo.DeletePost(r.Context(), postID)
+	if err != nil {
+		slog.Error("Failed to delete post", "error", err.Error())
+		h.sendError(w, http.StatusInternalServerError, "Failed to delete post")
+		return
+	}
+
+	slog.Info("Post deleted successfully", "postID", postID, "author", username)
+
+	// Set content type
+	w.Header().Set("Content-Type", "application/json")
+
+	// Create response structure
+	response := map[string]interface{}{
+		"success": true,
+		"message": "Post deleted successfully",
 	}
 
 	// Encode response

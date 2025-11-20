@@ -60,6 +60,14 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 		),
 	)
 
+	mux.Handle(
+		"DELETE /api/v1/posts/{id}",
+		manager.With(
+			http.HandlerFunc(server.handlers.DeletePostHandler),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
 	// Like endpoints - require authentication
 	mux.Handle(
 		"POST /api/v1/posts/{id}/like",

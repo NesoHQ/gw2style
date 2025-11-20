@@ -21,14 +21,13 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 | **Must-Have (MVP Core)** | GW2 API Authentication | Login system using Guild Wars 2 API keys. Enables user identification without passwords. | ✅ Completed | 5 | None |
 | **Must-Have (MVP Core)** | Post Creation System | Form to create posts with title, description, armor info, tags, and image links. Core feature for content generation. | ✅ Completed | 8 | Authentication |
 | **Must-Have (MVP Core)** | Homepage Feed with Pagination | Display latest posts with infinite scrolling. Essential for content discovery. | ✅ Completed | 5 | Post Creation |
-| **Must-Have (MVP Core)** | Post Deletion | Allow users to delete their own posts. Required for user control over content. | 📅 Planned (v0.1) | 3 | Authentication, Post Creation |
+| **Must-Have (MVP Core)** | Post Deletion | Allow users to delete their own posts. Required for user control over content. | ✅ Completed | 3 | Authentication, Post Creation |
 | **Must-Have (MVP Core)** | Basic UI/UX | Responsive layout for desktop and mobile. Clean, accessible interface. | 📅 Planned (v0.1) | 8 | None |
 | **Should-Have (Post-MVP)** | Tag Search & Filtering | Filter posts by tags (race, armor type, theme). Significantly improves discoverability. | ✅ Completed | 5 | Post Creation |
 | **Should-Have (Post-MVP)** | Likes/Reactions System | Let users like posts to show appreciation. Drives engagement and community. | ✅ Completed | 5 | Post Creation |
 | **Should-Have (Post-MVP)** | Reporting & Moderation | User reporting with admin review queue. Essential for content quality. | 📅 Planned (v0.2) | 8 | Authentication |
 | **Could-Have (Nice-to-Have)** | Leaderboard by Likes | Showcase most popular posts and creators. Gamification element. | ✅ Completed | 3 | Likes System |
-| **Could-Have (Nice-to-Have)** | Search Bar & Advanced Filters | Full-text search across titles, descriptions, tags. Enhanced discovery. | 📅 Planned (v0.3) | 8 | Tag Filtering |
-| **Could-Have (Nice-to-Have)** | User Galleries | View all posts from a specific creator. Community building feature. | 📅 Planned (v0.3) | 5 | Post Creation |
+| **Could-Have (Nice-to-Have)** | User Galleries | View all posts from a specific creator. Community building feature. | ✅ Completed | 5 | Post Creation |
 | **Could-Have (Nice-to-Have)** | Post Editing | Edit existing posts after creation. Improved user experience. | 📅 Planned (v0.3) | 5 | Post Creation |
 | **Could-Have (Nice-to-Have)** | Admin Dashboard | Comprehensive moderation tools and analytics. Too complex for initial launch. | 📅 Future (v0.4+) | 13 | Reporting System |
 | **Won't-Have (Out of Scope)** | Comments System | User comments on posts. Adds complexity and moderation overhead. | ❌ Not Planned | 13 | Authentication |

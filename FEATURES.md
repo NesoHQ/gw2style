@@ -14,7 +14,6 @@ This document outlines all features in GW2STYLE, including implementation detail
 - [Post Deletion](#feature-post-deletion)
 - [Reporting & Moderation](#feature-reporting--moderation)
 - [Leaderboard](#feature-leaderboard-by-likes)
-- [Search Bar & Advanced Filters](#feature-search-bar--advanced-filters)
 - [Admin Dashboard](#feature-admin-dashboard-for-moderation--stats)
 
 ---
@@ -133,7 +132,7 @@ Provides a comprehensive post creation form with fields for title, description, 
 - [✅] Invalid/incomplete data rejected with clear error messages
 - [✅] Homepage displays posts in newest-first order
 - [✅] Individual post pages show all details
-- [❌] Like counting works correctly
+- [✅] Like counting works correctly
 - [✅] Images display in gallery format
 
 ### Roadmap
@@ -298,7 +297,7 @@ Help wanted:
 
 ## Feature: Post Deletion
 
-**Status:** 📅 Planned (v0.2)
+**Status:** ✅ Implemented
 
 ### Problem Solved
 
@@ -323,9 +322,9 @@ Authenticated users can delete their own posts with ownership verification.
 
 ### Acceptance Criteria
 
-- [ ] Users can only delete their own posts
-- [ ] Deleted posts disappear from public feed immediately
-- [ ] Confirmation dialog prevents accidental deletion
+- [✅] Users can only delete their own posts
+- [✅] Deleted posts disappear from public feed immediately
+- [✅] Confirmation dialog prevents accidental deletion
 
 ### Roadmap
 
@@ -439,56 +438,6 @@ Help wanted:
 - Leaderboard design and animations
 - Caching strategy optimization
 - Category filter implementation
-
----
-
-## Feature: Search Bar & Advanced Filters
-
-**Status:** 📅 Planned (v0.3+)
-
-### Problem Solved
-
-Users need powerful search capabilities beyond basic tag filtering.
-
-### Solution Overview
-
-Full-text search supporting keywords across titles, descriptions, and tags with real-time results.
-
-### User Flow
-
-1. User types query (e.g., "human light armor red")
-2. Backend parses and searches across relevant fields
-3. Results display dynamically in gallery
-4. Search history saved for quick access
-
-### Technical Implementation
-
-- **Backend:** PostgreSQL full-text search with ranking
-- **Database:** GIN index on searchable text fields
-- **Frontend:** Debounced search with autocomplete suggestions
-- **Performance:** Sub-200ms response time for common queries
-
-### Acceptance Criteria
-
-- [ ] Search returns relevant results by keyword or tag
-- [ ] Performance under 200ms for 95th percentile
-- [ ] Search suggestions based on popular queries
-- [ ] Typo tolerance and fuzzy matching
-
-### Roadmap
-
-- **Current:** Future feature (v0.3+)
-- **Next Steps:**
-  - Search history and saved searches
-  - Advanced filters (date range, creator)
-
-### Contributing
-
-Help wanted:
-
-- PostgreSQL full-text search optimization
-- Search UI/UX design
-- Autocomplete implementation
 
 ---
 
