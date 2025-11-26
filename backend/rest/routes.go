@@ -101,4 +101,30 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 			server.middlewares.AuthenticateJWT,
 		),
 	)
+
+	// Admin endpoints (bot-authenticated)
+	mux.Handle(
+		"POST /api/v1/admin/posts/{id}/publish",
+		manager.With(
+			http.HandlerFunc(server.handlers.PublishPostHandler),
+			server.middlewares.AuthenticateBot,
+		),
+	)
+
+	mux.Handle(
+		"POST /api/v1/admin/posts/{id}/reject",
+		manager.With(
+			http.HandlerFunc(server.handlers.RejectPostHandler),
+			server.middlewares.AuthenticateBot,
+		),
+	)
+
+	// Report endpoint (user-authenticated)
+	mux.Handle(
+		"POST /api/v1/posts/{id}/report",
+		manager.With(
+			http.HandlerFunc(server.handlers.CreateReportHandler),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
 }

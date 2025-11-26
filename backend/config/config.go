@@ -20,7 +20,10 @@ type Config struct {
 	HttpPort    int    `mapstructure:"HTTP_PORT"                         validate:"required"`
 	// MigrationSource   string `mapstructure:"MIGRATION_SOURCE"                  validate:"required"`
 	JwtSecret         string `mapstructure:"JWT_SECRET"               validate:"required"`
-	DB   DBConfig
+	DiscordBotToken   string `mapstructure:"DISCORD_BOT_TOKEN"        validate:"required"`
+	DiscordWebhookURL string `mapstructure:"DISCORD_WEBHOOK_URL"      validate:"required"`
+	DiscordModChannel string `mapstructure:"DISCORD_MOD_CHANNEL_ID"   validate:"required"`
+	DB                DBConfig
 }
 
 var config *Config

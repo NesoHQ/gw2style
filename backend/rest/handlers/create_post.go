@@ -19,7 +19,6 @@ type CreatePostRequest struct {
 	Image5URL    string          `json:"image5Url"`
 	Equipments   json.RawMessage `json:"equipments"` // Will store GW2 equipment data
 	Tags         json.RawMessage `json:"tags"`       // Array of tags
-	Published    bool            `json:"published"`
 }
 
 func (h *Handlers) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +41,7 @@ func (h *Handlers) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Create post in database
+	// Create post in database (always unpublished, requires moderation)
 	post := &repo.Post{
 		Title:       req.Title,
 		Description: req.Description,
@@ -55,7 +54,7 @@ func (h *Handlers) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		Equipments:  req.Equipments,
 		AuthorName:  user.Name,
 		Tags:        req.Tags,
-		Published:   req.Published,
+		Published:   false, // All posts require moderation approval
 	}
 
 	createdPost, err := h.postRepo.Create(*post)
@@ -63,6 +62,15 @@ func (h *Handlers) CreatePostHandler(w http.ResponseWriter, r *http.Request) {
 		utils.SendError(w, http.StatusInternalServerError, "failed to create post", err)
 		return
 	}
+
+	// Send notification to Discord for moderation (async, don't block response)
+	go func() {
+		if err := h.SendPostToDiscord(createdPost); err != nil {
+			// Log error but don't fail the request
+			// TODO: Add proper logging
+			_ = err
+		}
+	}()
 
 	utils.SendData(w, http.StatusCreated, createdPost)
 }

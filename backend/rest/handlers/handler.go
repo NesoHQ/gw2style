@@ -12,18 +12,20 @@ import (
 )
 
 type Handlers struct {
-	cnf      *config.Config
-	DB       *sqlx.DB
-	repoUser repo.UserRepo
-	postRepo *repo.PostRepository
+	cnf            *config.Config
+	DB             *sqlx.DB
+	repoUser       repo.UserRepo
+	postRepo       *repo.PostRepository
+	moderationRepo *repo.ModerationRepository
 }
 
 func NewHandler(cnf *config.Config, db *sqlx.DB, userRepo repo.UserRepo) *Handlers {
 	return &Handlers{
-		cnf:      cnf,
-		DB:       db,
-		repoUser: userRepo,
-		postRepo: repo.NewPostRepository(db.DB),
+		cnf:            cnf,
+		DB:             db,
+		repoUser:       userRepo,
+		postRepo:       repo.NewPostRepository(db.DB),
+		moderationRepo: repo.NewModerationRepository(db.DB),
 	}
 }
 

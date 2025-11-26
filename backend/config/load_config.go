@@ -28,7 +28,10 @@ func loadConfig() error {
 		ServiceName: viper.GetString("SERVICE_NAME"),
 		HttpPort:    viper.GetInt("HTTP_PORT"),
 		// MigrationSource: viper.GetString("MIGRATION_SOURCE"),
-		JwtSecret:       viper.GetString("JWT_SECRET"),
+		JwtSecret:         viper.GetString("JWT_SECRET"),
+		DiscordBotToken:   viper.GetString("DISCORD_BOT_TOKEN"),
+		DiscordWebhookURL: viper.GetString("DISCORD_WEBHOOK_URL"),
+		DiscordModChannel: viper.GetString("DISCORD_MOD_CHANNEL_ID"),
 		DB: &DB{
 			DbHost:                 viper.GetString("DB_HOST"),
 			DbPort:                 viper.GetInt("DB_PORT"),
