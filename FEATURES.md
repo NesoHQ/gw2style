@@ -12,9 +12,9 @@ This document outlines all features in GW2STYLE, including implementation detail
 - [Tag Search & Filtering](#feature-tag-search--filtering)
 - [Likes / Reactions System](#feature-likes--reactions-system)
 - [Post Deletion](#feature-post-deletion)
-- [Reporting & Moderation](#feature-reporting--moderation)
 - [Leaderboard](#feature-leaderboard-by-likes)
-- [Admin Dashboard](#feature-admin-dashboard-for-moderation--stats)
+- [Discord-Based Moderation System](#feature-discord-based-moderation-system)
+- [Discord Bot Analytics & Commands](#feature-discord-bot-analytics--commands)
 
 ---
 
@@ -341,53 +341,88 @@ Help wanted:
 
 ---
 
-## Feature: Reporting & Moderation
+## Feature: Discord-Based Moderation System
 
 **Status:** 📅 Planned (v0.2)
 
 ### Problem Solved
 
-Platform needs community-driven content moderation to handle inappropriate posts.
+Platform needs efficient content moderation without the complexity of building a full admin dashboard. Traditional admin panels add development overhead and require moderators to context-switch between platforms.
 
 ### Solution Overview
 
-User reporting system with admin review queue for handling flags.
+Discord bot integration for post moderation. All posts start as unpublished and require moderator approval via Discord emoji reactions. This keeps moderation lightweight, community-integrated, and requires no additional frontend.
 
 ### User Flow
 
+**Post Submission:**
+1. User creates post via website
+2. Post saved as `published = false` in database
+3. Discord bot sends notification to private #mod-review channel with post details
+4. Moderators react with ✅ (approve), ❌ (reject), or 📝 (request changes)
+5. Bot calls backend API to update post status
+6. If approved, bot announces new post in public Discord channel
+
+**User Reporting (Optional):**
 1. User clicks "Report" button on problematic post
 2. Selects reason (NSFW, spam, off-topic, etc.)
-3. Report stored in database
-4. Admins review reports via dashboard
+3. Report sent to Discord moderation channel
+4. Moderators review and take action via emoji reactions
 
 ### Technical Implementation
 
-- **Backend:** Report submission and admin review endpoints
-- **Database:** `reports` table tracking `post_id`, `reporter`, `reason`, `status`
-- **Rate Limiting:** Prevents report spam
-- **Admin Tools:** Dashboard for report queue management
+- **Backend:**
+  - `/admin/publish` endpoint (bot-authenticated)
+  - `/admin/reject` endpoint (bot-authenticated)
+  - Optional `/reports/submit` for user reports
+  - Bot token validation middleware
+  - Moderator role verification
+
+- **Discord Bot:**
+  - Listens for new post webhooks
+  - Sends formatted messages to #mod-review
+  - Monitors emoji reactions from moderators
+  - Calls backend APIs based on reactions
+  - Announces approved posts to public channel
+
+- **Database:**
+  - `posts` table: `published` boolean field (default: false)
+  - Optional `reports` table for user-submitted reports
+  - Audit log for moderation actions
+
+- **Security:**
+  - Bot-only API endpoints with secure token
+  - Discord role verification (only moderators can react)
+  - Backend validates bot identity and moderator permissions
+  - No admin passwords or session management needed
 
 ### Acceptance Criteria
 
-- [ ] Reports logged with complete metadata
-- [ ] Rate limiting prevents abuse
-- [ ] Admins can resolve or dismiss reports
-- [ ] Resolved reports archived for transparency
+- [ ] New posts trigger Discord notifications
+- [ ] Only moderators with specific role can approve/reject
+- [ ] Emoji reactions correctly update post status
+- [ ] Approved posts appear on website immediately
+- [ ] Bot announces published posts to public channel
+- [ ] All moderation actions logged for transparency
+- [ ] Rate limiting prevents spam submissions
 
 ### Roadmap
 
 - **Current:** Planned for v0.2
 - **Next Steps:**
-  - Email/Discord notifications for admins
-  - Automated flagging for repeated offenders
+  - User reporting integration
+  - Automated flagging for repeated violations
+  - Moderation statistics dashboard (Discord bot command)
+  - Edit request workflow (📝 reaction)
 
 ### Contributing
 
 Help wanted:
 
-- Moderation UI design
-- Report filtering and sorting logic
-- Admin notification system
+- Discord bot development (Discord.js or discord.py)
+- Webhook integration design
+- Moderation workflow testing
+- Bot command features
 
 ---
 
@@ -441,55 +476,69 @@ Help wanted:
 
 ---
 
-## Feature: Admin Dashboard (for Moderation & Stats)
+## Feature: Discord Bot Analytics & Commands
 
 **Status:** 📅 Planned (v0.4+)
 
 ### Problem Solved
 
-Moderators need centralized tools to manage content, review reports, and monitor platform health.
+Moderators need quick access to platform statistics and moderation history without building a complex admin dashboard.
 
 ### Solution Overview
 
-Secure admin-only dashboard providing moderation tools, analytics, and content management.
+Discord bot commands provide on-demand analytics and moderation tools directly in Discord. This eliminates the need for a separate admin dashboard while keeping data accessible to the moderation team.
 
 ### User Flow
 
-1. Admin authenticates with secure credentials
-2. Accesses dashboard at `/admin`
-3. Reviews reports, views statistics, manages users
-4. Takes moderation actions (delete, warn, resolve)
-5. All actions logged for transparency
+1. Moderator types bot command in Discord (e.g., `/stats`, `/recent-posts`, `/user-history`)
+2. Bot queries backend API
+3. Bot responds with formatted statistics or data
+4. Moderators can take actions via follow-up commands or reactions
 
 ### Technical Implementation
 
-- **Backend:** Protected admin endpoints with role-based access
-- **Frontend:** Dedicated admin interface with data visualization
-- **Database:** Analytics queries and audit logging
-- **Security:** Restricted to verified admin accounts
+- **Discord Bot Commands:**
+  - `/stats` - Platform overview (total posts, users, likes)
+  - `/recent-posts` - Last 10 submitted posts with status
+  - `/user-posts <username>` - All posts by specific user
+  - `/modlog` - Recent moderation actions
+  - `/pending` - Count of posts awaiting approval
+
+- **Backend:**
+  - Bot-authenticated API endpoints for analytics
+  - Aggregation queries for statistics
+  - Audit log retrieval endpoints
+
+- **Security:**
+  - Commands restricted to moderator role
+  - Bot token authentication
+  - Rate limiting on analytics queries
 
 ### Acceptance Criteria
 
-- [ ] Admins can view and action all reports
-- [ ] Dashboard displays accurate metrics (posts, users, engagement)
-- [ ] Unauthorized users cannot access admin routes
-- [ ] All admin actions logged to audit trail
+- [ ] Bot commands return accurate real-time data
+- [ ] Only moderators can execute commands
+- [ ] Response times under 3 seconds
+- [ ] All queries logged for audit trail
+- [ ] Commands work in designated channels only
 
 ### Roadmap
 
 - **Current:** Planned for v0.4+
 - **Next Steps:**
-  - User management tools
-  - Analytics charts and graphs
+  - User management commands (ban, warn)
   - Bulk moderation actions
+  - Automated weekly statistics reports
+  - Integration with platform webhooks
 
 ### Contributing
 
 Help wanted:
 
-- Data visualization components (charts, graphs)
-- Admin route security hardening
-- Audit log interface design
+- Discord bot command design
+- Data visualization in Discord embeds
+- Performance optimization for analytics queries
+- Command permission system
 
 ---
 

@@ -25,11 +25,11 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 | **Must-Have (MVP Core)** | Basic UI/UX | Responsive layout for desktop and mobile. Clean, accessible interface. | 📅 Planned (v0.1) | 8 | None |
 | **Should-Have (Post-MVP)** | Tag Search & Filtering | Filter posts by tags (race, armor type, theme). Significantly improves discoverability. | ✅ Completed | 5 | Post Creation |
 | **Should-Have (Post-MVP)** | Likes/Reactions System | Let users like posts to show appreciation. Drives engagement and community. | ✅ Completed | 5 | Post Creation |
-| **Should-Have (Post-MVP)** | Reporting & Moderation | User reporting with admin review queue. Essential for content quality. | 📅 Planned (v0.2) | 8 | Authentication |
+| **Should-Have (Post-MVP)** | Discord-Based Moderation | Discord bot for post approval/rejection via emoji reactions. Lightweight alternative to admin dashboard. | 📅 Planned (v0.2) | 8 | Authentication, Discord Bot |
 | **Could-Have (Nice-to-Have)** | Leaderboard by Likes | Showcase most popular posts and creators. Gamification element. | ✅ Completed | 3 | Likes System |
 | **Could-Have (Nice-to-Have)** | User Galleries | View all posts from a specific creator. Community building feature. | ✅ Completed | 5 | Post Creation |
 | **Could-Have (Nice-to-Have)** | Post Editing | Edit existing posts after creation. Improved user experience. | 📅 Planned (v0.3) | 5 | Post Creation |
-| **Could-Have (Nice-to-Have)** | Admin Dashboard | Comprehensive moderation tools and analytics. Too complex for initial launch. | 📅 Future (v0.4+) | 13 | Reporting System |
+| **Could-Have (Nice-to-Have)** | Discord Bot Analytics | Bot commands for platform statistics and moderation history. Replaces traditional admin dashboard. | 📅 Future (v0.4+) | 8 | Discord Moderation System |
 | **Won't-Have (Out of Scope)** | Comments System | User comments on posts. Adds complexity and moderation overhead. | ❌ Not Planned | 13 | Authentication |
 | **Won't-Have (Out of Scope)** | Direct Image Uploads | Self-hosted image storage. Cost and infrastructure complexity too high. | ❌ Not Planned | 21 | N/A |
 
@@ -95,7 +95,8 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 **Features:**
 - 📅 Tag search & filtering system
 - 📅 Likes/reactions on posts
-- 📅 User reporting and basic moderation
+- 📅 Discord bot for post moderation (approve/reject workflow)
+- 📅 User reporting integration with Discord
 - 📅 Improved post editor with preview
 - 📅 User profile pages (lightweight galleries)
 
@@ -141,10 +142,10 @@ Use this table to triage features. Focus on **Must-Haves** for MVP launch.
 **Goal:** Build robust moderation tools and scale infrastructure.
 
 **Features:**
-- Admin dashboard with full moderation suite
-- Automated content flagging
-- User management tools
-- Advanced analytics and insights
+- Discord bot analytics commands (`/stats`, `/modlog`, etc.)
+- Automated content flagging via Discord alerts
+- User management via Discord bot commands
+- Advanced analytics through bot queries
 - API webhooks for third-party integrations
 - Mobile app (possible)
 
