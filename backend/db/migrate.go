@@ -13,12 +13,16 @@ func MigrateDB(db *sqlx.DB, dir string) error {
 		Dir: dir,
 	}
 
-	_, err := migrate.Exec(db.DB, "postgres", migrations, migrate.Up)
+	n, err := migrate.Exec(db.DB, "postgres", migrations, migrate.Up)
 	if err != nil {
 		return err
 	}
 
-	slog.Info("Successfully migrated database")
+	if n > 0 {
+		slog.Info("Successfully applied migrations", "count", n)
+	} else {
+		slog.Info("No new migrations to apply")
+	}
 
 	return nil
 }

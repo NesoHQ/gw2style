@@ -18,7 +18,7 @@ func Serve() {
 	cnf := config.GetConfig()
 
 	DB, err := db.GetDbConnection(cnf.DB)
-	
+
 	if err != nil {
 		slog.Error("Failed to connect to database:", logger.Extra(map[string]any{
 			"error": err.Error(),
@@ -27,6 +27,15 @@ func Serve() {
 		os.Exit(1)
 	}
 	defer db.CloseDB(DB)
+
+	err = db.MigrateDB(DB, cnf.MigrationSource)
+	if err != nil {
+		slog.Error("Failed to migrate database:", logger.Extra(map[string]any{
+			"error": err.Error(),
+		}))
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	userRepo := repo.NewUserRepo(DB)
 

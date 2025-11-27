@@ -20,11 +20,6 @@
 -- DYE COLOR TAGS
 -- Gray dyes, Brown dyes, Red dyes, Orange dyes, Yellow dyes, Green dyes, Blue dyes, Purple dyes
 
--- SOURCE TAGS
--- Lunar New Year, Super Adventure Box, Dragon Bash, Four Winds, Halloween
--- Loot, Gems Store, Trading Post
--- (More sources can be added as needed)
-
 -- ARMOR SKIN TAGS
 -- Specific armor skin names can be added as tags (e.g., "Carapace Armor", "Bladed Armor")
 

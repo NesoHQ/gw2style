@@ -18,7 +18,7 @@ type Config struct {
 	Mode        Mode   `mapstructure:"MODE"                              validate:"required"`
 	ServiceName string `mapstructure:"SERVICE_NAME"                      validate:"required"`
 	HttpPort    int    `mapstructure:"HTTP_PORT"                         validate:"required"`
-	// MigrationSource   string `mapstructure:"MIGRATION_SOURCE"                  validate:"required"`
+	MigrationSource   string `mapstructure:"MIGRATION_SOURCE"                  validate:"required"`
 	JwtSecret         string `mapstructure:"JWT_SECRET"               validate:"required"`
 	DiscordBotToken   string `mapstructure:"DISCORD_BOT_TOKEN"        validate:"required"`
 	DiscordWebhookURL string `mapstructure:"DISCORD_WEBHOOK_URL"      validate:"required"`
