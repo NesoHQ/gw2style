@@ -188,7 +188,7 @@ func (r *PostRepository) GetPostByID(ctx context.Context, id string) (*Post, err
 	return &post, nil
 }
 
-func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, limit int) ([]Post, error) {
+func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, limit int) ([]PostSummary, error) {
 	var timeCondition string
 	switch timeframe {
 	case "week":
@@ -205,19 +205,9 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 		SELECT 
 			CAST(id AS TEXT),
 			COALESCE(title, '') as title,
-			COALESCE(description, '') as description,
 			COALESCE(thumbnail_url, '') as thumbnail,
-			COALESCE(image1_url, '') as image1,
-			COALESCE(image2_url, '') as image2,
-			COALESCE(image3_url, '') as image3,
-			COALESCE(image4_url, '') as image4,
-			COALESCE(image5_url, '') as image5,
-			equipments,
 			COALESCE(author_name, '') as author_name,
-			COALESCE(tags, '[]'::jsonb) as tags,
-			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
-			COALESCE(likes_count, 0) as likes_count,
-			COALESCE(published, false) as published
+			COALESCE(likes_count, 0) as likes_count
 		FROM posts
 		WHERE published = true %s
 		ORDER BY likes_count DESC
@@ -229,25 +219,15 @@ func (r *PostRepository) GetPopularPosts(ctx context.Context, timeframe string, 
 	}
 	defer rows.Close()
 
-	var posts []Post
+	var posts []PostSummary
 	for rows.Next() {
-		var post Post
+		var post PostSummary
 		err := rows.Scan(
 			&post.ID,
 			&post.Title,
-			&post.Description,
 			&post.Thumbnail,
-			&post.Image1,
-			&post.Image2,
-			&post.Image3,
-			&post.Image4,
-			&post.Image5,
-			&post.Equipments,
 			&post.AuthorName,
-			&post.Tags,
-			&post.CreatedAt,
 			&post.LikesCount,
-			&post.Published,
 		)
 		if err != nil {
 			return nil, err
@@ -282,7 +262,7 @@ func (r *PostRepository) DeletePost(ctx context.Context, postID string) error {
 	return nil
 }
 
-func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]Post, int, error) {
+func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) ([]PostSummary, int, error) {
 	queryArgs := []interface{}{}
 	conditions := []string{}
 
@@ -327,19 +307,9 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 		SELECT 
 			CAST(id AS TEXT),
 			COALESCE(title, '') as title,
-			COALESCE(description, '') as description,
 			COALESCE(thumbnail_url, '') as thumbnail,
-			COALESCE(image1_url, '') as image1,
-			COALESCE(image2_url, '') as image2,
-			COALESCE(image3_url, '') as image3,
-			COALESCE(image4_url, '') as image4,
-			COALESCE(image5_url, '') as image5,
-			equipments,
 			COALESCE(author_name, '') as author_name,
-			COALESCE(tags, '[]'::jsonb) as tags,
-			to_char(COALESCE(created_at, NOW()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
-			COALESCE(likes_count, 0) as likes_count,
-			COALESCE(published, false) as published
+			COALESCE(likes_count, 0) as likes_count
 		FROM posts`
 
 	query := baseQuery + " " + whereClause + " ORDER BY created_at DESC"
@@ -356,25 +326,15 @@ func (r *PostRepository) SearchPosts(ctx context.Context, params SearchParams) (
 	}
 	defer rows.Close()
 
-	var posts []Post
+	var posts []PostSummary
 	for rows.Next() {
-		var post Post
+		var post PostSummary
 		err := rows.Scan(
 			&post.ID,
 			&post.Title,
-			&post.Description,
 			&post.Thumbnail,
-			&post.Image1,
-			&post.Image2,
-			&post.Image3,
-			&post.Image4,
-			&post.Image5,
-			&post.Equipments,
 			&post.AuthorName,
-			&post.Tags,
-			&post.CreatedAt,
 			&post.LikesCount,
-			&post.Published,
 		)
 		if err != nil {
 			return nil, 0, err
