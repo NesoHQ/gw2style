@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [apiKey, setApiKey] = useState('');
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showApiKey, setShowApiKey] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -237,7 +238,7 @@ export default function LoginPage() {
             opacity: 0.6,
           }}>◆</div>
 
-          <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
+          <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }} autoComplete="off">
             <div style={{ marginBottom: '1.5rem' }}>
               <label 
                 htmlFor="apiKey"
@@ -254,35 +255,77 @@ export default function LoginPage() {
               >
                 Guild Wars 2 API Key
               </label>
-              <input
-                id="apiKey"
-                type="text"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                required
-                placeholder="Enter your GW2 API key"
-                style={{
-                  width: '100%',
-                  padding: '0.875rem 1rem',
-                  background: 'rgba(26, 31, 46, 0.6)',
-                  border: '2px solid rgba(212, 175, 55, 0.2)',
-                  borderRadius: '6px',
-                  color: '#e8e6e3',
-                  fontSize: '1rem',
-                  fontFamily: "'Lato', 'Inter', sans-serif",
-                  transition: 'all 0.3s ease',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#d4af37';
-                  e.target.style.background = 'rgba(26, 31, 46, 0.8)';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1), 0 0 15px rgba(212, 175, 55, 0.2)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(212, 175, 55, 0.2)';
-                  e.target.style.background = 'rgba(26, 31, 46, 0.6)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  id="apiKey"
+                  name="api-key"
+                  type={showApiKey ? 'text' : 'password'}
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  required
+                  placeholder="Enter your GW2 API key"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck="false"
+                  data-form-type="other"
+                  style={{
+                    width: '100%',
+                    padding: '0.875rem 3rem 0.875rem 1rem',
+                    background: 'rgba(26, 31, 46, 0.6)',
+                    border: '2px solid rgba(212, 175, 55, 0.2)',
+                    borderRadius: '6px',
+                    color: '#e8e6e3',
+                    fontSize: '1rem',
+                    fontFamily: "'Lato', 'Inter', sans-serif",
+                    transition: 'all 0.3s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#d4af37';
+                    e.target.style.background = 'rgba(26, 31, 46, 0.8)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(212, 175, 55, 0.1), 0 0 15px rgba(212, 175, 55, 0.2)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                    e.target.style.background = 'rgba(26, 31, 46, 0.6)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowApiKey(!showApiKey)}
+                  style={{
+                    position: 'absolute',
+                    right: '0.75rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#a8a29e',
+                    cursor: 'pointer',
+                    padding: '0.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'color 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = '#d4af37'}
+                  onMouseLeave={(e) => e.target.style.color = '#a8a29e'}
+                  aria-label={showApiKey ? 'Hide API key' : 'Show API key'}
+                >
+                  {showApiKey ? (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  ) : (
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               <p style={{
                 fontSize: '0.875rem',
                 color: '#a8a29e',

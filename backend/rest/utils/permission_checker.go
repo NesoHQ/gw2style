@@ -41,8 +41,6 @@ func HasRequiredPermissions(apiKey string) (bool, error) {
 		return false, fmt.Errorf("failed to parse API response: %w", err)
 	}
 
-	fmt.Println(apiKeyInfo) // check what permissions the key has
-
 	required := []string{"account", "characters", "builds"}
 	set := make(map[string]struct{}, len(apiKeyInfo.Permissions))
 	for _, v := range apiKeyInfo.Permissions {
@@ -51,7 +49,6 @@ func HasRequiredPermissions(apiKey string) (bool, error) {
 
 	for _, v := range required {
 		if _, ok := set[v]; !ok {
-			fmt.Println("Missing:", v)
 			return false, fmt.Errorf("missing required permission: %s", v)
 		}
 	}

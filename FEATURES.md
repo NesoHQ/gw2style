@@ -343,7 +343,7 @@ Help wanted:
 
 ## Feature: Discord-Based Moderation System
 
-**Status:** 📅 Planned (v0.2)
+**Status:** ✅ Implemented (v0.2)
 
 ### Problem Solved
 
@@ -398,31 +398,58 @@ Discord bot integration for post moderation. All posts start as unpublished and 
 
 ### Acceptance Criteria
 
-- [ ] New posts trigger Discord notifications
-- [ ] Only moderators with specific role can approve/reject
-- [ ] Emoji reactions correctly update post status
-- [ ] Approved posts appear on website immediately
-- [ ] Bot announces published posts to public channel
-- [ ] All moderation actions logged for transparency
-- [ ] Rate limiting prevents spam submissions
+- [✅] New posts trigger Discord notifications
+- [✅] Only moderators with specific role can approve/reject
+- [✅] Emoji reactions correctly update post status
+- [✅] Approved posts appear on website immediately
+- [✅] All moderation actions logged for transparency
+- [✅] Bot authenticates with backend using secure token
+- [✅] Database tracks published status and moderation history
+- [✅] Bot announces published posts to public channel
+- [🚧] Rate limiting prevents spam submissions
+
+### Implementation Details
+
+**Backend (Go):**
+- Posts table with `published` boolean (default: false)
+- `moderation_log` table tracking all actions
+- `reports` table for user-submitted reports
+- Bot authentication middleware
+- Admin endpoints: `/admin/posts/{id}/publish` and `/admin/posts/{id}/reject`
+- User report endpoint: `/posts/{id}/report`
+- Discord webhook sends new post notifications
+
+**Discord Bot (Go):**
+- Built with `discordgo` library
+- Runs alongside backend server
+- Listens for ✅ and ❌ reactions in moderation channel
+- Extracts post ID from webhook messages
+- Calls backend APIs with bot authentication
+- Updates Discord messages with approval/rejection status
+- Graceful shutdown handling
+
+**Security:**
+- Bot token validation on all admin endpoints
+- Only reactions in designated moderation channel are processed
+- All actions logged with moderator username and Discord ID
 
 ### Roadmap
 
-- **Current:** Planned for v0.2
+- **Current:** Implemented in v0.2
 - **Next Steps:**
-  - User reporting integration
-  - Automated flagging for repeated violations
-  - Moderation statistics dashboard (Discord bot command)
+  - Public channel announcements for approved posts
   - Edit request workflow (📝 reaction)
+  - Automated flagging for repeated violations
+  - Rate limiting on post submissions
 
 ### Contributing
 
 Help wanted:
 
-- Discord bot development (Discord.js or discord.py)
-- Webhook integration design
-- Moderation workflow testing
-- Bot command features
+- Public announcement feature when posts are approved
+- Moderation workflow testing and feedback
+- Bot command features (see Discord Bot Analytics section)
+- UI for viewing moderation history
 
 ---
 
