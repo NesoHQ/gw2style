@@ -279,13 +279,13 @@ func (b *Bot) announceNewPost(postID string, originalMsg *discordgo.Message) {
 		Fields:      embed.Fields,
 		Thumbnail:   embed.Thumbnail,
 		Footer: &discordgo.MessageEmbedFooter{
-			Text: fmt.Sprintf("View on website: https://gw2style.com/posts/%s", postID),
+			Text: fmt.Sprintf("View on website: http://localhost:3000/posts/%s", postID),
 		},
 	}
 
 	// Send to public webhook
 	payload := map[string]interface{}{
-		"content": fmt.Sprintf("🎨 **New fashion post is live!** Check it out: https://gw2style.com/posts/%s", postID),
+		"content": fmt.Sprintf("🎨 **New fashion post is live!** Check it out: http://localhost:3000/posts/%s", postID),
 		"embeds":  []*discordgo.MessageEmbed{publicEmbed},
 	}
 
