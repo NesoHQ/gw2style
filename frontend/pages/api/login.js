@@ -17,7 +17,6 @@ export default async function handler(req, res) {
 
     // Always expect JSON response from SendJson/SendError
     const responseText = await backendRes.text();
-    console.log('Backend response:', responseText);
     let responseData;
 
     try {

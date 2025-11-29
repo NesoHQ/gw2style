@@ -258,16 +258,17 @@ export default function LoginPage() {
               <div style={{ position: 'relative' }}>
                 <input
                   id="apiKey"
-                  name="api-key"
-                  type={showApiKey ? 'text' : 'password'}
+                  name="search"
+                  type="text"
                   value={apiKey}
                   onChange={(e) => setApiKey(e.target.value)}
                   required
                   placeholder="Enter your GW2 API key"
-                  autoComplete="new-password"
+                  autoComplete="off"
                   autoCorrect="off"
                   autoCapitalize="off"
                   spellCheck="false"
+                  data-lpignore="true"
                   data-form-type="other"
                   style={{
                     width: '100%',
@@ -279,6 +280,7 @@ export default function LoginPage() {
                     fontSize: '1rem',
                     fontFamily: "'Lato', 'Inter', sans-serif",
                     transition: 'all 0.3s ease',
+                    WebkitTextSecurity: showApiKey ? 'none' : 'disc',
                   }}
                   onFocus={(e) => {
                     e.target.style.borderColor = '#d4af37';

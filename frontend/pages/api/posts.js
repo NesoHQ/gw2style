@@ -29,7 +29,6 @@ export default async function handler(req, res) {
     // Call the backend API
     const response = await fetch(url);
     const text = await response.text(); // Get raw response text
-    //console.log('Backend response:', text); // Log the raw response
 
     let posts;
     try {

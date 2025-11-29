@@ -23,8 +23,6 @@ export default async function handler(req, res) {
       },
     });
 
-    console.log('Backend response status:', response.status);
-
     if (!response.ok) {
       const error = await response.json().catch(() => ({ error: 'Unknown error' }));
       console.error('Backend error:', error);
@@ -35,7 +33,6 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    console.log('Backend response data:', data);
     
     // Backend returns { data: { apiKey: "..." }, success: true }
     // or just { apiKey: "..." }

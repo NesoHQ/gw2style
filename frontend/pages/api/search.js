@@ -38,7 +38,6 @@ export default async function handler(req, res) {
 
     // Get the raw text first
     const text = await response.text();
-    console.log('Backend response:', text); // Log the raw response
 
     let data;
     try {
