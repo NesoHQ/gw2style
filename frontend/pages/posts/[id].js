@@ -1,39 +1,73 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Layout from '@components/Layout';
 import EquipmentDisplay from '@components/EquipmentDisplay';
 import styles from '../../styles/Post.module.css';
 
-export async function getServerSideProps({ params }) {
-  try {
-    const res = await fetch(`http://localhost:3000/api/posts/${params.id}`);
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.error || 'Failed to fetch post');
-    }
-
-    return {
-      props: {
-        post: data.data || data,
-      },
-    };
-  } catch (error) {
-    console.error('Error in getServerSideProps:', error);
-    return {
-      props: {
-        post: null,
-      },
-    };
-  }
-}
-
-export default function PostDetail({ post }) {
+export default function PostDetail() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [direction, setDirection] = useState('');
 
-  if (!post) {
+  // Fetch post data from backend
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        const response = await fetch(`${apiUrl}/api/v1/posts/${id}`, {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to fetch post');
+        }
+
+        setPost(data.data || data);
+      } catch (err) {
+        console.error('Error fetching post:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <Layout>
+        <Head>
+          <title>Loading... - GW2Style</title>
+        </Head>
+        <main className={styles.main}>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <h2>Loading post...</h2>
+          </div>
+        </main>
+      </Layout>
+    );
+  }
+
+  // Error state
+  if (error || !post) {
     return (
       <Layout>
         <Head>
@@ -41,6 +75,7 @@ export default function PostDetail({ post }) {
         </Head>
         <main className={styles.main}>
           <h1>Post not found</h1>
+          {error && <p>{error}</p>}
         </main>
       </Layout>
     );

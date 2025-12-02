@@ -6,7 +6,7 @@ import { useUser } from '../context/UserContext';
 import Layout from '@components/Layout';
 
 export default function LoginPage() {
-  const { setUser } = useUser();
+  const { login } = useUser();
   const [apiKey, setApiKey] = useState('');
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,30 +19,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKey }),
+      // Use the new auth service directly
+      const user = await login(apiKey);
+      
+      setMessage({
+        type: 'success',
+        text: 'Login successful! Welcome, ' + user.username,
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage({ type: 'error', text: data?.error || 'Login failed' });
-      } else {
-        setMessage({
-          type: 'success',
-          text: 'Login successful! Welcome, ' + data.user.username,
-        });
-
-        // Immediately update Header/user state
-        if (data.user && setUser) setUser(data.user);
-
-        // Redirect after short delay
-        setTimeout(() => router.push('/'), 600);
-      }
+      // Redirect after short delay
+      setTimeout(() => router.push('/'), 600);
     } catch (err) {
-      setMessage({ type: 'error', text: 'Network error: ' + err.message });
+      setMessage({ 
+        type: 'error', 
+        text: err.message || 'Login failed. Please check your API key.' 
+      });
     } finally {
       setLoading(false);
     }

@@ -20,8 +20,15 @@ export default function PopularPage() {
   const fetchPopularPosts = async () => {
     setLoading(true);
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       const response = await fetch(
-        `/api/posts/popular?timeframe=${timeframe}&limit=100`
+        `${apiUrl}/api/v1/posts/popular?timeframe=${timeframe}&limit=100`,
+        {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
       const data = await response.json();
 

@@ -3,6 +3,7 @@ import '@styles/globals.css';
 import '../styles/logo-options.css';
 import { UserProvider } from '../context/UserContext';
 import { initializeSkinCache } from '../utils/skinCache';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 function Application({ Component, pageProps }) {
   // Initialize skin cache on app load
@@ -16,9 +17,11 @@ function Application({ Component, pageProps }) {
   }, []);
 
   return (
-    <UserProvider>
-      <Component {...pageProps} />
-    </UserProvider>
+    <ErrorBoundary>
+      <UserProvider>
+        <Component {...pageProps} />
+      </UserProvider>
+    </ErrorBoundary>
   );
 }
 

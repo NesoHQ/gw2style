@@ -2,24 +2,50 @@ import { useEffect, useRef, useState } from 'react';
 import styles from '../styles/Home.module.css';
 import Layout from '@components/Layout';
 import PostCard from '@components/PostCard';
+import { postsApi } from '../utils/postsApi';
 
-export default function Home({ initialPosts, initialTotal }) {
+export default function Home() {
   const gridRef = useRef(null);
   const masonryRef = useRef(null);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(initialPosts.length < initialTotal);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const loadingRef = useRef(false);
-  const previousPostCount = useRef(initialPosts.length);
+  const previousPostCount = useRef(0);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  // Initialize Masonry once
+  // Fetch initial posts on mount
+  useEffect(() => {
+    const fetchInitialPosts = async () => {
+      try {
+        setLoading(true);
+        const data = await postsApi.getPosts(1, 25);
+        
+        if (data.success && data.data) {
+          setPosts(data.data);
+          setHasMore(data.pagination?.page < data.pagination?.total_pages);
+          previousPostCount.current = data.data.length;
+        }
+      } catch (error) {
+        console.error('Error fetching initial posts:', error);
+      } finally {
+        setLoading(false);
+        setInitialLoad(false);
+      }
+    };
+
+    fetchInitialPosts();
+  }, []);
+
+  // Initialize Masonry once posts are loaded
   useEffect(() => {
     const initMasonry = async () => {
       if (
         typeof window !== 'undefined' &&
         gridRef.current &&
-        initialPosts.length > 0
+        posts.length > 0 &&
+        !masonryRef.current
       ) {
         try {
           const Masonry = (await import('masonry-layout')).default;
@@ -40,15 +66,17 @@ export default function Home({ initialPosts, initialTotal }) {
       }
     };
 
-    const timer = setTimeout(initMasonry, 100);
+    if (!initialLoad && posts.length > 0) {
+      const timer = setTimeout(initMasonry, 100);
+      return () => clearTimeout(timer);
+    }
 
     return () => {
-      clearTimeout(timer);
       if (masonryRef.current) {
         masonryRef.current.destroy();
       }
     };
-  }, []);
+  }, [posts, initialLoad]);
 
   // Append new items to Masonry when posts change
   useEffect(() => {
@@ -85,7 +113,7 @@ export default function Home({ initialPosts, initialTotal }) {
 
   useEffect(() => {
     const handleScroll = async () => {
-      if (loadingRef.current || !hasMore) return;
+      if (loadingRef.current || !hasMore || initialLoad) return;
 
       const scrollTop = window.scrollY;
       const windowHeight = window.innerHeight;
@@ -97,8 +125,7 @@ export default function Home({ initialPosts, initialTotal }) {
         
         try {
           const nextPage = page + 1;
-          const res = await fetch(`/api/posts?page=${nextPage}&limit=25`);
-          const data = await res.json();
+          const data = await postsApi.getPosts(nextPage, 25);
           
           if (data.success && data.data.length > 0) {
             setPosts(prev => {
@@ -122,52 +149,44 @@ export default function Home({ initialPosts, initialTotal }) {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, page]);
+  }, [hasMore, page, initialLoad]);
 
   return (
     <Layout fullWidth  title="Home">
-      <div ref={gridRef} className={styles.grid}>
-        <div className={styles.gridSizer}></div>
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
-      </div>
-      {loading && (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          Loading more posts...
+      {initialLoad ? (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <div className={styles.skeleton}>
+            <div className={styles.skeletonCard}></div>
+            <div className={styles.skeletonCard}></div>
+            <div className={styles.skeletonCard}></div>
+            <div className={styles.skeletonCard}></div>
+          </div>
         </div>
-      )}
-      {!hasMore && posts.length > 0 && (
-        <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-          No more posts to load
-        </div>
+      ) : (
+        <>
+          <div ref={gridRef} className={styles.grid}>
+            <div className={styles.gridSizer}></div>
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+          {loading && !initialLoad && (
+            <div style={{ textAlign: 'center', padding: '20px' }}>
+              Loading more posts...
+            </div>
+          )}
+          {!hasMore && posts.length > 0 && (
+            <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
+              No more posts to load
+            </div>
+          )}
+          {!loading && posts.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+              No posts found
+            </div>
+          )}
+        </>
       )}
     </Layout>
   );
-}
-
-export async function getServerSideProps() {
-  const baseUrl = `http://localhost:3000`;
-
-  try {
-    const res = await fetch(`${baseUrl}/api/posts?page=1&limit=25`);
-    const data = await res.json();
-    const posts = data.data || [];
-    const total = data.pagination?.total || 0;
-
-    return {
-      props: {
-        initialPosts: posts,
-        initialTotal: total,
-      },
-    };
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return {
-      props: {
-        initialPosts: [],
-        initialTotal: 0,
-      },
-    };
-  }
 }

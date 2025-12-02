@@ -5,7 +5,7 @@ import Layout from '@components/Layout';
 
 export default function UserPage() {
   const router = useRouter();
-  const { user, setUser } = useUser();
+  const { user, setUser, logout } = useUser();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({ show: false, postId: null, postTitle: '' });
@@ -52,8 +52,15 @@ export default function UserPage() {
     }
 
     try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       const response = await fetch(
-        `/api/search?author=${encodeURIComponent(user.username)}&limit=100&page=${page}`
+        `${apiUrl}/api/v1/posts/search?author=${encodeURIComponent(user.username)}&limit=100&page=${page}`,
+        {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
       const data = await response.json();
 
@@ -81,15 +88,8 @@ export default function UserPage() {
   const handleLogout = async () => {
     setLogoutModal(false);
     try {
-      const res = await fetch('/api/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        setUser(null);
-        router.push('/');
-      }
+      await logout();
+      router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);
       alert('Failed to logout. Please try again.');
@@ -109,9 +109,13 @@ export default function UserPage() {
     closeDeleteModal();
 
     try {
-      const response = await fetch(`/api/posts/${postId}/delete`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiUrl}/api/v1/posts/${postId}`, {
         method: 'DELETE',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       const data = await response.json();

@@ -101,9 +101,16 @@ export default function StylesPage() {
         queryParams.set('tags', allTags);
       }
 
-      // Call Next.js API route (which proxies to backend)
+      // Call backend API directly
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
       const response = await fetch(
-        `/api/posts/search?${queryParams.toString()}`
+        `${apiUrl}/api/v1/posts/search?${queryParams.toString()}`,
+        {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
       const data = await response.json();
 

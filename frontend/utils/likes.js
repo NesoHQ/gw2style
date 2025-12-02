@@ -82,8 +82,12 @@ export function clearLikedCache() {
  */
 export async function syncLikedPostsFromBackend() {
   try {
-    const response = await fetch('/api/user/liked-posts', {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const response = await fetch(`${apiUrl}/api/v1/user/liked-posts`, {
       credentials: 'include', // Include cookies for JWT
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     if (!response.ok) {
@@ -118,9 +122,13 @@ export async function likePost(postId) {
     // Optimistic update
     addToLikedCache(postId);
 
-    const response = await fetch(`/api/posts/${postId}/like`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const response = await fetch(`${apiUrl}/api/v1/posts/${postId}/like`, {
       method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     const data = await response.json();
@@ -151,9 +159,13 @@ export async function unlikePost(postId) {
     // Optimistic update
     removeFromLikedCache(postId);
 
-    const response = await fetch(`/api/posts/${postId}/like`, {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const response = await fetch(`${apiUrl}/api/v1/posts/${postId}/like`, {
       method: 'DELETE',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     const data = await response.json();

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -12,8 +13,10 @@ const nextConfig = {
         hostname: '**',
       },
     ],
-    unoptimized: false,
+    unoptimized: true, // Required for static export
   },
+  // Disable features not supported in static export
+  trailingSlash: true,
 };
 
 module.exports = nextConfig;
