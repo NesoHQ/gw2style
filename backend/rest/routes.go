@@ -45,6 +45,21 @@ func (server *Server) initRoutes(mux *http.ServeMux, manager *middlewares.Manage
 
 	// Protected routes that require JWT auth
 	mux.Handle(
+		"GET /api/v1/user/me",
+		manager.With(
+			http.HandlerFunc(server.handlers.GetCurrentUserHandler),
+			server.middlewares.AuthenticateJWT,
+		),
+	)
+
+	mux.Handle(
+		"POST /api/v1/logout",
+		manager.With(
+			http.HandlerFunc(server.handlers.LogoutHandler),
+		),
+	)
+
+	mux.Handle(
 		"GET /api/v1/user/apikey",
 		manager.With(
 			http.HandlerFunc(server.handlers.GetUserAPIKeyHandler),

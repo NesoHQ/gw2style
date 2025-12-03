@@ -40,7 +40,26 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 			utils.SendError(w, http.StatusInternalServerError, "Failed to generate token", err)
 			return
 		}
-		utils.SendData(w, http.StatusOK, JWT)
+
+		// Set HTTP-only cookie
+		http.SetCookie(w, &http.Cookie{
+			Name:     "jwt_token",
+			Value:    JWT,
+			HttpOnly: true,
+			Secure:   false, // Set to true in production with HTTPS
+			SameSite: http.SameSiteStrictMode,
+			Path:     "/",
+			MaxAge:   86400 * 7, // 7 days
+		})
+
+		// Return user data (not the token)
+		utils.SendData(w, http.StatusOK, map[string]interface{}{
+			"success": true,
+			"user": map[string]interface{}{
+				"id":       user.ID,
+				"username": user.Name,
+			},
+		})
 		return
 	}
 
@@ -82,5 +101,23 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.SendData(w, http.StatusOK, JWT)
+	// Set HTTP-only cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "jwt_token",
+		Value:    JWT,
+		HttpOnly: true,
+		Secure:   false, // Set to true in production with HTTPS
+		SameSite: http.SameSiteStrictMode,
+		Path:     "/",
+		MaxAge:   86400 * 7, // 7 days
+	})
+
+	// Return user data (not the token)
+	utils.SendData(w, http.StatusOK, map[string]interface{}{
+		"success": true,
+		"user": map[string]interface{}{
+			"id":       newUser.ID,
+			"username": newUser.Name,
+		},
+	})
 }
