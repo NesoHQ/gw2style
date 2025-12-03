@@ -7,7 +7,7 @@ import { generateTagsFromEquipment, categorizeTags } from '../utils/gw2AutoTagge
 
 export default function CreatePost() {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, loading: authLoading } = useUser();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -36,9 +36,26 @@ export default function CreatePost() {
   const [loadingCharacters, setLoadingCharacters] = useState(false);
   const [loadingEquipment, setLoadingEquipment] = useState(false);
 
-  // Redirect if not logged in
-  if (typeof window !== 'undefined' && !user) {
-    router.push('/login');
+  // Redirect if not logged in (but wait for auth check to complete)
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+    }
+  }, [authLoading, user, router]);
+
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <Layout title="Create" description="Share your Guild Wars 2 character's style">
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#a8a29e' }}>
+          Loading...
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if not logged in
+  if (!user) {
     return null;
   }
 
@@ -50,7 +67,7 @@ export default function CreatePost() {
       // Just try to fetch the API key - if user is logged in, it will work
       
       // Call backend directly with credentials
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/api/v1/user/apikey`, {
         method: 'GET',
         credentials: 'include',

@@ -24,7 +24,7 @@ export default function PostDetail() {
         setLoading(true);
         setError(null);
         
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const response = await fetch(`${apiUrl}/api/v1/posts/${id}`, {
           credentials: 'include',
           headers: {

@@ -5,7 +5,7 @@ import Layout from '@components/Layout';
 
 export default function UserPage() {
   const router = useRouter();
-  const { user, setUser, logout } = useUser();
+  const { user, setUser, logout, loading: authLoading } = useUser();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({ show: false, postId: null, postTitle: '' });
@@ -16,13 +16,13 @@ export default function UserPage() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
-    // Redirect to login if not authenticated
-    if (!user) {
+    // Redirect to login if not authenticated (but wait for auth check to complete)
+    if (!authLoading && !user) {
       router.push('/login');
-    } else {
+    } else if (user) {
       fetchUserPosts(1, false);
     }
-  }, [user, router]);
+  }, [authLoading, user, router]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,7 +52,7 @@ export default function UserPage() {
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(
         `${apiUrl}/api/v1/posts/search?author=${encodeURIComponent(user.username)}&limit=100&page=${page}`,
         {
@@ -109,7 +109,7 @@ export default function UserPage() {
     closeDeleteModal();
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/api/v1/posts/${postId}`, {
         method: 'DELETE',
         credentials: 'include',
@@ -132,8 +132,20 @@ export default function UserPage() {
     }
   };
 
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <Layout title="Profile" description="Your GW2Style profile">
+        <div style={{ textAlign: 'center', padding: '3rem', color: '#a8a29e' }}>
+          Loading...
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if not logged in
   if (!user) {
-    return null; // Don't render anything while redirecting
+    return null;
   }
 
   return (

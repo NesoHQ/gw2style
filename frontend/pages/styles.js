@@ -102,7 +102,7 @@ export default function StylesPage() {
       }
 
       // Call backend API directly
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(
         `${apiUrl}/api/v1/posts/search?${queryParams.toString()}`,
         {

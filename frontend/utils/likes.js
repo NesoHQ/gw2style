@@ -82,7 +82,7 @@ export function clearLikedCache() {
  */
 export async function syncLikedPostsFromBackend() {
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(`${apiUrl}/api/v1/user/liked-posts`, {
       credentials: 'include', // Include cookies for JWT
       headers: {
@@ -122,7 +122,7 @@ export async function likePost(postId) {
     // Optimistic update
     addToLikedCache(postId);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(`${apiUrl}/api/v1/posts/${postId}/like`, {
       method: 'POST',
       credentials: 'include',
@@ -159,7 +159,7 @@ export async function unlikePost(postId) {
     // Optimistic update
     removeFromLikedCache(postId);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const response = await fetch(`${apiUrl}/api/v1/posts/${postId}/like`, {
       method: 'DELETE',
       credentials: 'include',

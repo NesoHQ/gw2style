@@ -1,7 +1,7 @@
 // utils/apiClient.js
 class APIClient {
   constructor(baseURL) {
-    this.baseURL = baseURL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+    this.baseURL = baseURL || process.env.NEXT_PUBLIC_API_URL;
     this.cache = new Map();
     this.cacheTimeout = 5 * 60 * 1000; // 5 minutes
   }
@@ -14,14 +14,8 @@ class APIClient {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-      credentials: 'include', // Include cookies
+      credentials: 'include', // Include HTTP-only cookies
     };
-
-    // Add auth token if available
-    const token = this.getToken();
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
 
     try {
       const response = await fetch(url, config);
@@ -36,10 +30,6 @@ class APIClient {
         
         // Handle specific status codes
         if (response.status === 401) {
-          this.clearToken();
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
           throw new Error('Authentication required');
         }
         
@@ -54,21 +44,6 @@ class APIClient {
       }
       throw error;
     }
-  }
-
-  getToken() {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('jwt_token');
-  }
-
-  setToken(token) {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('jwt_token', token);
-  }
-
-  clearToken() {
-    if (typeof window === 'undefined') return;
-    localStorage.removeItem('jwt_token');
   }
 
   // Cache management

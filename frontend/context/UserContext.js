@@ -10,20 +10,33 @@ export function UserProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing token and validate it
-    const currentUser = auth.getCurrentUser();
-    setUser(currentUser);
+    // Check for existing session via HTTP-only cookie
+    const checkAuth = async () => {
+      console.log('[UserContext] Starting auth check...');
+      try {
+        const currentUser = await auth.getCurrentUser();
+        console.log('[UserContext] Auth check result:', currentUser);
+        setUser(currentUser);
+        
+        if (currentUser) {
+          // Sync liked posts from backend to localStorage
+          await syncLikedPostsFromBackend().catch(err => {
+            console.error('Failed to sync liked posts:', err);
+          });
+        } else {
+          clearLikedCache();
+        }
+      } catch (error) {
+        console.error('[UserContext] Auth check failed:', error);
+        setUser(null);
+        clearLikedCache();
+      } finally {
+        console.log('[UserContext] Auth check complete, setting loading=false');
+        setLoading(false);
+      }
+    };
     
-    if (currentUser) {
-      // Sync liked posts from backend to localStorage
-      syncLikedPostsFromBackend().catch(err => {
-        console.error('Failed to sync liked posts:', err);
-      });
-    } else {
-      clearLikedCache();
-    }
-    
-    setLoading(false);
+    checkAuth();
   }, []);
 
   const login = async (apiKey) => {

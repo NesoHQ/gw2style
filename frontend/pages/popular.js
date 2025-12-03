@@ -20,7 +20,7 @@ export default function PopularPage() {
   const fetchPopularPosts = async () => {
     setLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(
         `${apiUrl}/api/v1/posts/popular?timeframe=${timeframe}&limit=100`,
         {
