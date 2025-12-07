@@ -105,7 +105,7 @@ graph TB
 |-----------|-----------|---------|---------|
 | **Language** | Go | 1.25+ | High-performance backend language |
 | **Web Framework** | `net/http` | stdlib | Native HTTP server and routing |
-| **Database** | PostgreSQL | 14+ | Relational data storage |
+| **Database** | PostgreSQL | 17+ | Relational data storage |
 | **ORM/Query Builder** | `sqlx` | 1.4.0 | SQL query execution and mapping |
 | **Migration Tool** | `sql-migrate` | 1.8.0 | Database schema versioning |
 | **Authentication** | JWT | `golang-jwt/jwt/v5` | Stateless user sessions |
@@ -268,26 +268,6 @@ Middleware chain for cross-cutting concerns:
 
 ---
 
-## 🚀 Quick Start
-
-```bash
-# Install dependencies
-make deps
-
-# Run with hot reload (development)
-make dev
-
-# Build production binary
-make build
-
-# Run tests
-make test
-```
-
-See [BACKEND_SETUP.md](BACKEND_SETUP.md) for detailed setup instructions.
-
----
-
 ## 📊 Database Schema Overview
 
 The application uses **4 main tables**:
@@ -317,12 +297,12 @@ See [API_DOCUMENTATION.md](API_DOCUMENTATION.md) for complete API reference.
 
 ## 🤝 Contributing
 
-This is an open-source project welcoming contributions! Areas to contribute:
+This is an open-source project by the NesoHQ community welcoming contributions! Areas to contribute:
 
 - Backend endpoints and features
 - Database optimizations
 - API documentation
-- Testing and quality assurance
+- Code quality improvements
 
 Join the discussion on [Discord](https://discord.com/invite/xvArbFbh34)
 

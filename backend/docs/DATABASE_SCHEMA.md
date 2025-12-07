@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-GW2STYLE uses **PostgreSQL 14+** as its primary database. The schema is designed to support:
+GW2STYLE uses **PostgreSQL 17+** as its primary database. The schema is designed to support:
 
 - User authentication via GW2 API keys
 - Post creation and management
@@ -582,7 +582,7 @@ DB_MAX_IDLE_TIME_IN_MINUTES=60
 
 **PostgreSQL Backup Command**:
 ```bash
-pg_dump -U postgres -d gw2style > backup_$(date +%Y%m%d).sql
+pg_dump -U your_database_user -d your_database_name > backup_$(date +%Y%m%d).sql
 ```
 
 ### Monitoring
@@ -616,7 +616,7 @@ VACUUM ANALYZE users;
    - Replace `likes_count` with proper many-to-many relationship
    - Track individual user likes
 
-2. **User Profiles** (v0.4)
+2. **User Profiles** (In Progress)
    - Add bio, avatar, social links
    - User preferences
 

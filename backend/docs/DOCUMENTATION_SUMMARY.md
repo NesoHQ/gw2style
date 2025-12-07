@@ -4,11 +4,11 @@
 
 I've created a comprehensive documentation suite for the GW2STYLE backend project. Here's what was delivered:
 
-### 1. **BACKEND_README.md** - Main Entry Point
-- Quick start guide
+### 1. **README.md** - Main Entry Point
 - Project overview
 - Links to all documentation
 - Development commands
+- Running the application
 - Contribution guidelines
 - **Purpose**: First document new developers should read
 
@@ -21,7 +21,7 @@ I've created a comprehensive documentation suite for the GW2STYLE backend projec
 - **Purpose**: Understand what the project does and how it's built
 
 ### 3. **API_DOCUMENTATION.md** - Complete API Reference
-- All 17 REST endpoints documented
+- All 16 REST endpoints documented
 - Request/response schemas for each endpoint
 - Authentication requirements
 - Query parameters and path variables
@@ -49,15 +49,14 @@ I've created a comprehensive documentation suite for the GW2STYLE backend projec
 - Design patterns used
 - **Purpose**: Understand how the system works internally
 
-### 6. **BACKEND_SETUP.md** - Configuration & Deployment
-- Prerequisites and installation
+### 6. **SETUP.md** - Configuration & Setup
+- Prerequisites
 - Environment variables reference
 - Local development setup
 - Database configuration
 - Discord bot setup
-- Deployment options (Docker, K8s, Systemd)
-- Troubleshooting guide
-- **Purpose**: Get the backend running locally or in production
+- Running the application
+- **Purpose**: Get the backend running locally
 
 ---
 
@@ -74,6 +73,7 @@ I've created a comprehensive documentation suite for the GW2STYLE backend projec
 - ✅ **Deployment**: Multiple deployment options
 - ✅ **Troubleshooting**: Common issues and solutions
 - ✅ **Developer Onboarding**: README for new contributors
+- ✅ **PostgreSQL 17+**: Updated database version
 
 ### Documentation Quality
 - ✅ Clear, consistent formatting
@@ -89,7 +89,7 @@ I've created a comprehensive documentation suite for the GW2STYLE backend projec
 
 While the documentation is comprehensive, here are areas you might want to add:
 
-### 1. **Testing Documentation** (Recommended)
+### 1. **Testing Documentation** (Not Yet Implemented)
 Create `TESTING.md`:
 - Unit testing guidelines
 - Integration testing setup
@@ -97,6 +97,8 @@ Create `TESTING.md`:
 - Test coverage requirements
 - Mocking external services (GW2 API, Discord)
 - CI/CD testing pipeline
+
+> **Note**: Testing infrastructure is not yet set up in the project.
 
 ### 2. **Security Documentation** (Recommended)
 Create `SECURITY.md`:
@@ -249,13 +251,10 @@ mux.Handle("GET /health", http.HandlerFunc(func(w http.ResponseWriter, r *http.R
 
 | Category | Coverage | Status |
 |----------|----------|--------|
-| **API Endpoints** | 17/17 (100%) | ✅ Complete |
+| **API Endpoints** | 16/16 (100%) | ✅ Complete |
 | **Database Tables** | 4/4 (100%) | ✅ Complete |
 | **Environment Variables** | 15/15 (100%) | ✅ Complete |
-| **Deployment Options** | 3/3 (100%) | ✅ Complete |
 | **Architecture Diagrams** | 5 diagrams | ✅ Good |
-| **Code Examples** | 20+ examples | ✅ Good |
-| **Troubleshooting** | 5 common issues | ⚠️ Could expand |
 
 ### Documentation Quality
 

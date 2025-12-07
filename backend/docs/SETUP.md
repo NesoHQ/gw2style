@@ -21,7 +21,7 @@
 | Software | Version | Purpose |
 |----------|---------|---------|
 | **Go** | 1.25+ | Backend runtime |
-| **PostgreSQL** | 14+ | Database |
+| **PostgreSQL** | 17+ | Database |
 | **Make** | Any | Build automation |
 | **Git** | Any | Version control |
 
@@ -30,39 +30,6 @@
 - **Air** - Hot reload for development (auto-installed via Makefile)
 - **Docker** - Containerization (optional)
 - **pgAdmin** - Database GUI (optional)
-
-### Installation
-
-#### Go
-```bash
-# Download from https://go.dev/dl/
-# Or use package manager:
-
-# Ubuntu/Debian
-sudo apt install golang-go
-
-# macOS
-brew install go
-
-# Verify installation
-go version  # Should show 1.25+
-```
-
-#### PostgreSQL
-```bash
-# Ubuntu/Debian
-sudo apt install postgresql postgresql-contrib
-
-# macOS
-brew install postgresql@14
-
-# Start PostgreSQL
-sudo systemctl start postgresql  # Linux
-brew services start postgresql@14  # macOS
-
-# Verify installation
-psql --version
-```
 
 ---
 
@@ -85,7 +52,7 @@ cp .env.example .env
 | `VERSION` | string | No | 0.0.1 | Application version |
 | `MODE` | string | No | debug | Run mode: `debug` or `release` |
 | `SERVICE_NAME` | string | No | gw2style | Service identifier |
-| `HTTP_PORT` | integer | No | 8080 | HTTP server port |
+| `HTTP_PORT` | integer | No | - | HTTP server port |
 | `JWT_SECRET` | string | **Yes** | - | Secret key for JWT signing (min 32 chars) |
 | `MIGRATION_SOURCE` | string | No | file://db/migrations | Migration files location |
 
@@ -93,10 +60,10 @@ cp .env.example .env
 
 | Variable | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| `DB_HOST` | string | Yes | 127.0.0.1 | PostgreSQL host |
+| `DB_HOST` | string | Yes | - | PostgreSQL host |
 | `DB_PORT` | integer | Yes | 5432 | PostgreSQL port |
-| `DB_NAME` | string | Yes | gw2style | Database name |
-| `DB_USER` | string | Yes | postgres | Database user |
+| `DB_NAME` | string | Yes | - | Database name |
+| `DB_USER` | string | Yes | - | Database user |
 | `DB_PASSWORD` | string | Yes | - | Database password |
 | `DB_MAX_IDLE_TIME_IN_MINUTES` | integer | No | 60 | Max idle connection time |
 | `DB_MAX_OPEN_CONNS` | integer | No | 20 | Max open connections |
@@ -119,7 +86,7 @@ cp .env.example .env
 VERSION=0.2.0
 MODE=debug
 SERVICE_NAME=gw2style
-HTTP_PORT=8080
+HTTP_PORT=your_port_number
 MIGRATION_SOURCE=file://db/migrations
 JWT_SECRET=your-super-secret-jwt-key-min-32-characters-long
 
@@ -130,10 +97,10 @@ DISCORD_MOD_CHANNEL_ID=123456789012345678
 DISCORD_PUBLIC_WEBHOOK_URL=https://discord.com/api/webhooks/PUBLIC_WEBHOOK_ID/PUBLIC_WEBHOOK_TOKEN
 
 # Database
-DB_HOST=127.0.0.1
+DB_HOST=your_database_host
 DB_PORT=5432
-DB_NAME=gw2style
-DB_USER=postgres
+DB_NAME=your_database_name
+DB_USER=your_database_user
 DB_PASSWORD=your_secure_password
 DB_MAX_IDLE_TIME_IN_MINUTES=60
 DB_MAX_OPEN_CONNS=20
@@ -198,7 +165,7 @@ make dev
 make run
 ```
 
-The server will start on `http://localhost:8080`.
+The server will start on the configured port.
 
 ---
 
@@ -211,9 +178,9 @@ The server will start on `http://localhost:8080`.
 sudo -u postgres psql
 
 # Create database and user
-CREATE DATABASE gw2style;
-CREATE USER gw2style_user WITH ENCRYPTED PASSWORD 'your_password';
-GRANT ALL PRIVILEGES ON DATABASE gw2style TO gw2style_user;
+CREATE DATABASE your_database_name;
+CREATE USER your_database_user WITH ENCRYPTED PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_database_user;
 
 # Exit psql
 \q
@@ -222,10 +189,10 @@ GRANT ALL PRIVILEGES ON DATABASE gw2style TO gw2style_user;
 ### 2. Update `.env` File
 
 ```bash
-DB_HOST=127.0.0.1
+DB_HOST=your_database_host
 DB_PORT=5432
-DB_NAME=gw2style
-DB_USER=gw2style_user
+DB_NAME=your_database_name
+DB_USER=your_database_user
 DB_PASSWORD=your_password
 ```
 
@@ -238,7 +205,7 @@ Migrations run automatically on application startup. Alternatively:
 # They run automatically when you start the app
 
 # To verify migrations:
-psql -U gw2style_user -d gw2style -c "\dt"
+psql -U your_database_user -d your_database_name -c "\dt"
 ```
 
 You should see tables:
@@ -252,7 +219,7 @@ You should see tables:
 
 ```bash
 # Connect to database
-psql -U gw2style_user -d gw2style
+psql -U your_database_user -d your_database_name
 
 # List tables
 \dt
@@ -347,11 +314,10 @@ go run .
 
 **Output**:
 ```
-[INFO] Starting GW2STYLE backend v0.2.0
-[INFO] Database connected successfully
-[INFO] Running migrations...
-[INFO] Discord bot started
-[INFO] Server listening on :8080
+INFO No new migrations to apply
+INFO Discord bot is now running
+INFO Server and Discord bot are running. Press CTRL+C to exit.
+INFO Listening at :YOUR_PORT
 ```
 
 ### Available Make Commands
@@ -361,7 +327,6 @@ make help          # Show all available commands
 make dev           # Run with hot reload (Air)
 make run           # Run without hot reload
 make build         # Build production binary
-make test          # Run tests
 make clean         # Clean build artifacts
 make deps          # Download dependencies
 ```
@@ -369,11 +334,8 @@ make deps          # Download dependencies
 ### Verify Server is Running
 
 ```bash
-# Health check (if implemented)
-curl http://localhost:8080/health
-
-# Get posts
-curl http://localhost:8080/api/v1/posts
+# Get posts (replace port with your configured port)
+curl http://localhost:YOUR_PORT/api/v1/posts
 ```
 
 ---
@@ -416,271 +378,11 @@ upx bin/gw2style  # Requires UPX installed
 
 ---
 
-## Deployment
-
-### Option 1: Docker Deployment
-
-#### Create `Dockerfile`
-
-```dockerfile
-FROM golang:1.25-alpine AS builder
-
-WORKDIR /app
-COPY go.mod go.sum ./
-RUN go mod download
-
-COPY . .
-RUN go build -ldflags="-s -w" -o gw2style .
-
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
-COPY --from=builder /app/gw2style .
-COPY --from=builder /app/db/migrations ./db/migrations
-
-EXPOSE 8080
-CMD ["./gw2style"]
-```
-
-#### Build and Run
-
-```bash
-# Build image
-docker build -t gw2style-backend .
-
-# Run container
-docker run -p 8080:8080 --env-file .env gw2style-backend
-```
-
-### Option 2: Kubernetes (k3s)
-
-#### Create Deployment
-
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: gw2style-backend
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: gw2style-backend
-  template:
-    metadata:
-      labels:
-        app: gw2style-backend
-    spec:
-      containers:
-      - name: backend
-        image: gw2style-backend:latest
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DB_HOST
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: host
-        # ... other env vars
-```
-
-### Option 3: Systemd Service
-
-```ini
-[Unit]
-Description=GW2STYLE Backend
-After=network.target postgresql.service
-
-[Service]
-Type=simple
-User=gw2style
-WorkingDirectory=/opt/gw2style
-EnvironmentFile=/opt/gw2style/.env
-ExecStart=/opt/gw2style/bin/gw2style
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-# Enable and start service
-sudo systemctl enable gw2style
-sudo systemctl start gw2style
-sudo systemctl status gw2style
-```
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-#### 1. Database Connection Failed
-
-**Error**: `pq: password authentication failed`
-
-**Solution**:
-- Check `DB_USER` and `DB_PASSWORD` in `.env`
-- Verify PostgreSQL is running: `sudo systemctl status postgresql`
-- Check `pg_hba.conf` for authentication settings
-
-#### 2. Port Already in Use
-
-**Error**: `bind: address already in use`
-
-**Solution**:
-```bash
-# Find process using port 8080
-lsof -i :8080
-
-# Kill process
-kill -9 <PID>
-
-# Or change HTTP_PORT in .env
-```
-
-#### 3. Migration Errors
-
-**Error**: `migration failed: table already exists`
-
-**Solution**:
-```bash
-# Check migration status
-psql -U gw2style_user -d gw2style -c "SELECT * FROM gorp_migrations;"
-
-# Reset database (CAUTION: deletes all data)
-psql -U postgres -c "DROP DATABASE gw2style;"
-psql -U postgres -c "CREATE DATABASE gw2style;"
-```
-
-#### 4. Discord Bot Not Responding
-
-**Error**: Bot doesn't react to emoji reactions
-
-**Solution**:
-- Verify `DISCORD_BOT_TOKEN` is correct
-- Check bot has "Read Message History" permission
-- Ensure `DISCORD_MOD_CHANNEL_ID` matches the channel
-- Check bot is online in Discord
-
-#### 5. JWT Token Invalid
-
-**Error**: `401 Unauthorized` on protected endpoints
-
-**Solution**:
-- Verify JWT token is included in `Authorization: Bearer <token>` header
-- Check `JWT_SECRET` hasn't changed
-- Token may be expired (default: 7 days)
-
-### Logging
-
-Enable debug logging:
-
-```bash
-# Set in .env
-MODE=debug
-
-# View logs
-tail -f /var/log/gw2style/app.log  # If using systemd
-```
-
-### Database Debugging
-
-```bash
-# Check database connections
-psql -U gw2style_user -d gw2style -c "SELECT * FROM pg_stat_activity;"
-
-# Check table sizes
-psql -U gw2style_user -d gw2style -c "
-SELECT 
-    schemaname,
-    tablename,
-    pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) AS size
-FROM pg_tables
-WHERE schemaname = 'public'
-ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
-"
-```
-
----
-
-## Development Tips
-
-### Hot Reload with Air
-
-Air automatically restarts the server when code changes:
-
-```bash
-# Install Air (done automatically by make dev)
-go install github.com/air-verse/air@latest
-
-# Run with Air
-air
-
-# Configuration in .air.toml
-```
-
-### Database Seeding
-
-Create test data:
-
-```sql
--- Insert test user
-INSERT INTO users (id, username, api_key) 
-VALUES ('test-id', 'TestUser.1234', 'test-api-key');
-
--- Insert test post
-INSERT INTO posts (title, thumbnail_url, author_name, published) 
-VALUES ('Test Post', 'https://example.com/img.jpg', 'TestUser.1234', true);
-```
-
-### API Testing
-
-Use `curl` or Postman:
-
-```bash
-# Login
-curl -X POST http://localhost:8080/api/v1/login \
-  -H "Content-Type: application/json" \
-  -d '{"api_key": "YOUR_GW2_API_KEY"}'
-
-# Get posts
-curl http://localhost:8080/api/v1/posts
-
-# Create post (with JWT)
-curl -X POST http://localhost:8080/api/v1/posts/create \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "My Outfit",
-    "thumbnail_url": "https://example.com/img.jpg",
-    "tags": ["light", "human"]
-  }'
-```
-
----
-
-## Next Steps
-
-After successful setup:
-
-1. ✅ Verify all endpoints work
-2. ✅ Test Discord moderation workflow
-3. ✅ Set up frontend application
-4. ✅ Configure production environment
-5. ✅ Set up monitoring and logging
-6. ✅ Configure backups
-
----
-
 ## Additional Resources
 
 - [API Documentation](API_DOCUMENTATION.md)
 - [Database Schema](DATABASE_SCHEMA.md)
 - [Architecture Guide](ARCHITECTURE.md)
-- [Contributing Guide](../CONTRIBUTING.md)
 - [Discord Community](https://discord.com/invite/xvArbFbh34)
 
 ---

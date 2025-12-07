@@ -518,7 +518,7 @@ graph LR
 #### 1. CORS Middleware
 ```go
 // Allow cross-origin requests from frontend
-AllowedOrigins: ["http://localhost:3000", "https://gw2style.com"]
+AllowedOrigins: ["http://localhost:YOUR_FRONTEND_PORT", "https://gw2style.com"]
 AllowedMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 AllowedHeaders: ["Authorization", "Content-Type"]
 AllowCredentials: true

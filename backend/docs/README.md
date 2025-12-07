@@ -49,9 +49,9 @@ cp .env.example .env
 make dev
 ```
 
-Server starts at `http://localhost:8080` 🎉
+Server starts on the configured port 🎉
 
-**Detailed setup**: See [BACKEND_SETUP.md](BACKEND_SETUP.md)
+**Detailed setup**: See [SETUP.md](SETUP.md)
 
 ---
 
@@ -63,7 +63,7 @@ Server starts at `http://localhost:8080` 🎉
 | **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** | Complete API reference with all endpoints |
 | **[DATABASE_SCHEMA.md](DATABASE_SCHEMA.md)** | Database schema, relationships, and migrations |
 | **[ARCHITECTURE.md](ARCHITECTURE.md)** | Business logic, workflows, and design patterns |
-| **[BACKEND_SETUP.md](BACKEND_SETUP.md)** | Environment setup, configuration, and deployment |
+| **[SETUP.md](SETUP.md)** | Environment setup and configuration |
 
 ---
 
@@ -124,7 +124,6 @@ Server starts at `http://localhost:8080` 🎉
 ### Likes
 - `POST /api/v1/posts/{id}/like` - Like a post
 - `DELETE /api/v1/posts/{id}/like` - Unlike a post
-- `GET /api/v1/posts/{id}/like` - Check like status
 
 ### Moderation (Bot-authenticated)
 - `POST /api/v1/admin/posts/{id}/publish` - Approve post
@@ -200,11 +199,11 @@ backend/
 
 ```bash
 # Database
-DB_HOST=127.0.0.1
+DB_HOST=your_database_host
 DB_PORT=5432
-DB_NAME=gw2style
-DB_USER=postgres
-DB_PASSWORD=your_password
+DB_NAME=your_database_name
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
 
 # JWT
 JWT_SECRET=your-super-secret-key-min-32-chars
@@ -215,7 +214,7 @@ DISCORD_WEBHOOK_URL=your_webhook_url
 DISCORD_MOD_CHANNEL_ID=channel_id
 ```
 
-**Full Configuration Guide**: [BACKEND_SETUP.md](BACKEND_SETUP.md)
+**Full Configuration Guide**: [SETUP.md](SETUP.md)
 
 ---
 
@@ -246,70 +245,19 @@ DISCORD_MOD_CHANNEL_ID=channel_id
 
 ---
 
-## 🧪 Testing
+## 🚀 Running the Application
 
-### Run Tests
-
-```bash
-# Run all tests
-make test
-
-# Run specific package tests
-go test ./repo/...
-go test ./rest/handlers/...
-
-# Run with coverage
-go test -cover ./...
-```
-
-### API Testing
+The backend is designed to run alongside the frontend with nginx on a VPS.
 
 ```bash
-# Test login
-curl -X POST http://localhost:8080/api/v1/login \
-  -H "Content-Type: application/json" \
-  -d '{"api_key": "YOUR_GW2_API_KEY"}'
+# Build the application
+make build
 
-# Test get posts
-curl http://localhost:8080/api/v1/posts?limit=10
+# Run the binary
+./bin/gw2style
 ```
 
----
-
-## 🚢 Deployment
-
-### Docker
-
-```bash
-# Build image
-docker build -t gw2style-backend .
-
-# Run container
-docker run -p 8080:8080 --env-file .env gw2style-backend
-```
-
-### Kubernetes (k3s)
-
-```bash
-# Apply deployment
-kubectl apply -f k8s/deployment.yaml
-
-# Check status
-kubectl get pods -l app=gw2style-backend
-```
-
-### Systemd Service
-
-```bash
-# Copy service file
-sudo cp gw2style.service /etc/systemd/system/
-
-# Enable and start
-sudo systemctl enable gw2style
-sudo systemctl start gw2style
-```
-
-**Detailed Deployment Guide**: [BACKEND_SETUP.md](BACKEND_SETUP.md#deployment)
+The application will start on the port specified in your `.env` file.
 
 ---
 
@@ -320,17 +268,15 @@ We welcome contributions! Here's how to get started:
 1. **Fork the repository**
 2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
 3. **Make your changes**
-4. **Run tests**: `make test`
-5. **Commit**: `git commit -m 'Add amazing feature'`
-6. **Push**: `git push origin feature/amazing-feature`
-7. **Open a Pull Request**
+4. **Commit**: `git commit -m 'Add amazing feature'`
+5. **Push**: `git push origin feature/amazing-feature`
+6. **Open a Pull Request**
 
 ### Areas to Contribute
 
 - 🐛 Bug fixes
 - ✨ New features
 - 📝 Documentation improvements
-- 🧪 Test coverage
 - 🎨 Code quality improvements
 
 **Join our Discord**: [https://discord.com/invite/xvArbFbh34](https://discord.com/invite/xvArbFbh34)
@@ -351,49 +297,17 @@ We welcome contributions! Here's how to get started:
 - User galleries
 
 #### 🚧 In Progress
+- Post editing
+- User profiles
 - Rate limiting
 - Image upload (currently external URLs only)
 - Advanced analytics
 
 #### 📅 Planned Features
-- Post editing
 - Comments system
-- User profiles
 - Discord bot analytics commands
 
 **Full Roadmap**: [../ROADMAP.md](../ROADMAP.md)
-
----
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Database connection failed**
-```bash
-# Check PostgreSQL is running
-sudo systemctl status postgresql
-
-# Verify credentials in .env
-```
-
-**Port already in use**
-```bash
-# Find process using port 8080
-lsof -i :8080
-
-# Change port in .env
-HTTP_PORT=8081
-```
-
-**Discord bot not responding**
-```bash
-# Verify bot token
-# Check bot permissions
-# Ensure bot is in the server
-```
-
-**Full Troubleshooting Guide**: [BACKEND_SETUP.md](BACKEND_SETUP.md#troubleshooting)
 
 ---
 
@@ -405,7 +319,7 @@ This project is open-source. See [LICENSE](../LICENSE) for details.
 
 ## 🔗 Links
 
-- **Frontend Repository**: [Coming Soon]
+- **Frontend**: [../frontend](../frontend) (Monorepo)
 - **Discord Community**: [Join Here](https://discord.com/invite/xvArbFbh34)
 - **GW2 Official API**: [wiki.guildwars2.com/wiki/API](https://wiki.guildwars2.com/wiki/API:Main)
 - **Project Roadmap**: [ROADMAP.md](../ROADMAP.md)
@@ -415,7 +329,7 @@ This project is open-source. See [LICENSE](../LICENSE) for details.
 
 ## 👥 Team
 
-Built with ❤️ by the GW2STYLE community
+Built with ❤️ by the NesoHQ community
 
 **Maintainers**: See [CONTRIBUTORS.md](../CONTRIBUTORS.md)
 

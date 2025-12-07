@@ -51,7 +51,7 @@ X-Bot-Token: <discord_bot_token>
 ## Base URL
 
 ```
-http://localhost:8080/api/v1
+http://localhost:YOUR_PORT/api/v1
 ```
 
 In production, replace with your deployed backend URL.
@@ -141,7 +141,7 @@ Authenticate a user using their Guild Wars 2 API key.
 
 **Example**:
 ```bash
-curl -X POST http://localhost:8080/api/v1/login \
+curl -X POST http://localhost:YOUR_PORT/api/v1/login \
   -H "Content-Type: application/json" \
   -d '{"api_key": "YOUR_GW2_API_KEY"}'
 ```
@@ -251,7 +251,7 @@ Retrieve a paginated list of published posts.
 
 **Example**:
 ```bash
-curl http://localhost:8080/api/v1/posts?limit=10&offset=0
+curl http://localhost:YOUR_PORT/api/v1/posts?limit=10&offset=0
 ```
 
 ---
@@ -287,7 +287,7 @@ Search and filter posts by tags, query, or author.
 
 **Example**:
 ```bash
-curl "http://localhost:8080/api/v1/posts/search?tags=light,sylvari&limit=10"
+curl "http://localhost:YOUR_PORT/api/v1/posts/search?tags=light,sylvari&limit=10"
 ```
 
 ---
@@ -325,7 +325,7 @@ Retrieve most-liked posts within a timeframe.
 
 **Example**:
 ```bash
-curl "http://localhost:8080/api/v1/posts/popular?timeframe=week&limit=5"
+curl "http://localhost:YOUR_PORT/api/v1/posts/popular?timeframe=week&limit=5"
 ```
 
 ---
@@ -380,7 +380,7 @@ Retrieve detailed information for a specific post.
 
 **Example**:
 ```bash
-curl http://localhost:8080/api/v1/posts/1
+curl http://localhost:YOUR_PORT/api/v1/posts/1
 ```
 
 ---
@@ -452,7 +452,7 @@ Create a new outfit post (requires authentication).
 
 **Example**:
 ```bash
-curl -X POST http://localhost:8080/api/v1/posts/create \
+curl -X POST http://localhost:YOUR_PORT/api/v1/posts/create \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -491,7 +491,7 @@ Delete a post (only the author can delete their own posts).
 
 **Example**:
 ```bash
-curl -X DELETE http://localhost:8080/api/v1/posts/123 \
+curl -X DELETE http://localhost:YOUR_PORT/api/v1/posts/123 \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -529,7 +529,7 @@ Add a like to a post.
 
 **Example**:
 ```bash
-curl -X POST http://localhost:8080/api/v1/posts/1/like \
+curl -X POST http://localhost:YOUR_PORT/api/v1/posts/1/like \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
@@ -564,26 +564,7 @@ Remove a like from a post.
 
 ---
 
-#### 13. Get Like Status
-
-Check if the current user has liked a post.
-
-**Endpoint**: `GET /api/v1/posts/{id}/like`  
-**Authentication**: JWT Required
-
-**Success Response** (200 OK):
-```json
-{
-  "success": true,
-  "data": {
-    "liked": true
-  }
-}
-```
-
----
-
-#### 14. Get User's Liked Posts
+#### 13. Get User's Liked Posts
 
 Retrieve all posts liked by the authenticated user.
 
@@ -604,7 +585,7 @@ Retrieve all posts liked by the authenticated user.
 
 ### User Endpoints
 
-#### 15. Report a Post
+#### 14. Report a Post
 
 Submit a report for inappropriate content.
 
@@ -649,7 +630,7 @@ Submit a report for inappropriate content.
 
 > **Note**: These endpoints require Discord bot authentication via `X-Bot-Token` header.
 
-#### 16. Publish Post
+#### 15. Publish Post
 
 Approve and publish a post (bot-authenticated).
 
@@ -688,7 +669,7 @@ X-Bot-Token: <discord_bot_token>
 
 ---
 
-#### 17. Reject Post
+#### 16. Reject Post
 
 Reject a post submission (bot-authenticated).
 
