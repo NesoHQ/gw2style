@@ -240,6 +240,25 @@
   font-style: italic;
 }
 
+/* Loading More (Infinite Scroll) */
+.loadingMore {
+  text-align: center;
+  padding: 20px;
+  color: #d4af37;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 1px;
+}
+
+/* End of Results */
+.endOfResults {
+  text-align: center;
+  padding: 20px;
+  color: #6b7280;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+}
+
 /* Responsive Layout */
 @media (max-width: 768px) {
   .main {

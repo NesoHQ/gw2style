@@ -18,6 +18,8 @@ import {
   removeFilter
 } from '../utils/filterHelpers';
 
+const POSTS_PER_PAGE = 25;
+
 export default function StylesPage() {
   const router = useRouter();
   const [posts, setPosts] = useState([]);
@@ -43,11 +45,16 @@ export default function StylesPage() {
   const [skinTags, setSkinTags] = useState([]);
   const [clearDeepSearch, setClearDeepSearch] = useState(0);
   
-  // Debounce timer ref (Task 7.3)
-  const debounceTimerRef = useRef(null);
+  // Pagination state for infinite scroll
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const loadingRef = useRef(false);
+  const previousPostCount = useRef(0);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [hasSearched, setHasSearched] = useState(false);
   
-  // Scroll position management (Task 8.3)
-  const scrollPositionRef = useRef(0);
+  // Store current search params for pagination
+  const currentSearchRef = useRef({ filters: {}, skinTags: [], searchParams: {} });
   
   // Masonry grid refs
   const gridRef = useRef(null);
@@ -58,12 +65,13 @@ export default function StylesPage() {
     if (router.isReady) {
       const urlFilters = decodeFiltersFromURL(router.query);
       setFilters(urlFilters);
+      setInitialLoad(false);
     }
   }, [router.isReady]);
 
   // Update URL when filters change (Task 7.2)
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !initialLoad) {
       const query = encodeFiltersToURL(filters);
       router.push(
         {
@@ -76,15 +84,23 @@ export default function StylesPage() {
     }
   }, [filters]);
 
-  // Fetch posts with filters - debounced (Task 7.3)
-  const fetchPosts = async (filtersToApply, skinTagsToApply = []) => {
+  // Fetch posts with filters and pagination
+  const fetchPosts = async (filtersToApply, skinTagsToApply = [], searchParamsToApply = {}, pageNum = 1, append = false) => {
+    if (loadingRef.current) return;
+    
+    loadingRef.current = true;
     setLoading(true);
+    
     try {
       const queryParams = new URLSearchParams();
       
+      // Add pagination params
+      queryParams.append('page', pageNum.toString());
+      queryParams.append('limit', POSTS_PER_PAGE.toString());
+      
       // Add search params
-      if (searchParams.query) queryParams.append('q', searchParams.query);
-      if (searchParams.author) queryParams.append('author', searchParams.author);
+      if (searchParamsToApply.query) queryParams.append('q', searchParamsToApply.query);
+      if (searchParamsToApply.author) queryParams.append('author', searchParamsToApply.author);
       
       // Add filter params - combines all filters into 'tags' parameter
       const filterParams = buildAPIQueryParams(filtersToApply);
@@ -118,54 +134,54 @@ export default function StylesPage() {
         throw new Error(data.error || 'Failed to fetch posts');
       }
 
-      setPosts(data.data || []);
+      const newPosts = data.data || [];
+      
+      if (append) {
+        setPosts(prev => {
+          const existingIds = new Set(prev.map(p => p.id));
+          const uniqueNewPosts = newPosts.filter(p => !existingIds.has(p.id));
+          return [...prev, ...uniqueNewPosts];
+        });
+      } else {
+        setPosts(newPosts);
+        previousPostCount.current = newPosts.length;
+      }
+      
+      // Check if there are more posts to load
+      const pagination = data.pagination;
+      if (pagination) {
+        setHasMore(pagination.page < pagination.total_pages);
+      } else {
+        setHasMore(newPosts.length === POSTS_PER_PAGE);
+      }
+      
+      setPage(pageNum);
+      setHasSearched(true);
+      
     } catch (error) {
       console.error('Error fetching posts:', error);
-      setPosts([]);
+      if (!append) {
+        setPosts([]);
+      }
+      setHasMore(false);
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
   };
 
-  // Save scroll position before filter changes (Task 8.3)
-  useEffect(() => {
-    scrollPositionRef.current = window.scrollY;
-  }, [filters]);
-
-  // Restore scroll position after results load (Task 8.3)
-  useEffect(() => {
-    if (!loading && scrollPositionRef.current > 0) {
-      // Use requestAnimationFrame to ensure DOM has updated
-      requestAnimationFrame(() => {
-        window.scrollTo({
-          top: scrollPositionRef.current,
-          behavior: 'auto' // Instant scroll to prevent jarring jumps
-        });
-      });
-    }
-  }, [loading, posts]);
-
-  // Manual search trigger - only fetch when user clicks search or applies filters
-  const handleApplyFilters = () => {
-    fetchPosts(filters);
-  };
-
-  // Initialize Masonry layout
+  // Initialize Masonry once posts are loaded
   useEffect(() => {
     const initMasonry = async () => {
       if (
         typeof window !== 'undefined' &&
         gridRef.current &&
-        posts &&
-        posts.length > 0
+        posts.length > 0 &&
+        !masonryRef.current
       ) {
         try {
           const Masonry = (await import('masonry-layout')).default;
           const imagesLoaded = (await import('imagesloaded')).default;
-
-          if (masonryRef.current) {
-            masonryRef.current.destroy();
-          }
 
           imagesLoaded(gridRef.current, () => {
             masonryRef.current = new Masonry(gridRef.current, {
@@ -173,7 +189,7 @@ export default function StylesPage() {
               columnWidth: `.${homeStyles.gridSizer}`,
               percentPosition: true,
               transitionDuration: '0.3s',
-              fitWidth: false,
+              fitWidth: true,
             });
           });
         } catch (error) {
@@ -182,15 +198,77 @@ export default function StylesPage() {
       }
     };
 
-    const timer = setTimeout(initMasonry, 100);
+    if (hasSearched && posts.length > 0) {
+      const timer = setTimeout(initMasonry, 100);
+      return () => clearTimeout(timer);
+    }
 
     return () => {
-      clearTimeout(timer);
       if (masonryRef.current) {
         masonryRef.current.destroy();
+        masonryRef.current = null;
       }
     };
+  }, [posts, hasSearched]);
+
+  // Append new items to Masonry when posts change (for infinite scroll)
+  useEffect(() => {
+    const appendToMasonry = async () => {
+      if (
+        masonryRef.current &&
+        gridRef.current &&
+        posts.length > previousPostCount.current
+      ) {
+        try {
+          const imagesLoaded = (await import('imagesloaded')).default;
+
+          // Get all card elements
+          const allCards = Array.from(gridRef.current.querySelectorAll(`.${homeStyles.card}`));
+          // Get only the new ones
+          const newCards = allCards.slice(previousPostCount.current);
+
+          if (newCards.length > 0) {
+            imagesLoaded(newCards, () => {
+              masonryRef.current.appended(newCards);
+              masonryRef.current.layout();
+
+              // Fade in new cards after layout
+              newCards.forEach(card => {
+                card.style.transition = 'opacity 0.3s ease-in';
+                card.style.opacity = '1';
+              });
+            });
+          }
+
+          previousPostCount.current = posts.length;
+        } catch (error) {
+          console.log('Error appending to masonry:', error);
+        }
+      }
+    };
+
+    appendToMasonry();
   }, [posts]);
+
+  // Infinite scroll handler
+  useEffect(() => {
+    const handleScroll = async () => {
+      if (loadingRef.current || !hasMore || !hasSearched) return;
+
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+
+      if (scrollTop + windowHeight >= documentHeight - 1500) {
+        const nextPage = page + 1;
+        const { filters: savedFilters, skinTags: savedSkinTags, searchParams: savedSearchParams } = currentSearchRef.current;
+        await fetchPosts(savedFilters, savedSkinTags, savedSearchParams, nextPage, true);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasMore, page, hasSearched]);
 
   // Handle filter change (Task 7.1)
   const handleFilterChange = (category, value) => {
@@ -200,7 +278,6 @@ export default function StylesPage() {
     
     const newFilters = toggleFilter(filters, category, value, isSingleSelect);
     setFilters(newFilters);
-    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Handle clear all filters (Task 7.1)
@@ -209,15 +286,24 @@ export default function StylesPage() {
     setFilters(clearedFilters);
     setSearchParams({ query: '', author: '' });
     setSkinTags([]);
-    setClearDeepSearch(prev => prev + 1); // Trigger deep search clear
-    setPosts([]); // Clear results when clearing filters
+    setClearDeepSearch(prev => prev + 1);
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+    setHasSearched(false);
+    previousPostCount.current = 0;
+    
+    // Destroy masonry instance
+    if (masonryRef.current) {
+      masonryRef.current.destroy();
+      masonryRef.current = null;
+    }
   };
 
   // Handle remove individual filter (Task 7.1)
   const handleRemoveFilter = (category, value) => {
     const newFilters = removeFilter(filters, category, value);
     setFilters(newFilters);
-    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Toggle mobile filter panel (Task 7.1)
@@ -226,8 +312,26 @@ export default function StylesPage() {
   };
 
   const handleSearch = () => {
+    // Reset pagination state for new search
+    setPage(1);
+    setHasMore(true);
+    previousPostCount.current = 0;
+    
+    // Destroy existing masonry instance for fresh start
+    if (masonryRef.current) {
+      masonryRef.current.destroy();
+      masonryRef.current = null;
+    }
+    
+    // Store current search params for pagination
+    currentSearchRef.current = {
+      filters: { ...filters },
+      skinTags: [...skinTags],
+      searchParams: { ...searchParams }
+    };
+    
     // Trigger fetch with all current filters, search params, and skin tags
-    fetchPosts(filters, skinTags);
+    fetchPosts(filters, skinTags, searchParams, 1, false);
   };
 
   const handleSearchInputChange = (field, value) => {
@@ -240,7 +344,6 @@ export default function StylesPage() {
   // Handle deep search by skins
   const handleDeepSearch = (selectedSkins) => {
     setSkinTags(selectedSkins);
-    // Don't trigger fetch immediately - wait for user to click search button
   };
 
   // Toggle deep search panel
@@ -346,10 +449,16 @@ export default function StylesPage() {
 
         {/* Results Section */}
         <section className={styles.resultsSection}>
-          {loading ? (
-            <div className={styles.loading}>
-              <div className={styles.loadingSpinner}></div>
-              <div className={styles.loadingText}>Loading Styles...</div>
+          {!hasSearched ? (
+            <div className={styles.noResults}>
+              <div className={styles.noResultsIcon}>⚔</div>
+              <h3 className={styles.noResultsTitle}>Select Filters to Search</h3>
+              <p className={styles.noResultsMessage}>
+                Use the filters above to find Guild Wars 2 fashion styles.
+              </p>
+              <p className={styles.noResultsSuggestion}>
+                Select race, gender, armor weight, class, or other filters to get started.
+              </p>
             </div>
           ) : posts.length > 0 ? (
             <>
@@ -361,28 +470,41 @@ export default function StylesPage() {
               </div>
               <div ref={gridRef} className={homeStyles.grid}>
                 <div className={homeStyles.gridSizer}></div>
-                {posts.map((post) => (
-                  <PostCard key={post.id} post={post} />
+                {posts.map((post, index) => (
+                  <PostCard 
+                    key={post.id} 
+                    post={post}
+                    style={{
+                      opacity: index >= previousPostCount.current && previousPostCount.current > 0 ? 0 : 1
+                    }}
+                  />
                 ))}
               </div>
+              {loading && (
+                <div className={styles.loadingMore}>
+                  Loading more posts...
+                </div>
+              )}
+              {!hasMore && posts.length > 0 && (
+                <div className={styles.endOfResults}>
+                  No more posts to load
+                </div>
+              )}
             </>
+          ) : loading ? (
+            <div className={styles.loading}>
+              <div className={styles.loadingSpinner}></div>
+              <div className={styles.loadingText}>Loading Styles...</div>
+            </div>
           ) : (
             <div className={styles.noResults}>
               <div className={styles.noResultsIcon}>⚔</div>
-              <h3 className={styles.noResultsTitle}>
-                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
-                  ? 'No Styles Found'
-                  : 'Select Filters to Search'}
-              </h3>
+              <h3 className={styles.noResultsTitle}>No Styles Found</h3>
               <p className={styles.noResultsMessage}>
-                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
-                  ? 'No posts match your current filter selection.'
-                  : 'Use the filters above to find Guild Wars 2 fashion styles.'}
+                No posts match your current filter selection.
               </p>
               <p className={styles.noResultsSuggestion}>
-                {countActiveFilters(filters) > 0 || searchParams.query || searchParams.author
-                  ? 'Try adjusting your filters or clearing all filters to see more results.'
-                  : 'Select race, gender, armor weight, class, or other filters to get started.'}
+                Try adjusting your filters or clearing all filters to see more results.
               </p>
             </div>
           )}
