@@ -3,7 +3,7 @@ import Link from 'next/link';
 import styles from '../styles/Home.module.css';
 import { useLike } from '../hooks/useLike';
 
-export default function PostCard({ post }) {
+export default function PostCard({ post, style }) {
   const { isLiked, likesCount, isLoading, toggleLike, canLike } = useLike(
     post.id,
     post.likes_count || 0
@@ -23,7 +23,7 @@ export default function PostCard({ post }) {
   };
 
   return (
-    <Link href={`/posts/${post.id}`} className={styles.card}>
+    <Link href={`/posts/${post.id}`} className={styles.card} style={style}>
       <div>
         <div className={styles.imageWrapper}>
           <Image

@@ -21,7 +21,7 @@ export default function Home() {
       try {
         setLoading(true);
         const data = await postsApi.getPosts(1, 25);
-        
+
         if (data.success && data.data) {
           setPosts(data.data);
           setHasMore(data.pagination?.page < data.pagination?.total_pages);
@@ -88,7 +88,7 @@ export default function Home() {
       ) {
         try {
           const imagesLoaded = (await import('imagesloaded')).default;
-          
+
           // Get all card elements
           const allCards = Array.from(gridRef.current.querySelectorAll(`.${styles.card}`));
           // Get only the new ones
@@ -98,6 +98,12 @@ export default function Home() {
             imagesLoaded(newCards, () => {
               masonryRef.current.appended(newCards);
               masonryRef.current.layout();
+
+              // Fade in new cards after layout
+              newCards.forEach(card => {
+                card.style.transition = 'opacity 0.3s ease-in';
+                card.style.opacity = '1';
+              });
             });
           }
 
@@ -122,11 +128,11 @@ export default function Home() {
       if (scrollTop + windowHeight >= documentHeight - 1500) {
         loadingRef.current = true;
         setLoading(true);
-        
+
         try {
           const nextPage = page + 1;
           const data = await postsApi.getPosts(nextPage, 25);
-          
+
           if (data.success && data.data.length > 0) {
             setPosts(prev => {
               const existingIds = new Set(prev.map(p => p.id));
@@ -152,7 +158,7 @@ export default function Home() {
   }, [hasMore, page, initialLoad]);
 
   return (
-    <Layout fullWidth  title="Home">
+    <Layout fullWidth title="Home">
       {initialLoad ? (
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <div className={styles.skeleton}>
@@ -166,8 +172,14 @@ export default function Home() {
         <>
           <div ref={gridRef} className={styles.grid}>
             <div className={styles.gridSizer}></div>
-            {posts.map((post) => (
-              <PostCard key={post.id} post={post} />
+            {posts.map((post, index) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                style={{
+                  opacity: !initialLoad && index >= previousPostCount.current ? 0 : 1
+                }}
+              />
             ))}
           </div>
           {loading && !initialLoad && (
