@@ -54,7 +54,7 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 }
 
 func GenerateJWT(user User) (string, error) {
-	expirationTime := time.Now().Add(7 * 24 * time.Hour).Unix()
+	expirationTime := time.Now().Add(30 * 24 * time.Hour).Unix() // 30 days (1 month)
 
 	claims := jwt.MapClaims{
 		"sub":      user.ID,

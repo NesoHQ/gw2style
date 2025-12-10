@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/NesoHQ/gw2style/config"
 	"github.com/NesoHQ/gw2style/repo"
 	"github.com/NesoHQ/gw2style/rest/utils"
 )
@@ -46,10 +47,10 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 			Name:     "jwt_token",
 			Value:    JWT,
 			HttpOnly: true,
-			Secure:   false, // Set to true in production with HTTPS
+			Secure:   h.cnf.Mode == config.ReleaseMode, // Automatically set based on MODE env variable
 			SameSite: http.SameSiteStrictMode,
 			Path:     "/",
-			MaxAge:   86400 * 7, // 7 days
+			MaxAge:   86400 * 30, // 30 days (1 month)
 		})
 
 		// Return user data (not the token)
@@ -106,10 +107,10 @@ func (h *Handlers) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		Name:     "jwt_token",
 		Value:    JWT,
 		HttpOnly: true,
-		Secure:   false, // Set to true in production with HTTPS
+		Secure:   h.cnf.Mode == config.ReleaseMode, // Automatically set based on MODE env variable
 		SameSite: http.SameSiteStrictMode,
 		Path:     "/",
-		MaxAge:   86400 * 7, // 7 days
+		MaxAge:   86400 * 30, // 30 days (1 month)
 	})
 
 	// Return user data (not the token)
